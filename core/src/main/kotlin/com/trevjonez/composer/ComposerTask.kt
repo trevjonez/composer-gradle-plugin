@@ -24,8 +24,8 @@ import java.io.File
 import javax.inject.Inject
 
 open class ComposerTask : DefaultTask(), ComposerConfigurator {
-    override var apk: String? = null
-    override var testApk: String? = null
+    override var apk: File? = null
+    override var testApk: File? = null
     override var testPackage: String? = null
     override var testRunner: String? = null
     override var shard: Boolean? = null
@@ -33,7 +33,7 @@ open class ComposerTask : DefaultTask(), ComposerConfigurator {
     override var instrumentationArguments = mutableMapOf<String, String>()
     override var verboseOutput: Boolean? = null
 
-    val workerExecutor: WorkerExecutor
+    open val workerExecutor: WorkerExecutor
         @Inject get() = throw UnsupportedOperationException()
 
     @TaskAction
@@ -44,18 +44,28 @@ open class ComposerTask : DefaultTask(), ComposerConfigurator {
                 displayName = name
                 isolationMode = IsolationMode.PROCESS
                 params(apk, testApk, testPackage,
-                       testRunner, shard, outputDirectory,
-                       instrumentationArguments, verboseOutput)
+                       testRunner, OptionalWorkerParam(shard),
+                       OptionalWorkerParam(outputDirectory),
+                       instrumentationArguments,
+                       OptionalWorkerParam(verboseOutput))
             }
         }
     }
 
-    override fun apk(value: String) {
+    override fun apk(value: File) {
         apk = value
     }
 
-    override fun testApk(value: String) {
+    override fun apk(value: String) {
+        apk(File(value))
+    }
+
+    override fun testApk(value: File) {
         testApk = value
+    }
+
+    override fun testApk(value: String) {
+        testApk(File(value))
     }
 
     override fun testPackage(value: String) {

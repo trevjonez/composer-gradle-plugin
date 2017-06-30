@@ -23,10 +23,10 @@ interface ComposerConfiguration {
     val testApk: File
     val testPackage: String
     val testRunner: String
-    val shard: Boolean?
-    val outputDirectory: File?
+    val shard: OptionalWorkerParam<Boolean>
+    val outputDirectory: OptionalWorkerParam<File>
     val instrumentationArguments: Map<String, String>
-    val verboseOutput: Boolean?
+    val verboseOutput: OptionalWorkerParam<Boolean>
 
     fun toCliArgs(): Array<String> {
         return arrayOf(
@@ -35,13 +35,13 @@ interface ComposerConfiguration {
                 "--test-package", testPackage,
                 "--test-runner", testRunner)
                 .let { params ->
-                    shard?.let {
-                        params + arrayOf("--shard", "$it")
+                    shard.takeIf { it.isPresent() }?.let {
+                        params + arrayOf("--shard", "${it.get()}")
                     } ?: params
                 }
                 .let { params ->
-                    outputDirectory?.let {
-                        params + arrayOf("--output-directory", it.absolutePath)
+                    outputDirectory.takeIf { it.isPresent() }?.let {
+                        params + arrayOf("--output-directory", it.get().absolutePath)
                     } ?: params
                 }
                 .let { params ->
@@ -51,8 +51,8 @@ interface ComposerConfiguration {
                     } ?: params
                 }
                 .let { params ->
-                    verboseOutput?.let {
-                        params + arrayOf("--verbose-output", "$it")
+                    verboseOutput.takeIf { it.isPresent() }?.let {
+                        params + arrayOf("--verbose-output", "${it.get()}")
                     } ?: params
                 }
     }

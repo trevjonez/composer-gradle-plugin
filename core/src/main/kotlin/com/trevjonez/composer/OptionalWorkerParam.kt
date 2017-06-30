@@ -16,21 +16,12 @@
 
 package com.trevjonez.composer
 
-import java.io.File
-import javax.inject.Inject
+import java.io.Serializable
 
-class ComposerWorkerAction @Inject constructor(
-        override val apk: File,
-        override val testApk: File,
-        override val testPackage: String,
-        override val testRunner: String,
-        override val shard: OptionalWorkerParam<Boolean>,
-        override val outputDirectory: OptionalWorkerParam<File>,
-        override val instrumentationArguments: Map<String, String>,
-        override val verboseOutput: OptionalWorkerParam<Boolean>)
-    : Runnable, ComposerConfiguration {
-
-    override fun run() {
-        TODO("need to get rid of system exit calls in composer first")
-    }
+/**
+ * Java8 Optional is not serializable. thus this.
+ */
+data class OptionalWorkerParam<out T>(val value: T?) : Serializable {
+    fun isPresent() = value != null
+    fun get() = value!!
 }

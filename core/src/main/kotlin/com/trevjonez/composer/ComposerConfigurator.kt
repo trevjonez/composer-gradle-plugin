@@ -19,8 +19,8 @@ package com.trevjonez.composer
 import java.io.File
 
 interface ComposerConfigurator {
-    var apk: String?
-    var testApk: String?
+    var apk: File?
+    var testApk: File?
     var testPackage: String?
     var testRunner: String?
     var shard: Boolean?
@@ -28,7 +28,9 @@ interface ComposerConfigurator {
     var instrumentationArguments: MutableMap<String, String>
     var verboseOutput: Boolean?
 
+    fun apk(value: File)
     fun apk(value: String)
+    fun testApk(value: File)
     fun testApk(value: String)
     fun testPackage(value: String)
     fun testRunner(value: String)
