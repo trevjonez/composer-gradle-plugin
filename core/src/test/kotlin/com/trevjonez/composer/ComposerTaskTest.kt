@@ -34,6 +34,8 @@ class ComposerTaskTest {
     
     @Before
     fun setUp() {
+        File(testProjectDir.root, "app.apk").createNewFile()
+        File(testProjectDir.root, "app-test.apk").createNewFile()
         File(testProjectDir.root, "libs").also {
             it.mkdir()
             FileUtils.copyFileToDirectory(File(".", "build/libs/core.jar"), it)
@@ -42,12 +44,24 @@ class ComposerTaskTest {
 
     @Test
     fun functionalCheck() {
-        //language=Groovy
-        "buildscript {\n    dependencies {\n        classpath files(\"libs/core.jar\")\n    }\n}\n\nimport com.trevjonez.composer.ComposerTask\n\ntask runComposer(type: ComposerTask) {\n    apk \"app.apk\"\n    testApk \"app-test.apk\"\n    testPackage \"com.nope\"\n    testRunner \"com.nope.Runner\"\n}".writeTo(buildFile)
+        """buildscript {
+    dependencies {
+        classpath files("libs/core.jar")
+    }
+}
+
+import com.trevjonez.composer.ComposerTask
+
+task runComposer(type: ComposerTask) {
+    apk "${testProjectDir.root.absolutePath}/app.apk"
+    testApk "${testProjectDir.root.absolutePath}/app-test.apk"
+    testPackage "com.nope"
+    testRunner "com.nope.Runner"
+}""".writeTo(buildFile)
 
         val runResult = GradleRunner.create()
                 .withProjectDir(testProjectDir.root)
-                .withArguments("runComposer", "--stacktrace")
+                .withArguments("runComposer", "--info")
                 .forwardOutput()
                 .build()
     }

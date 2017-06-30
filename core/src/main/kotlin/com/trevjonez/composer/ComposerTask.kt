@@ -17,20 +17,50 @@
 package com.trevjonez.composer
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.workers.IsolationMode
 import org.gradle.workers.WorkerExecutor
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 open class ComposerTask : DefaultTask(), ComposerConfigurator {
-    override var apk: File? = null
+
+    private val logger: Logger = LoggerFactory.getLogger(ComposerTask::class.java)
+
+    @get:InputFile
+    override var apk: File? by Delegates.observable<File?>(null) { prop, old, new ->
+        logger.info("$name: apk: ${new?.absolutePath}")
+    }
+
+    @InputFile
     override var testApk: File? = null
+
+    @Input
     override var testPackage: String? = null
+
+    @Input
     override var testRunner: String? = null
+
+    @Input
+    @Optional
     override var shard: Boolean? = null
-    override var outputDirectory: File? = null
+
+    @Input
+    @OutputDirectory
+    override var outputDirectory: File? = File("composer-output")
+
+    @Input
     override var instrumentationArguments = mutableMapOf<String, String>()
+
+    @Input
+    @Optional
     override var verboseOutput: Boolean? = null
 
     open val workerExecutor: WorkerExecutor
