@@ -21,7 +21,4 @@ import java.io.Serializable
 /**
  * Java8 Optional is not serializable. thus this.
  */
-data class OptionalWorkerParam<out T>(val value: T?) : Serializable {
-    fun isPresent() = value != null
-    fun get() = value!!
-}
+data class OptionalWorkerParam<out T>(val value: T?) : Serializable

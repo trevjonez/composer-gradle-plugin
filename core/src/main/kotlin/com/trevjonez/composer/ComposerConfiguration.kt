@@ -35,13 +35,13 @@ interface ComposerConfiguration {
                 "--test-package", testPackage,
                 "--test-runner", testRunner)
                 .let { params ->
-                    shard.takeIf { it.isPresent() }?.let {
-                        params + arrayOf("--shard", "${it.get()}")
+                    shard.value?.let {
+                        params + arrayOf("--shard", "$it")
                     } ?: params
                 }
                 .let { params ->
-                    outputDirectory.takeIf { it.isPresent() }?.let {
-                        params + arrayOf("--output-directory", it.get().absolutePath)
+                    outputDirectory.value?.let {
+                        params + arrayOf("--output-directory", it.absolutePath)
                     } ?: params
                 }
                 .let { params ->
@@ -51,8 +51,8 @@ interface ComposerConfiguration {
                     } ?: params
                 }
                 .let { params ->
-                    verboseOutput.takeIf { it.isPresent() }?.let {
-                        params + arrayOf("--verbose-output", "${it.get()}")
+                    verboseOutput.value?.let {
+                        params + arrayOf("--verbose-output", "$it")
                     } ?: params
                 }
     }
