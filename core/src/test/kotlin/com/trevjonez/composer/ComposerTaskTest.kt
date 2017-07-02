@@ -18,14 +18,13 @@ package com.trevjonez.composer
 
 import org.apache.commons.io.FileUtils
 import org.gradle.testkit.runner.GradleRunner
-import org.gradle.testkit.runner.internal.DefaultGradleRunner
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
-import java.io.BufferedWriter
 
 
 class ComposerTaskTest {
@@ -44,9 +43,18 @@ class ComposerTaskTest {
 
     @Test
     fun functionalCheck() {
-        """buildscript {
+        """
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+
     dependencies {
         classpath files("libs/core.jar")
+
+        //todo update version from dev to a jcenter hosted version then remove maven local
+        classpath group: 'com.gojuno.composer', name: 'composer', version: 'dev'
     }
 }
 
@@ -61,7 +69,7 @@ task runComposer(type: ComposerTask) {
 
         val runResult = GradleRunner.create()
                 .withProjectDir(testProjectDir.root)
-                .withArguments("runComposer", "--info")
+                .withArguments("runComposer")
                 .forwardOutput()
                 .build()
     }
@@ -77,4 +85,5 @@ task runComposer(type: ComposerTask) {
             }
         }
     }
+
 }

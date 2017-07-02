@@ -16,6 +16,8 @@
 
 package com.trevjonez.composer
 
+import com.gojuno.composer.Exit
+import com.gojuno.composer.run
 import java.io.File
 import javax.inject.Inject
 
@@ -31,6 +33,10 @@ class ComposerWorkerAction @Inject constructor(
     : Runnable, ComposerConfiguration {
 
     override fun run() {
-        TODO("need to get rid of system exit calls in composer first")
+        val result = run(toCliArgs())
+        when (result) {
+            Exit.Ok -> return
+            else -> throw ComposerTask.Error(result.message ?: "")
+        }
     }
 }

@@ -17,6 +17,7 @@
 package com.trevjonez.composer
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
@@ -33,6 +34,8 @@ import kotlin.properties.Delegates
 open class ComposerTask : DefaultTask(), ComposerConfigurator {
 
     private val logger: Logger = LoggerFactory.getLogger(ComposerTask::class.java)
+
+    class Error(message: String) : GradleException(message)
 
     @get:InputFile
     override var apk: File? by Delegates.observable<File?>(null) { prop, old, new ->
@@ -69,10 +72,15 @@ open class ComposerTask : DefaultTask(), ComposerConfigurator {
     @TaskAction
     fun invokeComposer() {
         validate()
+
+        val cp = project.buildscript.configurations
+                .getByName("classpath").resolvedConfiguration.files
+
         workerExecutor.submit(ComposerWorkerAction::class.java) { config ->
             config.apply {
                 displayName = name
                 isolationMode = IsolationMode.PROCESS
+                classpath = cp
                 params(apk, testApk, testPackage,
                        testRunner, OptionalWorkerParam(shard),
                        OptionalWorkerParam(outputDirectory),
