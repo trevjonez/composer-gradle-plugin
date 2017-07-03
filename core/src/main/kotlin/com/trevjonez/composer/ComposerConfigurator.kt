@@ -24,7 +24,7 @@ interface ComposerConfigurator {
     var testPackage: String?
     var testRunner: String?
     var shard: Boolean?
-    var outputDirectory: File?
+    var outputDirectory: File
     var instrumentationArguments: MutableMap<String, String>
     var verboseOutput: Boolean?
 

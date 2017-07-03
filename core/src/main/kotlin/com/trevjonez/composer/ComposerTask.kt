@@ -21,19 +21,17 @@ import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.io.File
-import kotlin.properties.Delegates
 
+@Suppress("unused")
 open class ComposerTask : JavaExec(), ComposerConfigurator {
 
     companion object {
-        const val COMPOSER = "composer"
-        const val ARTIFACT_DEP = "com.gojuno.composer:composer:0.2.3"
+        private const val MAIN_CLASS = "com.gojuno.composer.MainKt"
+        private const val COMPOSER = "composer"
+        private const val ARTIFACT_DEP = "com.gojuno.composer:composer:0.2.3"
+        private val DEFAULT_OUTPUT_DIR = File("composer-output")
     }
-
-    private val logger: Logger = LoggerFactory.getLogger(ComposerTask::class.java)
 
     init {
         if (project.configurations.findByName(COMPOSER) == null) {
@@ -42,10 +40,8 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
         }
     }
 
-    @get:InputFile
-    override var apk: File? by Delegates.observable<File?>(null) { prop, old, new ->
-        logger.info("$name: apk: ${new?.absolutePath}")
-    }
+    @InputFile
+    override var apk: File? = null
 
     @InputFile
     override var testApk: File? = null
@@ -62,7 +58,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
 
     @Input
     @OutputDirectory
-    override var outputDirectory: File? = File("composer-output")
+    override var outputDirectory: File = DEFAULT_OUTPUT_DIR
 
     @Input
     override var instrumentationArguments = mutableMapOf<String, String>()
@@ -76,8 +72,8 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
                 apk!!, testApk!!, testPackage!!, testRunner!!,
                 shard, outputDirectory, instrumentationArguments, verboseOutput)
         args = config.toCliArgs()
-        main = "com.gojuno.composer.MainKt"
-        classpath = project.configurations.getByName("composer")
+        main = MAIN_CLASS
+        classpath = project.configurations.getByName(COMPOSER)
         super.exec()
     }
 
