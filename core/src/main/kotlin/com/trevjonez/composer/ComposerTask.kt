@@ -81,10 +81,6 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
         super.exec()
     }
 
-    private fun missingRequiredParam(paramName: String): NullPointerException {
-        return NullPointerException("Missing required param: $paramName")
-    }
-
     override fun apk(value: File) {
         apk = value
     }
