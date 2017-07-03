@@ -16,26 +16,31 @@
 
 package com.trevjonez.composer
 
-import org.gradle.api.DefaultTask
-import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.TaskAction
-import org.gradle.workers.IsolationMode
-import org.gradle.workers.WorkerExecutor
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
-import javax.inject.Inject
 import kotlin.properties.Delegates
 
-open class ComposerTask : DefaultTask(), ComposerConfigurator {
+open class ComposerTask : JavaExec(), ComposerConfigurator {
+
+    companion object {
+        const val COMPOSER = "composer"
+        const val ARTIFACT_DEP = "com.gojuno.composer:composer:0.2.3"
+    }
 
     private val logger: Logger = LoggerFactory.getLogger(ComposerTask::class.java)
 
-    class Error(message: String) : GradleException(message)
+    init {
+        if (project.configurations.findByName(COMPOSER) == null) {
+            project.configurations.create(COMPOSER)
+            project.dependencies.add(COMPOSER, ARTIFACT_DEP)
+        }
+    }
 
     @get:InputFile
     override var apk: File? by Delegates.observable<File?>(null) { prop, old, new ->
@@ -66,28 +71,18 @@ open class ComposerTask : DefaultTask(), ComposerConfigurator {
     @Optional
     override var verboseOutput: Boolean? = null
 
-    open val workerExecutor: WorkerExecutor
-        @Inject get() = throw UnsupportedOperationException()
+    override fun exec() {
+        val config = ComposerConfiguration.DefaultImpl(
+                apk!!, testApk!!, testPackage!!, testRunner!!,
+                shard, outputDirectory, instrumentationArguments, verboseOutput)
+        args = config.toCliArgs()
+        main = "com.gojuno.composer.MainKt"
+        classpath = project.configurations.getByName("composer")
+        super.exec()
+    }
 
-    @TaskAction
-    fun invokeComposer() {
-        validate()
-
-        val cp = project.buildscript.configurations
-                .getByName("classpath").resolvedConfiguration.files
-
-        workerExecutor.submit(ComposerWorkerAction::class.java) { config ->
-            config.apply {
-                displayName = name
-                isolationMode = IsolationMode.PROCESS
-                classpath = cp
-                params(apk, testApk, testPackage,
-                       testRunner, OptionalWorkerParam(shard),
-                       OptionalWorkerParam(outputDirectory),
-                       instrumentationArguments,
-                       OptionalWorkerParam(verboseOutput))
-            }
-        }
+    private fun missingRequiredParam(paramName: String): NullPointerException {
+        return NullPointerException("Missing required param: $paramName")
     }
 
     override fun apk(value: File) {

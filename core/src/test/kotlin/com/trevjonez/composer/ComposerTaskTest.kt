@@ -17,7 +17,9 @@
 package com.trevjonez.composer
 
 import org.apache.commons.io.FileUtils
+import org.assertj.core.api.Assertions.assertThat
 import org.gradle.testkit.runner.GradleRunner
+import org.junit.Assume
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -43,19 +45,17 @@ class ComposerTaskTest {
 
     @Test
     fun functionalCheck() {
+        val androidHome: String? = System.getenv("ANDROID_HOME")
+        Assume.assumeNotNull(androidHome)
         """
 buildscript {
-    repositories {
-        mavenLocal()
-        jcenter()
-    }
-
     dependencies {
         classpath files("libs/core.jar")
-
-        //todo update version from dev to a jcenter hosted version then remove maven local
-        classpath group: 'com.gojuno.composer', name: 'composer', version: 'dev'
     }
+}
+
+repositories {
+    jcenter()
 }
 
 import com.trevjonez.composer.ComposerTask
@@ -65,16 +65,22 @@ task runComposer(type: ComposerTask) {
     testApk "${testProjectDir.root.absolutePath}/app-test.apk"
     testPackage "com.nope"
     testRunner "com.nope.Runner"
-}""".writeTo(buildFile)
+    environment.put("ANDROID_HOME", "$androidHome")
+}
+""".writeTo(buildFile)
 
         val runResult = GradleRunner.create()
                 .withProjectDir(testProjectDir.root)
                 .withArguments("runComposer")
                 .forwardOutput()
-                .build()
+                .buildAndFail()
+
+        assertThat(runResult.output).contains("Error: No devices available for tests.")
     }
 
     private fun String.writeTo(file: File) {
+        println(this)
+
         var output: BufferedWriter? = null
         try {
             output = BufferedWriter(FileWriter(file))

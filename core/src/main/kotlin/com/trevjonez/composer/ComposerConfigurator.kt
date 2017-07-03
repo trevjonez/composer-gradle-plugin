@@ -42,12 +42,4 @@ interface ComposerConfigurator {
     fun addInstrumentationArgument(key: String, value: String)
     fun addInstrumentationArgument(value: Pair<String, String>)
     fun verboseOutput(value: Boolean)
-
-    @Throws(IllegalStateException::class)
-    fun validate() {
-        check(apk != null)
-        check(testApk != null)
-        check(!testPackage.isNullOrBlank())
-        check(!testRunner.isNullOrBlank())
-    }
 }

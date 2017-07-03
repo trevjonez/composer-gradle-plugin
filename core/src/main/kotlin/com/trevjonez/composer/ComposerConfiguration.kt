@@ -23,24 +23,24 @@ interface ComposerConfiguration {
     val testApk: File
     val testPackage: String
     val testRunner: String
-    val shard: OptionalWorkerParam<Boolean>
-    val outputDirectory: OptionalWorkerParam<File>
+    val shard: Boolean?
+    val outputDirectory: File?
     val instrumentationArguments: Map<String, String>
-    val verboseOutput: OptionalWorkerParam<Boolean>
+    val verboseOutput: Boolean?
 
-    fun toCliArgs(): Array<String> {
-        return arrayOf(
+    fun toCliArgs(): List<String> {
+        return listOf(
                 "--apk", apk.absolutePath,
                 "--test-apk", testApk.absolutePath,
                 "--test-package", testPackage,
                 "--test-runner", testRunner)
                 .let { params ->
-                    shard.value?.let {
+                    shard?.let {
                         params + arrayOf("--shard", "$it")
                     } ?: params
                 }
                 .let { params ->
-                    outputDirectory.value?.let {
+                    outputDirectory?.let {
                         params + arrayOf("--output-directory", it.absolutePath)
                     } ?: params
                 }
@@ -51,9 +51,20 @@ interface ComposerConfiguration {
                     } ?: params
                 }
                 .let { params ->
-                    verboseOutput.value?.let {
+                    verboseOutput?.let {
                         params + arrayOf("--verbose-output", "$it")
                     } ?: params
                 }
     }
+
+    data class DefaultImpl(
+            override val apk: File,
+            override val testApk: File,
+            override val testPackage: String,
+            override val testRunner: String,
+            override val shard: Boolean?,
+            override val outputDirectory: File?,
+            override val instrumentationArguments: Map<String, String>,
+            override val verboseOutput: Boolean?)
+        : ComposerConfiguration
 }
