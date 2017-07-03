@@ -16,71 +16,20 @@
 
 package com.trevjonez.composer
 
-import org.gradle.api.Project
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.JavaExec
-import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.Action
 import java.io.File
 
-@Suppress("unused")
-open class ComposerTask : JavaExec(), ComposerConfigurator {
-
-    companion object {
-        private const val MAIN_CLASS = "com.gojuno.composer.MainKt"
-        private const val COMPOSER = "composer"
-        private const val ARTIFACT_DEP = "com.gojuno.composer:composer:0.2.3"
-        val DEFAULT_OUTPUT_DIR = File("composer-output")
-
-        fun createComposerConfiguration(project: Project) {
-            if (project.configurations.findByName(COMPOSER) == null) {
-                project.configurations.create(COMPOSER)
-                project.dependencies.add(COMPOSER, ARTIFACT_DEP)
-            }
-        }
-    }
-
-    init {
-        createComposerConfiguration(project)
-    }
-
-    @InputFile
+open class ConfiguratorDomainObj: ComposerConfigurator {
     override var apk: File? = null
-
-    @InputFile
     override var testApk: File? = null
-
-    @Input
     override var testPackage: String? = null
-
-    @Input
     override var testRunner: String? = null
-
-    @Input
-    @Optional
     override var shard: Boolean? = null
-
-    @Input
-    @OutputDirectory
-    override var outputDirectory: File = DEFAULT_OUTPUT_DIR
-
-    @Input
-    override var instrumentationArguments = mutableMapOf<String, String>()
-
-    @Input
-    @Optional
+    override var outputDirectory: File = ComposerTask.DEFAULT_OUTPUT_DIR
+    override var instrumentationArguments: MutableMap<String, String> = mutableMapOf()
     override var verboseOutput: Boolean? = null
 
-    override fun exec() {
-        val config = ComposerConfiguration.DefaultImpl(
-                apk!!, testApk!!, testPackage!!, testRunner!!,
-                shard, outputDirectory, instrumentationArguments, verboseOutput)
-        args = config.toCliArgs()
-        main = MAIN_CLASS
-        classpath = project.configurations.getByName(COMPOSER)
-        super.exec()
-    }
+    var configureTask: Action<ComposerTask>? = null
 
     override fun apk(value: File) {
         apk = value
@@ -138,4 +87,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
         verboseOutput = value
     }
 
+    fun configureTask(action: Action<ComposerTask>) {
+        configureTask = action
+    }
 }

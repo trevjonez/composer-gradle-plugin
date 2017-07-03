@@ -19,6 +19,7 @@ buildscript {
 
     repositories {
         jcenter()
+        google()
     }
     dependencies {
         classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: kotlin_version

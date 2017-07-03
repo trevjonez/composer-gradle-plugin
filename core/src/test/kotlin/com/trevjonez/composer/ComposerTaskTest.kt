@@ -20,6 +20,7 @@ import org.apache.commons.io.FileUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Assume
+import org.junit.Assume.assumeNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -46,7 +47,7 @@ class ComposerTaskTest {
     @Test
     fun functionalCheck() {
         val androidHome: String? = System.getenv("ANDROID_HOME")
-        Assume.assumeNotNull(androidHome)
+        assumeNotNull(androidHome)
         """
 buildscript {
     dependencies {
@@ -63,9 +64,14 @@ import com.trevjonez.composer.ComposerTask
 task runComposer(type: ComposerTask) {
     apk "${testProjectDir.root.absolutePath}/app.apk"
     testApk "${testProjectDir.root.absolutePath}/app-test.apk"
-    testPackage "com.nope"
+    testPackage "com.nope.test"
     testRunner "com.nope.Runner"
     environment.put("ANDROID_HOME", "$androidHome")
+}
+
+dependencies {
+    //optional classpath config
+    composer "com.gojuno.composer:composer:0.2.3"
 }
 """.writeTo(buildFile)
 

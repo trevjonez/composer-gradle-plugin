@@ -14,20 +14,12 @@
  *    limitations under the License.
  */
 
-apply plugin: 'kotlin'
-apply plugin: 'nebula.kotlin'
+package com.trevjonez.composer
 
-sourceCompatibility = 1.8
+import org.junit.Rule
+import org.junit.rules.TemporaryFolder
 
-dependencies {
-    compile gradleApi()
+class ComposerPluginTest {
+    @Rule @JvmField val testProjectDir = TemporaryFolder()
+
 }
-
-dependencies {
-    testCompile gradleTestKit()
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.5.2'
-    testCompile group: 'commons-io', name: 'commons-io', version: '2.5'
-}
-
-tasks.findByPath('test').dependsOn('jar')
