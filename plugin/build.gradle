@@ -23,3 +23,5 @@ dependencies {
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.5.2'
     testCompile group: 'commons-io', name: 'commons-io', version: '2.5'
 }
+
+tasks.findByPath('test').dependsOn('jar')

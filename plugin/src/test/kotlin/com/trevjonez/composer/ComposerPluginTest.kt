@@ -16,10 +16,43 @@
 
 package com.trevjonez.composer
 
+import org.apache.commons.io.FileUtils
+import org.assertj.core.api.Assertions.assertThat
+import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
+import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import java.io.File
 
 class ComposerPluginTest {
     @Rule @JvmField val testProjectDir = TemporaryFolder()
 
+
+    /**
+     * Run with a device or emulator connected
+     */
+    @Test
+    fun happyPath() {
+        val projectDir = testProjectDir.newFolder("vanilla").also {
+            FileUtils.copyDirectory(File(javaClass.classLoader.getResource("vanilla").path), it)
+            File(it, "local.properties").writeText("sdk.dir=${System.getenv("HOME")}/Library/Android/sdk", Charsets.UTF_8)
+            File(it, "libs").also {
+                it.mkdir()
+                FileUtils.copyFileToDirectory(File(".", "build/libs/plugin.jar"), it)
+                FileUtils.copyFileToDirectory(File(".", "../core/build/libs/core.jar"), it)
+            }
+        }
+
+        val result = GradleRunner.create()
+                .withProjectDir(projectDir)
+                .withArguments("testDebugComposer")
+                .withDebug(true)
+                .forwardOutput()
+                .buildAndFail()
+
+        assertThat(result.output).contains("Successfully installed apk",
+                                                      "Starting tests",
+                                                      "Test run finished, 0 passed, 0 failed",
+                                                      "Error: 0 tests were run.")
+    }
 }

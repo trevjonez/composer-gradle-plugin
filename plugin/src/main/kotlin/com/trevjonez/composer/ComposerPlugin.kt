@@ -22,7 +22,6 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.file.FileCollection
 import java.io.File
 import kotlin.reflect.KClass
 
@@ -54,16 +53,19 @@ class ComposerPlugin : Plugin<Project> {
 
         androidExtension.applicationVariants.all {
             if (config.variants.isEmpty() || config.variants.contains(it.name)) {
-                val assembleTask = project.tasks.findByName("assemble${it.name.capitalize()}AndroidTest")
+                if (it.testVariant == null) return@all
+
+                val assembleTask = project.tasks.findByName("assemble${it.name.capitalize()}")
+                val assembleTestTask = project.tasks.findByName("assemble${it.name.capitalize()}AndroidTest")
                 val configurator: ConfiguratorDomainObj? = config.configs.findByName(it.name)
                 project.createTask(
                         type = ComposerTask::class,
                         name = "test${it.name.capitalize()}Composer",
                         description = "Run composer for ${it.name} variant",
-                        dependsOn = listOf(assembleTask))
+                        dependsOn = listOf(assembleTask, assembleTestTask))
                         .apply {
-                            apk = project.getApk(it, configurator)
-                            testApk = project.getTestApk(it, configurator)
+                            apk = getApk(it, configurator)
+                            testApk = getTestApk(it, configurator)
                             testPackage = getTestPackage(it, configurator)
                             testRunner = getTestRunner(it, configurator)
                             shard = configurator?.shard
@@ -98,27 +100,39 @@ class ComposerPlugin : Plugin<Project> {
         }
     }
 
-    private fun Project.getApk(variant: ApplicationVariant,
-                               configurator: ComposerConfigurator?): File {
+    private fun getApk(variant: ApplicationVariant,
+                       configurator: ComposerConfigurator?): File {
         try {
-            val apks = apksForTask(assemble(variant))
-            return configurator?.apk ?: apks.singleFile
-        } catch (multipleFiles: IllegalStateException) {
+            return configurator?.apk ?: apkForVariant(variant)
+        } catch (multipleFiles: IllegalArgumentException) {
             throw IllegalStateException("Multiple APK outputs found, " +
                                         "You must define the apk to use for composer task on variant ${variant.name}", multipleFiles)
+        } catch (noFiles: NoSuchElementException) {
+            throw IllegalStateException("No APK output found," +
+                                        "You must define the testApk to use for composer task on variant ${variant.name}", noFiles)
         }
 
     }
 
-    private fun Project.getTestApk(variant: ApplicationVariant,
-                                   configurator: ComposerConfigurator?): File {
+    private fun getTestApk(variant: ApplicationVariant,
+                           configurator: ComposerConfigurator?): File {
         try {
-            val apks = apksForTask(assembleAndroidTest(variant))
-            return configurator?.testApk ?: apks.singleFile
-        } catch (multipleFiles: IllegalStateException) {
+            return configurator?.testApk ?: testApkForVariant(variant)
+        } catch (multipleFiles: IllegalArgumentException) {
             throw IllegalStateException("Multiple APK outputs found, " +
                                         "You must define the testApk to use for composer task on variant ${variant.name}", multipleFiles)
+        } catch (noFiles: NoSuchElementException) {
+            throw IllegalStateException("No APK output found," +
+                                        "You must define the testApk to use for composer task on variant ${variant.name}", noFiles)
         }
+    }
+
+    private fun apkForVariant(variant: ApplicationVariant): File {
+        return variant.outputs.map { it.mainOutputFile }.single().outputFile
+    }
+
+    private fun testApkForVariant(variant: ApplicationVariant): File {
+        return variant.testVariant.outputs.single().outputFile
     }
 
     private fun getTestPackage(variant: ApplicationVariant, configurator: ComposerConfigurator?): String {
@@ -136,16 +150,6 @@ class ComposerPlugin : Plugin<Project> {
             configurator.outputDirectory
         }
     }
-
-    private fun apksForTask(task: Task): FileCollection {
-        return task.outputs.files.filter { it.extension == "apk" }
-    }
-
-    private fun Project.assemble(variant: ApplicationVariant) =
-            tasks.getByName("assemble${variant.name.capitalize()}")
-
-    private fun Project.assembleAndroidTest(variant: ApplicationVariant) =
-            tasks.getByName("assemble${variant.name.capitalize()}AndroidTest")
 
     private fun ApplicationVariant.testPackage(): String = "$applicationId.test"
 }

@@ -19,7 +19,6 @@ package com.trevjonez.composer
 import org.apache.commons.io.FileUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.gradle.testkit.runner.GradleRunner
-import org.junit.Assume
 import org.junit.Assume.assumeNotNull
 import org.junit.Before
 import org.junit.Rule
@@ -44,6 +43,9 @@ class ComposerTaskTest {
         }
     }
 
+    /**
+     * Run without any android devices connected or emulators running
+     */
     @Test
     fun functionalCheck() {
         val androidHome: String? = System.getenv("ANDROID_HOME")

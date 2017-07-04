@@ -24,7 +24,6 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import java.io.File
 
-@Suppress("unused")
 open class ComposerTask : JavaExec(), ComposerConfigurator {
 
     companion object {
