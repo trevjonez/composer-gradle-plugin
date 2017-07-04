@@ -1,4 +1,4 @@
-composer-gradle-plugin
+composer-gradle-plugin [![](https://jitpack.io/v/trevjonez/composer-gradle-plugin.svg)](https://jitpack.io/#trevjonez/composer-gradle-plugin)
 ====
 Gradle task type and plugin for running [gojuno/composer](https://github.com/gojuno/composer) from gradle.
 
