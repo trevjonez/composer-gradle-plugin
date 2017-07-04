@@ -70,7 +70,7 @@ class ComposerPlugin : Plugin<Project> {
                             testRunner = getTestRunner(it, configurator)
                             shard = configurator?.shard
                             outputDirectory = getOutputDirectory(it, configurator, project)
-                            instrumentationArguments = collectInstrumentationArgs(configurator)
+                            instrumentationArguments.addAll(collectInstrumentationArgs(configurator))
                             verboseOutput = configurator?.verboseOutput
                             configurator?.configureTask?.execute(this)
                         }
@@ -93,10 +93,10 @@ class ComposerPlugin : Plugin<Project> {
         }))
     }
 
-    private fun collectInstrumentationArgs(configurator: ComposerConfigurator?): MutableMap<String, String> {
-        return mutableMapOf<String, String>().apply {
-            putAll(config.instrumentationArguments)
-            configurator?.let { putAll(it.instrumentationArguments) }
+    private fun collectInstrumentationArgs(configurator: ComposerConfigurator?): List<Pair<String, String>> {
+        return mutableListOf<Pair<String, String>>().apply {
+            addAll(config.instrumentationArguments)
+            configurator?.let { addAll(it.instrumentationArguments) }
         }
     }
 

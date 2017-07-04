@@ -4,14 +4,14 @@ Gradle task type and plugin for running [gojuno/composer](https://github.com/goj
 
 Installation & Usage
 --------------------
-In the root `build.gradle` file add the appropriate jitpack repository and classpath dependency. 
+In the appropriate `build.gradle` file add the jitpack repository and classpath dependency.
 ```groovy
 buildscript {
     repositories {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.1.1'
+        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.1.2'
     }
 }
 ```
@@ -23,7 +23,7 @@ Plugin
 ```groovy
 apply plugin: 'composer'
 ```
-The above should be all you need and will create a task for each testable variant in the project.
+The above should be all you need to get started and will create a task for each testable variant in the project.
 
 The tasks that are created will be of the form `testFlavorTypeComposer`
 
@@ -31,8 +31,10 @@ If you want to limit the variants that get tasks or provide custom configuration
 ```groovy
 composer {
   variants "redDebug" // optional, variant names to create composer tasks for. If empty all testable variants will receive a task.
-  instrumentationArguments key1: 'value1', key2: 'value2'  //optional. args that apply to all created tasks
-  
+  instrumentationArgument('key1', 'value1') //optional. args that apply to all created tasks
+  instrumentationArgument('key2', 'value2')
+  instrumentationArgument('keyN', 'valueN')
+
   configs { 
     redDebug {
       apk 'app/build/outputs/apk/example-debug.apk' //optional override
@@ -41,8 +43,9 @@ composer {
       testRunner 'com.example.test.ExampleTestRunner' //optional override
       shard true //optional. default true
       outputDirectory 'artifacts/composer-output' //optional override. default 'build/reports/composer/redDebug'
-      instrumentationArguments key1: 'value1', key2: 'value2'  //optional. replaces existing arguments + root args
-      addInstrumentationArgument('key3', 'value3')  //optional. adds to existing arguments
+      instrumentationArgument('key1', 'value1') //optional
+      instrumentationArgument('key2', 'value2')
+      instrumentationArgument('keyN', 'valueN')
       verboseOutput false //optional default false
     }
   }
@@ -60,7 +63,9 @@ task customTaskName(type: ComposerTask) {
   testRunner 'com.example.test.ExampleTestRunner' //required
   shard true //optional
   outputDirectory 'artifacts/composer-output' //optional
-  instrumentationArguments key1: 'value1', key2: 'value2' //optional
+  instrumentationArgument('key1', 'value1') //optional
+  instrumentationArgument('key2', 'value2')
+  instrumentationArgument('keyN', 'valueN')
   verboseOutput false //optional
 }
 ```

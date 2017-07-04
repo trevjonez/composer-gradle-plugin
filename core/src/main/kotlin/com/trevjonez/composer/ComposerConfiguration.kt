@@ -25,7 +25,7 @@ interface ComposerConfiguration {
     val testRunner: String
     val shard: Boolean?
     val outputDirectory: File?
-    val instrumentationArguments: Map<String, String>
+    val instrumentationArguments: List<Pair<String, String>>
     val verboseOutput: Boolean?
 
     fun toCliArgs(): List<String> {
@@ -47,7 +47,7 @@ interface ComposerConfiguration {
                 .let { params ->
                     instrumentationArguments.takeIf { it.isNotEmpty() }?.let {
                         params + arrayOf("--instrumentation-arguments",
-                                         it.map { "${it.key} ${it.value}" }.joinToString(separator = " ") { it })
+                                         it.map { "${it.first} ${it.second}" }.joinToString(separator = " ") { it })
                     } ?: params
                 }
                 .let { params ->
@@ -64,7 +64,7 @@ interface ComposerConfiguration {
             override val testRunner: String,
             override val shard: Boolean?,
             override val outputDirectory: File?,
-            override val instrumentationArguments: Map<String, String>,
+            override val instrumentationArguments: List<Pair<String, String>>,
             override val verboseOutput: Boolean?)
         : ComposerConfiguration
 }

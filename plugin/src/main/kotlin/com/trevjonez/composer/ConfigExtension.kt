@@ -26,7 +26,7 @@ open class ConfigExtension(project: Project) {
 
     val variants = mutableListOf<String>()
 
-    val instrumentationArguments: MutableMap<String, String> = mutableMapOf()
+    val instrumentationArguments: MutableList<Pair<String, String>> = mutableListOf()
 
     fun configs(closure: Closure<Any>) {
         configs.configure(closure)
@@ -37,10 +37,10 @@ open class ConfigExtension(project: Project) {
     }
 
     fun instrumentationArguments(vararg values: Pair<String, String>) {
-        instrumentationArguments.putAll(values)
+        values.forEach { instrumentationArguments.add(it) }
     }
 
-    fun instrumentationArguments(values: Map<String, String>) {
-        instrumentationArguments.putAll(values)
+    fun instrumentationArgument(key: String, value: String) {
+        instrumentationArguments.add(key to value)
     }
 }

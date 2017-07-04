@@ -65,7 +65,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
     override var outputDirectory: File = DEFAULT_OUTPUT_DIR
 
     @Input
-    override var instrumentationArguments = mutableMapOf<String, String>()
+    override val instrumentationArguments = mutableListOf<Pair<String, String>>()
 
     @Input
     @Optional
@@ -117,20 +117,12 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
         outputDirectory(File(value))
     }
 
-    override fun instrumentationArguments(value: MutableMap<String, String>) {
-        instrumentationArguments = value
-    }
-
     override fun instrumentationArguments(vararg values: Pair<String, String>) {
-        instrumentationArguments(mutableMapOf(*values))
+        values.forEach { instrumentationArguments.add(it) }
     }
 
-    override fun addInstrumentationArgument(key: String, value: String) {
-        instrumentationArguments.put(key, value)
-    }
-
-    override fun addInstrumentationArgument(value: Pair<String, String>) {
-        instrumentationArguments.put(value.first, value.second)
+    override fun instrumentationArgument(key: String, value: String) {
+        instrumentationArguments.add(key to value)
     }
 
     override fun verboseOutput(value: Boolean) {

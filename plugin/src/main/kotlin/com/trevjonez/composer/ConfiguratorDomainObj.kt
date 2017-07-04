@@ -26,7 +26,7 @@ open class ConfiguratorDomainObj(val name: String): ComposerConfigurator {
     override var testRunner: String? = null
     override var shard: Boolean? = null
     override var outputDirectory: File = ComposerTask.DEFAULT_OUTPUT_DIR
-    override var instrumentationArguments: MutableMap<String, String> = mutableMapOf()
+    override val instrumentationArguments: MutableList<Pair<String, String>> = mutableListOf()
     override var verboseOutput: Boolean? = null
 
     var configureTask: Action<ComposerTask>? = null
@@ -67,20 +67,12 @@ open class ConfiguratorDomainObj(val name: String): ComposerConfigurator {
         outputDirectory(File(value))
     }
 
-    override fun instrumentationArguments(value: MutableMap<String, String>) {
-        instrumentationArguments = value
-    }
-
     override fun instrumentationArguments(vararg values: Pair<String, String>) {
-        instrumentationArguments(mutableMapOf(*values))
+        values.forEach { instrumentationArguments.add(it) }
     }
 
-    override fun addInstrumentationArgument(key: String, value: String) {
-        instrumentationArguments.put(key, value)
-    }
-
-    override fun addInstrumentationArgument(value: Pair<String, String>) {
-        instrumentationArguments.put(value.first, value.second)
+    override fun instrumentationArgument(key: String, value: String) {
+        instrumentationArguments.add(key to value)
     }
 
     override fun verboseOutput(value: Boolean) {

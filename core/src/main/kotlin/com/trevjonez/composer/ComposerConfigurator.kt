@@ -25,7 +25,7 @@ interface ComposerConfigurator {
     var testRunner: String?
     var shard: Boolean?
     var outputDirectory: File
-    var instrumentationArguments: MutableMap<String, String>
+    val instrumentationArguments: MutableList<Pair<String, String>>
     var verboseOutput: Boolean?
 
     fun apk(value: File)
@@ -37,9 +37,7 @@ interface ComposerConfigurator {
     fun shard(value: Boolean)
     fun outputDirectory(value: File)
     fun outputDirectory(value: String)
-    fun instrumentationArguments(value: MutableMap<String, String>)
+    fun instrumentationArgument(key: String, value: String)
     fun instrumentationArguments(vararg values: Pair<String, String>)
-    fun addInstrumentationArgument(key: String, value: String)
-    fun addInstrumentationArgument(value: Pair<String, String>)
     fun verboseOutput(value: Boolean)
 }
