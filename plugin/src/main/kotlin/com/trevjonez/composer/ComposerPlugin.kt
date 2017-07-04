@@ -69,7 +69,7 @@ class ComposerPlugin : Plugin<Project> {
                             testPackage = getTestPackage(it, configurator)
                             testRunner = getTestRunner(it, configurator)
                             shard = configurator?.shard
-                            outputDirectory = getOutputDirectory(it, configurator)
+                            outputDirectory = getOutputDirectory(it, configurator, project)
                             instrumentationArguments = collectInstrumentationArgs(configurator)
                             verboseOutput = configurator?.verboseOutput
                             configurator?.configureTask?.execute(this)
@@ -143,9 +143,9 @@ class ComposerPlugin : Plugin<Project> {
         return configurator?.testRunner ?: variant.mergedFlavor.testInstrumentationRunner
     }
 
-    private fun getOutputDirectory(variant: ApplicationVariant, configurator: ConfiguratorDomainObj?): File {
+    private fun getOutputDirectory(variant: ApplicationVariant, configurator: ConfiguratorDomainObj?, project: Project): File {
         return if (configurator == null || configurator.outputDirectory == ComposerTask.DEFAULT_OUTPUT_DIR) {
-            File("build/reports/composer/${variant.name}")
+            File(project.buildDir, "reports/composer/${variant.name}")
         } else {
             configurator.outputDirectory
         }

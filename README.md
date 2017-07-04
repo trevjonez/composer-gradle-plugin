@@ -11,7 +11,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.1.0'
+        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.1.1'
     }
 }
 ```
