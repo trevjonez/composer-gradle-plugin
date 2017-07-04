@@ -19,7 +19,7 @@ package com.trevjonez.composer
 import org.gradle.api.Action
 import java.io.File
 
-open class ConfiguratorDomainObj: ComposerConfigurator {
+open class ConfiguratorDomainObj(val name: String): ComposerConfigurator {
     override var apk: File? = null
     override var testApk: File? = null
     override var testPackage: String? = null

@@ -58,3 +58,11 @@ dependencies {
     composer "com.gojuno.composer:composer:0.2.3"
 }
 
+composer {
+    configs {
+        debug {
+            verboseOutput true
+        }
+    }
+}
+
