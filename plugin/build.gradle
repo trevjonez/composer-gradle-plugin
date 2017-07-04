@@ -1,7 +1,9 @@
 apply plugin: 'kotlin'
 apply plugin: 'nebula.kotlin'
 apply plugin: 'java-gradle-plugin'
+apply plugin: 'maven'
 
+group = rootProject.group
 sourceCompatibility = 1.8
 
 gradlePlugin {
@@ -25,3 +27,29 @@ dependencies {
 }
 
 tasks.findByPath('test').dependsOn('jar')
+
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.artifactId = 'plugin'
+        pom.project {
+            inceptionYear '2017'
+            licenses {
+                license {
+                    name 'The Apache Software License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    distribution 'repo'
+                }
+            }
+        }
+    }
+}
