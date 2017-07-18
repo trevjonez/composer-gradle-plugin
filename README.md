@@ -83,8 +83,20 @@ dependencies {
 
 Disclaimer
 ----
-I have not used this thing in the real world yet and the test cases only verify that composer is ran.
+So far this plugin has had light use in the wild and the test cases only verify that composer is ran.
 Please give any feedback possible if you have issues so I can make things work as expected.
+
+Notes on Compatibility
+----
+
+The plugin is developed against specific version of gradle and the android gradle plugin.
+In most cases using the latest version of gradle is safe but the minimum supported version of gradle is 4.0.
+
+The android plugin currently tested against is `2.3.3` and I do not plan on testing against the new `3.0` line until it reaches at least beta quality releases.
+
+Composer plugin version | Gradle version | Android plugin version
+----- | ---- | -----
+0.1.2 | 4.0  | 3.2.2
 
 License
 -------
