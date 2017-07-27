@@ -96,7 +96,7 @@ The android plugin currently tested against is `2.3.3` and I do not plan on test
 
 Composer plugin version | Gradle version | Android plugin version
 ----- | ---- | -----
-0.1.2 | 4.0  | 3.2.2
+0.1.3 | 4.0  | 3.2.2
 
 License
 -------

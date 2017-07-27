@@ -72,6 +72,11 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
     override var verboseOutput: Boolean? = null
 
     override fun exec() {
+        if(outputDirectory.exists()) {
+            if(!outputDirectory.deleteRecursively()) {
+                throw IllegalStateException("Failed to remove existing outputs")
+            }
+        }
         val config = ComposerConfiguration.DefaultImpl(
                 apk!!, testApk!!, testPackage!!, testRunner!!,
                 shard, outputDirectory, instrumentationArguments, verboseOutput)
