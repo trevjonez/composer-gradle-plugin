@@ -11,7 +11,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.1.2'
+        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.1.4'
     }
 }
 ```
@@ -96,7 +96,7 @@ The android plugin currently tested against is `2.3.3` and I do not plan on test
 
 Composer plugin version | Gradle version | Android plugin version
 ----- | ---- | -----
-0.1.3 | 4.0  | 3.2.2
+0.1.4 | 4.0  | 3.2.2
 
 License
 -------
