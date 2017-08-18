@@ -129,7 +129,7 @@ class ComposerPlugin : Plugin<Project> {
     }
 
     private fun apkForVariant(variant: ApplicationVariant): File {
-        return variant.outputs.map { it.mainOutputFile }.single().outputFile
+        return variant.outputs.single().outputFile
     }
 
     private fun testApkForVariant(variant: ApplicationVariant): File {
