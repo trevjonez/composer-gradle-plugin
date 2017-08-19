@@ -23,13 +23,14 @@ import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import java.io.File
+import kotlin.properties.Delegates
 
 open class ComposerTask : JavaExec(), ComposerConfigurator {
 
     companion object {
         private const val MAIN_CLASS = "com.gojuno.composer.MainKt"
         private const val COMPOSER = "composer"
-        private const val ARTIFACT_DEP = "com.gojuno.composer:composer:0.2.3"
+        private const val ARTIFACT_DEP = "com.gojuno.composer:composer:0.2.6"
         val DEFAULT_OUTPUT_DIR = File("composer-output")
 
         fun createComposerConfiguration(project: Project) {
@@ -56,30 +57,40 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
     @Input
     override var testRunner: String? = null
 
-    @Input
-    @Optional
+    @get:[Input Optional]
     override var shard: Boolean? = null
 
-    @Input
-    @OutputDirectory
+    @get:[Input OutputDirectory]
     override var outputDirectory: File = DEFAULT_OUTPUT_DIR
 
     @Input
     override val instrumentationArguments = mutableListOf<Pair<String, String>>()
 
-    @Input
-    @Optional
+    @get:[Input Optional]
     override var verboseOutput: Boolean? = null
 
+    @get:[Input Optional]
+    override var devices: MutableList<String> by Delegates.observable(mutableListOf()) { _, _, newValue ->
+        if (devicePattern != null && newValue.isNotEmpty())
+            throw IllegalArgumentException("devices and devicePattern can not be used together. devices: [${newValue.joinToString()}], devicePattern: $devicePattern")
+    }
+
+    @get:[Input Optional]
+    override var devicePattern: String? by Delegates.observable<String?>(null) { _, _, newValue ->
+        if (devices.isNotEmpty() && newValue != null)
+            throw IllegalArgumentException("devices and devicePattern can not be used together. devices: [${devices.joinToString()}], devicePattern: $newValue")
+    }
+
     override fun exec() {
-        if(outputDirectory.exists()) {
-            if(!outputDirectory.deleteRecursively()) {
+        if (outputDirectory.exists()) {
+            if (!outputDirectory.deleteRecursively()) {
                 throw IllegalStateException("Failed to remove existing outputs")
             }
         }
         val config = ComposerConfiguration.DefaultImpl(
                 apk!!, testApk!!, testPackage!!, testRunner!!,
-                shard, outputDirectory, instrumentationArguments, verboseOutput)
+                shard, outputDirectory, instrumentationArguments, verboseOutput,
+                devices, devicePattern)
         args = config.toCliArgs()
         main = MAIN_CLASS
         classpath = project.configurations.getByName(COMPOSER)
@@ -134,4 +145,15 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
         verboseOutput = value
     }
 
+    override fun device(value: String) {
+        devices.add(value)
+    }
+
+    override fun devices(vararg values: String) {
+        values.forEach { devices.add(it) }
+    }
+
+    override fun devicePattern(value: String) {
+        devicePattern = value
+    }
 }

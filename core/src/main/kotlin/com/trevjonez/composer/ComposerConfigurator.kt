@@ -27,6 +27,8 @@ interface ComposerConfigurator {
     var outputDirectory: File
     val instrumentationArguments: MutableList<Pair<String, String>>
     var verboseOutput: Boolean?
+    var devices: MutableList<String>
+    var devicePattern: String?
 
     fun apk(value: File)
     fun apk(value: String)
@@ -40,4 +42,7 @@ interface ComposerConfigurator {
     fun instrumentationArgument(key: String, value: String)
     fun instrumentationArguments(vararg values: Pair<String, String>)
     fun verboseOutput(value: Boolean)
+    fun device(value: String)
+    fun devices(vararg values: String)
+    fun devicePattern(value: String)
 }

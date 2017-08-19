@@ -1,5 +1,7 @@
-composer-gradle-plugin [![](https://jitpack.io/v/trevjonez/composer-gradle-plugin.svg)](https://jitpack.io/#trevjonez/composer-gradle-plugin)
+composer-gradle-plugin
 ====
+[![](https://jitpack.io/v/trevjonez/composer-gradle-plugin.svg)](https://jitpack.io/#trevjonez/composer-gradle-plugin)
+
 Gradle task type and plugin for running [gojuno/composer](https://github.com/gojuno/composer) from gradle.
 
 Installation & Usage
@@ -11,7 +13,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.1.4'
+        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.2.0'
     }
 }
 ```
@@ -47,6 +49,10 @@ composer {
       instrumentationArgument('key2', 'value2')
       instrumentationArgument('keyN', 'valueN')
       verboseOutput false //optional default false
+      device 'emulator-5554' //optional, additive
+      device 'emulator-5558'
+      devices('emulator-5554', 'emulator-5558') //optional, additive
+      devicePattern 'somePattern' //optional
     }
   }
 }
@@ -67,6 +73,10 @@ task customTaskName(type: ComposerTask) {
   instrumentationArgument('key2', 'value2')
   instrumentationArgument('keyN', 'valueN')
   verboseOutput false //optional
+  device 'emulator-5554' //optional
+  device 'emulator-5558'
+  devices('emulator-5554', 'emulator-5558') //optional
+  devicePattern 'somePattern' //optional
 }
 ```
 
@@ -77,7 +87,7 @@ The `composer` configuration is added to your project once a `ComposerTask` has 
 
 ```groovy
 dependencies {
- composer "com.gojuno.composer:composer:0.2.3"
+ composer "com.gojuno.composer:composer:0.2.6"
 }
 ```
 
@@ -90,13 +100,12 @@ Notes on Compatibility
 ----
 
 The plugin is developed against specific version of gradle and the android gradle plugin.
-In most cases using the latest version of gradle is safe but the minimum supported version of gradle is 4.0.
-
-The android plugin currently tested against is `2.3.3` and I do not plan on testing against the new `3.0` line until it reaches at least beta quality releases.
+In most cases using the latest version of gradle is safe but the minimum supported version of gradle is 4.0
 
 Composer plugin version | Gradle version | Android plugin version
 ----- | ---- | -----
-0.1.4 | 4.0  | 3.2.2
+0.2.0 | 4.1  | 2.3.3
+AGP-3.0.0-SNAPSHOT | 4.1 | 3.0.0-beta2 
 
 License
 -------

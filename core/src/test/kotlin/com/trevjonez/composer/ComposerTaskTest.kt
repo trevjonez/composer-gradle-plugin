@@ -73,7 +73,7 @@ task runComposer(type: ComposerTask) {
 
 dependencies {
     //optional classpath config
-    composer "com.gojuno.composer:composer:0.2.3"
+    composer "com.gojuno.composer:composer:0.2.6"
 }
 """.writeTo(buildFile)
 
