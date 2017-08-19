@@ -18,8 +18,9 @@ package com.trevjonez.composer
 
 import org.gradle.api.Action
 import java.io.File
+import kotlin.properties.Delegates
 
-open class ConfiguratorDomainObj(val name: String): ComposerConfigurator {
+open class ConfiguratorDomainObj(val name: String) : ComposerConfigurator {
     override var apk: File? = null
     override var testApk: File? = null
     override var testPackage: String? = null
@@ -28,6 +29,14 @@ open class ConfiguratorDomainObj(val name: String): ComposerConfigurator {
     override var outputDirectory: File = ComposerTask.DEFAULT_OUTPUT_DIR
     override val instrumentationArguments: MutableList<Pair<String, String>> = mutableListOf()
     override var verboseOutput: Boolean? = null
+    override var devices: MutableList<String> by Delegates.observable(mutableListOf()) { _, _, newValue ->
+        if (devicePattern != null && newValue.isNotEmpty())
+            throw IllegalArgumentException("devices and devicePattern can not be used together. devices: [${newValue.joinToString()}], devicePattern: $devicePattern")
+    }
+    override var devicePattern: String? by Delegates.observable<String?>(null) { _, _, newValue ->
+        if (devices.isNotEmpty() && newValue != null)
+            throw IllegalArgumentException("devices and devicePattern can not be used together. devices: [${devices.joinToString()}], devicePattern: $newValue")
+    }
 
     var configureTask: Action<ComposerTask>? = null
 
@@ -81,5 +90,17 @@ open class ConfiguratorDomainObj(val name: String): ComposerConfigurator {
 
     fun configureTask(action: Action<ComposerTask>) {
         configureTask = action
+    }
+
+    override fun device(value: String) {
+        devices.add(value)
+    }
+
+    override fun devices(vararg values: String) {
+        values.forEach { devices.add(it) }
+    }
+
+    override fun devicePattern(value: String) {
+        devicePattern = value
     }
 }
