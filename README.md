@@ -13,7 +13,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.2.0'
+        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.3.0'
     }
 }
 ```
@@ -104,7 +104,7 @@ In most cases using the latest version of gradle is safe but the minimum support
 
 Composer plugin version | Gradle version | Android plugin version
 ----- | ---- | -----
-0.2.0 | 4.1  | 2.3.3
+0.3.0 | 4.1  | 2.3.3
 AGP-3.0.0-SNAPSHOT | 4.1 | 3.0.0-beta2 
 
 License
