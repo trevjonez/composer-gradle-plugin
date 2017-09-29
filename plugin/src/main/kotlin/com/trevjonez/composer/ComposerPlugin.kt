@@ -73,6 +73,9 @@ class ComposerPlugin : Plugin<Project> {
                             instrumentationArguments.addAll(collectInstrumentationArgs(configurator))
                             verboseOutput = configurator?.verboseOutput
                             configurator?.configureTask?.execute(this)
+                            environment("ANDROID_HOME", androidExtension.sdkDirectory.absolutePath)
+                            devices = configurator?.devices ?: mutableListOf()
+                            devicePattern = configurator?.devicePattern
                         }
             }
         }

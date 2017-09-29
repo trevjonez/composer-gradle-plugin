@@ -27,6 +27,8 @@ interface ComposerConfiguration {
     val outputDirectory: File?
     val instrumentationArguments: List<Pair<String, String>>
     val verboseOutput: Boolean?
+    val devices: List<String>
+    val devicePattern: String?
 
     fun toCliArgs(): List<String> {
         return listOf(
@@ -47,12 +49,22 @@ interface ComposerConfiguration {
                 .let { params ->
                     instrumentationArguments.takeIf { it.isNotEmpty() }?.let {
                         params + arrayOf("--instrumentation-arguments",
-                                         it.map { "${it.first} ${it.second}" }.joinToString(separator = " ") { it })
+                                         it.joinToString(separator = " ") { "${it.first} ${it.second}" })
                     } ?: params
                 }
                 .let { params ->
                     verboseOutput?.let {
                         params + arrayOf("--verbose-output", "$it")
+                    } ?: params
+                }
+                .let { params ->
+                    devices.takeIf { it.isNotEmpty() }?.let {
+                        params + arrayOf("--devices", it.joinToString(separator = " "))
+                    } ?: params
+                }
+                .let { params ->
+                    devicePattern?.let {
+                        params + arrayOf("--device-pattern", it)
                     } ?: params
                 }
     }
@@ -65,6 +77,13 @@ interface ComposerConfiguration {
             override val shard: Boolean?,
             override val outputDirectory: File?,
             override val instrumentationArguments: List<Pair<String, String>>,
-            override val verboseOutput: Boolean?)
-        : ComposerConfiguration
+            override val verboseOutput: Boolean?,
+            override val devices: List<String>,
+            override val devicePattern: String?)
+        : ComposerConfiguration {
+        init {
+            if (devicePattern != null && devices.isNotEmpty())
+                throw IllegalArgumentException("devices and devicePattern can not be used together. devices: [${devices.joinToString()}], devicePattern: $devicePattern")
+        }
+    }
 }
