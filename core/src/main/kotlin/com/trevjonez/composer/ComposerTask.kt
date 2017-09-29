@@ -78,7 +78,14 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
         args = config.toCliArgs()
         main = MAIN_CLASS
         classpath = project.configurations.getByName(COMPOSER)
-        super.exec()
+        try {
+            super.exec()
+        } finally {
+            val htmlReportIndex = File(outputDirectory, "${File.separator}html-report${File.separator}index.html")
+            if (htmlReportIndex.exists()) {
+                println("\nComposer Html Report: file://${htmlReportIndex.absolutePath}\n")
+            }
+        }
     }
 
     override fun apk(value: File) {
