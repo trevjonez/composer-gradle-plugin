@@ -31,16 +31,12 @@ allprojects {
     repositories {
         mavenLocal()
         jcenter()
+        google()
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.0'
-    distributionUrl = "https://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
 
 group = 'com.github.trevjonez.composer-gradle-plugin'

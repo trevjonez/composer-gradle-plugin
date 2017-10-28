@@ -13,7 +13,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.3.0'
+        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.4.0'
     }
 }
 ```
@@ -87,7 +87,7 @@ The `composer` configuration is added to your project once a `ComposerTask` has 
 
 ```groovy
 dependencies {
- composer "com.gojuno.composer:composer:0.2.6"
+ composer "com.gojuno.composer:composer:0.2.7"
 }
 ```
 
@@ -100,12 +100,12 @@ Notes on Compatibility
 ----
 
 The plugin is developed against specific version of gradle and the android gradle plugin.
-In most cases using the latest version of gradle is safe but the minimum supported version of gradle is 4.0
+In most cases using the latest version of gradle is safe but the minimum supported 
+version of gradle is 4.0 or whatever minimum is mandated by the android gradle plugin. 
 
 Composer plugin version | Gradle version | Android plugin version
 ----- | ---- | -----
-0.3.0 | 4.1  | 2.3.3
-AGP-3.0.0-SNAPSHOT | 4.1 | 3.0.0-beta2 
+0.4.0 | 4.2.1  | 3.0.0 
 
 License
 -------
