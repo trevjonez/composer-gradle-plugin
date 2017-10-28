@@ -29,7 +29,7 @@ class ComposerPluginTest {
 
 
     /**
-     * Run with a device or emulator connected
+     * Run with an emulator connected on port 5554
      */
     @Test
     fun happyPath() {

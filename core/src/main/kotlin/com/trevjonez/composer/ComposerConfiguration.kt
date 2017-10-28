@@ -29,6 +29,7 @@ interface ComposerConfiguration {
     val verboseOutput: Boolean?
     val devices: List<String>
     val devicePattern: String?
+    val keepOutput: Boolean?
 
     fun toCliArgs(): List<String> {
         return listOf(
@@ -67,6 +68,11 @@ interface ComposerConfiguration {
                         params + arrayOf("--device-pattern", it)
                     } ?: params
                 }
+                .let { params ->
+                    keepOutput?.let {
+                        params + arrayOf("--keep-output-on-exit")
+                    } ?: params
+                }
     }
 
     data class DefaultImpl(
@@ -79,7 +85,8 @@ interface ComposerConfiguration {
             override val instrumentationArguments: List<Pair<String, String>>,
             override val verboseOutput: Boolean?,
             override val devices: List<String>,
-            override val devicePattern: String?)
+            override val devicePattern: String?,
+            override val keepOutput: Boolean?)
         : ComposerConfiguration {
         init {
             if (devicePattern != null && devices.isNotEmpty())

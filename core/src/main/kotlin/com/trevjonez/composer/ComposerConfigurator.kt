@@ -29,6 +29,7 @@ interface ComposerConfigurator {
     var verboseOutput: Boolean?
     var devices: MutableList<String>
     var devicePattern: String?
+    var keepOutput: Boolean?
 
     fun apk(value: File)
     fun apk(value: String)
@@ -45,4 +46,5 @@ interface ComposerConfigurator {
     fun device(value: String)
     fun devices(vararg values: String)
     fun devicePattern(value: String)
+    fun keepOutput(value: Boolean)
 }

@@ -30,7 +30,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
     companion object {
         private const val MAIN_CLASS = "com.gojuno.composer.MainKt"
         private const val COMPOSER = "composer"
-        private const val ARTIFACT_DEP = "com.gojuno.composer:composer:0.2.6"
+        private const val ARTIFACT_DEP = "com.gojuno.composer:composer:0.2.7"
         val DEFAULT_OUTPUT_DIR = File("composer-output")
 
         fun createComposerConfiguration(project: Project) {
@@ -81,6 +81,9 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
             throw IllegalArgumentException("devices and devicePattern can not be used together. devices: [${devices.joinToString()}], devicePattern: $newValue")
     }
 
+    @get:[Input Optional]
+    override var keepOutput: Boolean? = null
+
     override fun exec() {
         if (outputDirectory.exists()) {
             if (!outputDirectory.deleteRecursively()) {
@@ -90,7 +93,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
         val config = ComposerConfiguration.DefaultImpl(
                 apk!!, testApk!!, testPackage!!, testRunner!!,
                 shard, outputDirectory, instrumentationArguments, verboseOutput,
-                devices, devicePattern)
+                devices, devicePattern, keepOutput)
         args = config.toCliArgs()
         main = MAIN_CLASS
         classpath = project.configurations.getByName(COMPOSER)
@@ -162,5 +165,9 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
 
     override fun devicePattern(value: String) {
         devicePattern = value
+    }
+
+    override fun keepOutput(value: Boolean) {
+        keepOutput = value
     }
 }

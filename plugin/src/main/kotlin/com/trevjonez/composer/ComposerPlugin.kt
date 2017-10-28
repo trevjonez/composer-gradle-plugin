@@ -55,8 +55,12 @@ class ComposerPlugin : Plugin<Project> {
             if (config.variants.isEmpty() || config.variants.contains(it.name)) {
                 if (it.testVariant == null) return@all
 
-                val assembleTask = project.tasks.findByName("assemble${it.name.capitalize()}")
-                val assembleTestTask = project.tasks.findByName("assemble${it.name.capitalize()}AndroidTest")
+                val assembleTask: Task = project.tasks.findByName("assemble${it.name.capitalize()}")
+                                         ?: throw IllegalStateException("Couldn't find assemble task for variant ${it.name}")
+
+                val assembleTestTask: Task = project.tasks.findByName("assemble${it.name.capitalize()}AndroidTest")
+                                             ?: throw IllegalStateException("Couldn't find assemble android test task for variant ${it.name}")
+
                 val configurator: ConfiguratorDomainObj? = config.configs.findByName(it.name)
                 project.createTask(
                         type = ComposerTask::class,
@@ -76,6 +80,7 @@ class ComposerPlugin : Plugin<Project> {
                             environment("ANDROID_HOME", androidExtension.sdkDirectory.absolutePath)
                             devices = configurator?.devices ?: mutableListOf()
                             devicePattern = configurator?.devicePattern
+                            keepOutput = configurator?.keepOutput
                         }
             }
         }
