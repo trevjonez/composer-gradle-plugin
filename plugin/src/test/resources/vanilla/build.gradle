@@ -66,8 +66,7 @@ composer {
             verboseOutput true
             device "emulator-5554"
             instrumentationArgument('screenshotsDisabled', 'false')
-//            TODO composer is broken when more than 1 arg still
-//            instrumentationArgument('screenshotsEngine', 'uiAutomator')
+            instrumentationArgument('screenshotsEngine', 'uiAutomator')
             keepOutput true
         }
     }

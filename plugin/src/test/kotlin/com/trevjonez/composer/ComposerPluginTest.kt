@@ -45,7 +45,7 @@ class ComposerPluginTest {
 
         val result = GradleRunner.create()
                 .withProjectDir(projectDir)
-                .withArguments("testDebugComposer")
+                .withArguments("testDebugComposer", "--info")
                 .withDebug(true)
                 .forwardOutput()
                 .buildAndFail()

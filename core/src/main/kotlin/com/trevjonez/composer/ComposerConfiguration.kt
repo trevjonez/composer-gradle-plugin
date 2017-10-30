@@ -50,7 +50,7 @@ interface ComposerConfiguration {
                 .let { params ->
                     instrumentationArguments.takeIf { it.isNotEmpty() }?.let {
                         params + arrayOf("--instrumentation-arguments",
-                                         it.joinToString(separator = " ") { "${it.first} ${it.second}" })
+                                         *it.flatMap { listOf(it.first, it.second) }.toTypedArray())
                     } ?: params
                 }
                 .let { params ->
@@ -60,7 +60,7 @@ interface ComposerConfiguration {
                 }
                 .let { params ->
                     devices.takeIf { it.isNotEmpty() }?.let {
-                        params + arrayOf("--devices", it.joinToString(separator = " "))
+                        params + arrayOf("--devices", *it.toTypedArray())
                     } ?: params
                 }
                 .let { params ->
