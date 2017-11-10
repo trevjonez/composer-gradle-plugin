@@ -30,6 +30,7 @@ interface ComposerConfiguration {
     val devices: List<String>
     val devicePattern: String?
     val keepOutput: Boolean?
+    val apkInstallTimeout: Int?
 
     fun toCliArgs(): List<String> {
         return listOf(
@@ -73,6 +74,11 @@ interface ComposerConfiguration {
                         params + arrayOf("--keep-output-on-exit")
                     } ?: params
                 }
+                .let { params ->
+                    apkInstallTimeout?.let {
+                        params + arrayOf("--install-timeout", "$it")
+                    } ?: params
+                }
     }
 
     data class DefaultImpl(
@@ -86,7 +92,8 @@ interface ComposerConfiguration {
             override val verboseOutput: Boolean?,
             override val devices: List<String>,
             override val devicePattern: String?,
-            override val keepOutput: Boolean?)
+            override val keepOutput: Boolean?,
+            override val apkInstallTimeout: Int?)
         : ComposerConfiguration {
         init {
             if (devicePattern != null && devices.isNotEmpty())

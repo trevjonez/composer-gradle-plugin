@@ -17,6 +17,7 @@
 package com.trevjonez.composer
 
 import org.gradle.api.Project
+import org.gradle.api.internal.tasks.options.Option
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.JavaExec
@@ -30,7 +31,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
     companion object {
         private const val MAIN_CLASS = "com.gojuno.composer.MainKt"
         private const val COMPOSER = "composer"
-        private const val ARTIFACT_DEP = "com.gojuno.composer:composer:0.2.7"
+        private const val ARTIFACT_DEP = "com.gojuno.composer:composer:0.2.8"
         val DEFAULT_OUTPUT_DIR = File("composer-output")
 
         fun createComposerConfiguration(project: Project) {
@@ -84,6 +85,9 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
     @get:[Input Optional]
     override var keepOutput: Boolean? = null
 
+    @get:[Input Optional]
+    override var apkInstallTimeout: Int? = null
+
     override fun exec() {
         if (outputDirectory.exists()) {
             if (!outputDirectory.deleteRecursively()) {
@@ -93,7 +97,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
         val config = ComposerConfiguration.DefaultImpl(
                 apk!!, testApk!!, testPackage!!, testRunner!!,
                 shard, outputDirectory, instrumentationArguments, verboseOutput,
-                devices, devicePattern, keepOutput)
+                devices, devicePattern, keepOutput, apkInstallTimeout)
         args = config.toCliArgs()
         main = MAIN_CLASS
         classpath = project.configurations.getByName(COMPOSER)
@@ -169,5 +173,9 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
 
     override fun keepOutput(value: Boolean) {
         keepOutput = value
+    }
+
+    override fun apkInstallTimeout(value: Int) {
+        apkInstallTimeout = value
     }
 }
