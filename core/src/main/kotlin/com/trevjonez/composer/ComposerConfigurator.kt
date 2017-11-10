@@ -30,6 +30,7 @@ interface ComposerConfigurator {
     var devices: MutableList<String>
     var devicePattern: String?
     var keepOutput: Boolean?
+    var apkInstallTimeout: Int?
 
     fun apk(value: File)
     fun apk(value: String)
@@ -47,4 +48,5 @@ interface ComposerConfigurator {
     fun devices(vararg values: String)
     fun devicePattern(value: String)
     fun keepOutput(value: Boolean)
+    fun apkInstallTimeout(value: Int)
 }

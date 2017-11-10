@@ -81,6 +81,7 @@ class ComposerPlugin : Plugin<Project> {
                             devices = configurator?.devices ?: mutableListOf()
                             devicePattern = configurator?.devicePattern
                             keepOutput = configurator?.keepOutput
+                            apkInstallTimeout = configurator?.apkInstallTimeout
                         }
             }
         }

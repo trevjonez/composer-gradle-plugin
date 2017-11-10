@@ -69,11 +69,12 @@ task runComposer(type: ComposerTask) {
     testPackage "com.nope.test"
     testRunner "com.nope.Runner"
     environment.put("ANDROID_HOME", "$androidHome")
+    devicePattern "notArealPattern"
 }
 
 dependencies {
     //optional classpath config
-    composer "com.gojuno.composer:composer:0.2.6"
+    composer "com.gojuno.composer:composer:0.2.8"
 }
 """.writeTo(buildFile)
 

@@ -41,6 +41,8 @@ open class ConfiguratorDomainObj(val name: String) : ComposerConfigurator {
 
     var configureTask: Action<ComposerTask>? = null
 
+    override var apkInstallTimeout: Int? = null
+
     override fun apk(value: File) {
         apk = value
     }
@@ -107,5 +109,9 @@ open class ConfiguratorDomainObj(val name: String) : ComposerConfigurator {
 
     override fun keepOutput(value: Boolean) {
         keepOutput = value
+    }
+
+    override fun apkInstallTimeout(value: Int) {
+        apkInstallTimeout = value
     }
 }

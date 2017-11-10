@@ -13,7 +13,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.4.1'
+        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.5.0'
     }
 }
 ```
@@ -53,6 +53,7 @@ composer {
       device 'emulator-5558'
       devices('emulator-5554', 'emulator-5558') //optional, additive
       devicePattern 'somePattern' //optional
+      apkInstallTimeout 90 //optional, timeout in seconds default 120
     }
   }
 }
@@ -77,6 +78,7 @@ task customTaskName(type: ComposerTask) {
   device 'emulator-5558'
   devices('emulator-5554', 'emulator-5558') //optional
   devicePattern 'somePattern' //optional
+  apkInstallTimeout 90 //optional
 }
 ```
 
@@ -87,7 +89,7 @@ The `composer` configuration is added to your project once a `ComposerTask` has 
 
 ```groovy
 dependencies {
- composer "com.gojuno.composer:composer:0.2.7"
+ composer "com.gojuno.composer:composer:0.2.8"
 }
 ```
 
@@ -105,7 +107,7 @@ version of gradle is 4.0 or whatever minimum is mandated by the android gradle p
 
 Composer plugin version | Gradle version | Android plugin version
 ----- | ---- | -----
-0.4.1 | 4.2.1  | 3.0.0 
+0.5.0 | 4.3.1  | 3.0.0 
 
 License
 -------
