@@ -53,6 +53,7 @@ composer {
       device 'emulator-5558'
       devices('emulator-5554', 'emulator-5558') //optional, additive
       devicePattern 'somePattern' //optional
+      apkInstallTimeout 90 //optional, timeout in seconds default 120
     }
   }
 }
@@ -77,6 +78,7 @@ task customTaskName(type: ComposerTask) {
   device 'emulator-5558'
   devices('emulator-5554', 'emulator-5558') //optional
   devicePattern 'somePattern' //optional
+  apkInstallTimeout 90 //optional
 }
 ```
 
