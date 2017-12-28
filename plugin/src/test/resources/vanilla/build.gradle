@@ -57,7 +57,7 @@ dependencies {
     androidTestCompile 'com.android.support.test.espresso:espresso-core:3.0.0'
     androidTestCompile 'com.android.support.test:runner:1.0.0'
 
-    composer "com.gojuno.composer:composer:0.2.8"
+    composer "com.gojuno.composer:composer:0.2.9"
 }
 
 composer {
