@@ -13,7 +13,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.5.1'
+        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.5.2'
     }
 }
 ```
@@ -89,7 +89,7 @@ The `composer` configuration is added to your project once a `ComposerTask` has 
 
 ```groovy
 dependencies {
- composer "com.gojuno.composer:composer:0.2.9"
+ composer "com.gojuno.composer:composer:0.3.1"
 }
 ```
 
