@@ -23,8 +23,6 @@ import kotlin.properties.Delegates
 open class ConfiguratorDomainObj(val name: String) : ComposerConfigurator {
     override var apk: File? = null
     override var testApk: File? = null
-    override var testPackage: String? = null
-    override var testRunner: String? = null
     override var shard: Boolean? = null
     override var outputDirectory: File = ComposerTask.DEFAULT_OUTPUT_DIR
     override val instrumentationArguments: MutableList<Pair<String, String>> = mutableListOf()
@@ -57,14 +55,6 @@ open class ConfiguratorDomainObj(val name: String) : ComposerConfigurator {
 
     override fun testApk(value: String) {
         testApk(File(value))
-    }
-
-    override fun testPackage(value: String) {
-        testPackage = value
-    }
-
-    override fun testRunner(value: String) {
-        testRunner = value
     }
 
     override fun shard(value: Boolean) {

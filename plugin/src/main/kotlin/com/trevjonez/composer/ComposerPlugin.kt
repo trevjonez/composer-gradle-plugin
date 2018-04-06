@@ -70,8 +70,6 @@ class ComposerPlugin : Plugin<Project> {
                         .apply {
                             apk = getApk(it, configurator)
                             testApk = getTestApk(it, configurator)
-                            testPackage = getTestPackage(it, configurator)
-                            testRunner = getTestRunner(it, configurator)
                             shard = configurator?.shard
                             outputDirectory = getOutputDirectory(it, configurator, project)
                             instrumentationArguments.addAll(collectInstrumentationArgs(configurator))
@@ -142,14 +140,6 @@ class ComposerPlugin : Plugin<Project> {
 
     private fun testApkForVariant(variant: ApplicationVariant): File {
         return variant.testVariant.outputs.single().outputFile
-    }
-
-    private fun getTestPackage(variant: ApplicationVariant, configurator: ComposerConfigurator?): String {
-        return configurator?.testPackage ?: variant.testPackage()
-    }
-
-    private fun getTestRunner(variant: ApplicationVariant, configurator: ComposerConfigurator?): String {
-        return configurator?.testRunner ?: variant.mergedFlavor.testInstrumentationRunner
     }
 
     private fun getOutputDirectory(variant: ApplicationVariant, configurator: ConfiguratorDomainObj?, project: Project): File {
