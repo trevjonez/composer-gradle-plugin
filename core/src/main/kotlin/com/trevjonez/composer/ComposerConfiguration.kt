@@ -21,8 +21,6 @@ import java.io.File
 interface ComposerConfiguration {
     val apk: File
     val testApk: File
-    val testPackage: String
-    val testRunner: String
     val shard: Boolean?
     val outputDirectory: File?
     val instrumentationArguments: List<Pair<String, String>>
@@ -35,9 +33,7 @@ interface ComposerConfiguration {
     fun toCliArgs(): List<String> {
         return listOf(
                 "--apk", apk.absolutePath,
-                "--test-apk", testApk.absolutePath,
-                "--test-package", testPackage,
-                "--test-runner", testRunner)
+                "--test-apk", testApk.absolutePath)
                 .let { params ->
                     shard?.let {
                         params + arrayOf("--shard", "$it")
@@ -84,8 +80,6 @@ interface ComposerConfiguration {
     data class DefaultImpl(
             override val apk: File,
             override val testApk: File,
-            override val testPackage: String,
-            override val testRunner: String,
             override val shard: Boolean?,
             override val outputDirectory: File?,
             override val instrumentationArguments: List<Pair<String, String>>,

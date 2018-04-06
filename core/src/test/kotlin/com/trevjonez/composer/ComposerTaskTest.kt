@@ -44,7 +44,8 @@ class ComposerTaskTest {
     }
 
     /**
-     * Run without any android devices connected or emulators running
+     * Device config doesn't matter for this test. Our fake apk file will make composer puke.
+     * All this does is verifies we are getting to the invocation of composer without hick-up, not much else.
      */
     @Test
     fun functionalCheck() {
@@ -66,15 +67,13 @@ import com.trevjonez.composer.ComposerTask
 task runComposer(type: ComposerTask) {
     apk "${testProjectDir.root.absolutePath}/app.apk"
     testApk "${testProjectDir.root.absolutePath}/app-test.apk"
-    testPackage "com.nope.test"
-    testRunner "com.nope.Runner"
     environment.put("ANDROID_HOME", "$androidHome")
     devicePattern "notArealPattern"
 }
 
 dependencies {
     //optional classpath config
-    composer "com.gojuno.composer:composer:0.3.1"
+    composer "com.gojuno.composer:composer:0.3.2"
 }
 """.writeTo(buildFile)
 
@@ -84,7 +83,7 @@ dependencies {
                 .forwardOutput()
                 .buildAndFail()
 
-        assertThat(runResult.output).contains("Error: No devices available for tests.")
+        assertThat(runResult.output).contains("ERROR: dump failed because no AndroidManifest.xml found")
     }
 
     private fun String.writeTo(file: File) {

@@ -13,7 +13,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.5.2'
+        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.6.0'
     }
 }
 ```
@@ -41,8 +41,6 @@ composer {
     redDebug {
       apk 'app/build/outputs/apk/example-debug.apk' //optional override
       testApk 'build/outputs/apk/example-debug-androidTest.apk' //optional override
-      testPackage 'com.example.test' //optional override
-      testRunner 'com.example.test.ExampleTestRunner' //optional override
       shard true //optional. default true
       outputDirectory 'artifacts/composer-output' //optional override. default 'build/reports/composer/redDebug'
       instrumentationArgument('key1', 'value1') //optional
@@ -66,8 +64,6 @@ Manual task creation looks something like this:
 task customTaskName(type: ComposerTask) {
   apk 'app/build/outputs/apk/example-debug.apk' //required
   testApk 'build/outputs/apk/example-debug-androidTest.apk' //required
-  testPackage 'com.example.test' //required
-  testRunner 'com.example.test.ExampleTestRunner' //required
   shard true //optional
   outputDirectory 'artifacts/composer-output' //optional
   instrumentationArgument('key1', 'value1') //optional
@@ -89,7 +85,7 @@ The `composer` configuration is added to your project once a `ComposerTask` has 
 
 ```groovy
 dependencies {
- composer "com.gojuno.composer:composer:0.3.1"
+ composer "com.gojuno.composer:composer:0.3.2"
 }
 ```
 
@@ -107,7 +103,7 @@ version of gradle is 4.0 or whatever minimum is mandated by the android gradle p
 
 Composer plugin version | Gradle version | Android plugin version
 ----- | ---- | -----
-0.5.1 | 4.3.1  | 3.0.1
+0.6.0 | 4.6  | 3.1.0
 
 License
 -------

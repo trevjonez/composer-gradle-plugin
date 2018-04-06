@@ -21,8 +21,6 @@ import java.io.File
 interface ComposerConfigurator {
     var apk: File?
     var testApk: File?
-    var testPackage: String?
-    var testRunner: String?
     var shard: Boolean?
     var outputDirectory: File
     val instrumentationArguments: MutableList<Pair<String, String>>
@@ -36,8 +34,6 @@ interface ComposerConfigurator {
     fun apk(value: String)
     fun testApk(value: File)
     fun testApk(value: String)
-    fun testPackage(value: String)
-    fun testRunner(value: String)
     fun shard(value: Boolean)
     fun outputDirectory(value: File)
     fun outputDirectory(value: String)

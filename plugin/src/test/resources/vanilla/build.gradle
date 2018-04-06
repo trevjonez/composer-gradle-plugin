@@ -20,7 +20,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0'
+        classpath 'com.android.tools.build:gradle:3.1.0'
         classpath files("libs/core.jar")
         classpath files("libs/plugin.jar")
     }
@@ -57,7 +57,7 @@ dependencies {
     androidTestCompile 'com.android.support.test.espresso:espresso-core:3.0.0'
     androidTestCompile 'com.android.support.test:runner:1.0.0'
 
-    composer "com.gojuno.composer:composer:0.3.1"
+    composer "com.gojuno.composer:composer:0.3.2"
 }
 
 composer {

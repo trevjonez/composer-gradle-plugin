@@ -17,7 +17,6 @@
 package com.trevjonez.composer
 
 import org.gradle.api.Project
-import org.gradle.api.internal.tasks.options.Option
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.JavaExec
@@ -31,7 +30,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
     companion object {
         private const val MAIN_CLASS = "com.gojuno.composer.MainKt"
         private const val COMPOSER = "composer"
-        private const val ARTIFACT_DEP = "com.gojuno.composer:composer:0.3.1"
+        private const val ARTIFACT_DEP = "com.gojuno.composer:composer:0.3.2"
         val DEFAULT_OUTPUT_DIR = File("composer-output")
 
         fun createComposerConfiguration(project: Project) {
@@ -51,12 +50,6 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
 
     @InputFile
     override var testApk: File? = null
-
-    @Input
-    override var testPackage: String? = null
-
-    @Input
-    override var testRunner: String? = null
 
     @get:[Input Optional]
     override var shard: Boolean? = null
@@ -95,7 +88,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
             }
         }
         val config = ComposerConfiguration.DefaultImpl(
-                apk!!, testApk!!, testPackage!!, testRunner!!,
+                apk!!, testApk!!,
                 shard, outputDirectory, instrumentationArguments, verboseOutput,
                 devices, devicePattern, keepOutput, apkInstallTimeout)
         args = config.toCliArgs()
@@ -125,14 +118,6 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
 
     override fun testApk(value: String) {
         testApk(File(value))
-    }
-
-    override fun testPackage(value: String) {
-        testPackage = value
-    }
-
-    override fun testRunner(value: String) {
-        testRunner = value
     }
 
     override fun shard(value: Boolean) {
