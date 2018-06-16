@@ -1,4 +1,4 @@
-#composer-gradle-plugin
+# composer-gradle-plugin
 
 [![](https://jitpack.io/v/trevjonez/composer-gradle-plugin.svg)](https://jitpack.io/#trevjonez/composer-gradle-plugin)
 
