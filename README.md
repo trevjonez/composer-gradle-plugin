@@ -1,11 +1,11 @@
-composer-gradle-plugin
-====
+#composer-gradle-plugin
+
 [![](https://jitpack.io/v/trevjonez/composer-gradle-plugin.svg)](https://jitpack.io/#trevjonez/composer-gradle-plugin)
 
 Gradle task type and plugin for running [gojuno/composer](https://github.com/gojuno/composer) from gradle.
 
-Installation & Usage
---------------------
+## Installation & Usage
+
 In the appropriate `build.gradle` file add the jitpack repository and classpath dependency.
 ```groovy
 buildscript {
@@ -18,10 +18,10 @@ buildscript {
 }
 ```
 
-This can be consumed in two ways, via a android variant aware plugin or as a pre-provided task type.
+This repo can be consumed in two ways, via a android variant aware plugin or as a pre-provided task type.
 
-Plugin
-----
+##### Plugin Usage
+
 ```groovy
 apply plugin: 'composer'
 ```
@@ -57,8 +57,8 @@ composer {
 }
 ```
 
-Core
-----
+##### Core Usage
+
 Manual task creation looks something like this:
 ```groovy
 task customTaskName(type: ComposerTask) {
@@ -78,10 +78,49 @@ task customTaskName(type: ComposerTask) {
 }
 ```
 
-Dependency Configuration
-----
-If you need to use a different version of the composer jar than this plugin uses by default, you can modify the composer configuration with normal gradle strategies.
-The `composer` configuration is added to your project once a `ComposerTask` has been created or the plugin has been applied to the project.
+## Advanced Configuration
+
+#### Instrumentation Arguments
+
+In some cases you may want to only run a sub set of tests or filter based on annotations etc.
+Composer already supports passing custom arguments to the instrumentation runner 
+and the configuration DSL for both core and plugin use cases can take advantage of that.
+
+Lets say you want to add the ability to pass gradle a property for a class name to run:
+
+```groovy
+composer {
+  if(project.hasProperty("composerClassTarget")) {
+    instrumentationArgument('class', project.getProperty("composerClassTarget"))
+  }
+}
+```
+
+Invocation should look something like this:
+```bash
+./gradlew app:testCiDebugComposer -PcomposerClassTarget=com.foo.your.test.FullClassName
+``` 
+
+Another common use case is to always have the test runner ignore tests that should not be
+ran by handled by composer. An example of this would be to ignore [Kontrast screenshot tests:](https://github.com/trevjonez/Kontrast)
+
+```groovy
+composer {
+  instrumentationArgument('notAnnotation', 'com.trevjonez.kontrast.KontrastTest')
+}
+```
+
+As always I recommend you read the wealth of information available on [d.android.com](https://developer.android.com/).
+
+Or specifically the [documentation for `InstrumentationTestRunner`](https://developer.android.com/reference/android/test/InstrumentationTestRunner)    
+
+#### Dependency Configuration
+
+If you need to use a different version of the composer jar than this plugin uses by default, 
+you can modify the composer configuration with normal gradle strategies.
+
+The `composer` configuration is automatically added to your project once a 
+`ComposerTask` has been created or the plugin has been applied to the project.
 
 ```groovy
 dependencies {
@@ -89,13 +128,7 @@ dependencies {
 }
 ```
 
-Disclaimer
-----
-So far this plugin has had light use in the wild and the test cases only verify that composer is ran.
-Please give any feedback possible if you have issues so I can make things work as expected.
-
-Notes on Compatibility
-----
+## Notes on Compatibility
 
 The plugin is developed against specific version of gradle and the android gradle plugin.
 In most cases using the latest version of gradle is safe but the minimum supported 
@@ -105,8 +138,8 @@ Composer plugin version | Gradle version | Android plugin version
 ----- | ---- | -----
 0.6.0 | 4.6  | 3.1.0
 
-License
--------
+## License
+
     Copyright 2017 Trevor Jones
 
     Licensed under the Apache License, Version 2.0 (the "License");
