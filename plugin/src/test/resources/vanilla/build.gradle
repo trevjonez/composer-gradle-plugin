@@ -72,3 +72,8 @@ composer {
     }
 }
 
+import com.trevjonez.composer.ComposerTask
+task customTask(type: ComposerTask, dependsOn: ['assembleDebug', 'assembleDebugAndroidTest']) {
+    apk "${project.projectDir}/build/outputs/apk/debug/vanilla-debug.apk"
+    testApk "${project.projectDir}/build/outputs/apk/androidTest/debug/vanilla-debug-androidTest.apk"
+}
