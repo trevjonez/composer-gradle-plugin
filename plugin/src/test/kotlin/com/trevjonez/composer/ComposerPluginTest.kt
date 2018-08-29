@@ -27,7 +27,6 @@ import java.io.File
 class ComposerPluginTest {
     @Rule @JvmField val testProjectDir = TemporaryFolder()
 
-
     /**
      * Run with an emulator connected on port 5554
      */
@@ -57,7 +56,7 @@ class ComposerPluginTest {
     }
 
     /**
-     * Run with an emulator connected on port 5554
+     * Run with at least one device/emulator connected
      */
     @Test
     fun customTaskFindsApk() {

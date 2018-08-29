@@ -22,7 +22,9 @@ import org.gradle.api.Project
 
 open class ConfigExtension(project: Project) {
     val configs: NamedDomainObjectContainer<ConfiguratorDomainObj> =
-            project.container(ConfiguratorDomainObj::class.java)
+            project.container(ConfiguratorDomainObj::class.java) { name ->
+                ConfiguratorDomainObj(name, project)
+            }
 
     val variants = mutableListOf<String>()
 
