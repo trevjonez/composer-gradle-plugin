@@ -13,7 +13,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.6.0'
+        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.7.0'
     }
 }
 ```
@@ -136,7 +136,7 @@ version of gradle is 4.0 or whatever minimum is mandated by the android gradle p
 
 Composer plugin version | Gradle version | Android plugin version
 ----- | ---- | -----
-0.6.0 | 4.10  | 3.1.4
+0.7.0 | 4.10  | 3.1.4
 
 ## License
 
