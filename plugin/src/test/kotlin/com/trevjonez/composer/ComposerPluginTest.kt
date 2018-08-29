@@ -27,7 +27,6 @@ import java.io.File
 class ComposerPluginTest {
     @Rule @JvmField val testProjectDir = TemporaryFolder()
 
-
     /**
      * Run with an emulator connected on port 5554
      */
@@ -46,6 +45,34 @@ class ComposerPluginTest {
         val result = GradleRunner.create()
                 .withProjectDir(projectDir)
                 .withArguments("testDebugComposer", "--info")
+                .withDebug(true)
+                .forwardOutput()
+                .buildAndFail()
+
+        assertThat(result.output).contains("Successfully installed apk",
+                                                      "Starting tests",
+                                                      "Test run finished, 0 passed, 0 failed",
+                                                      "Error: 0 tests were run.")
+    }
+
+    /**
+     * Run with at least one device/emulator connected
+     */
+    @Test
+    fun customTaskFindsApk() {
+        val projectDir = testProjectDir.newFolder("vanilla").also {
+            FileUtils.copyDirectory(File(javaClass.classLoader.getResource("vanilla").path), it)
+            File(it, "local.properties").writeText("sdk.dir=${System.getenv("HOME")}/Library/Android/sdk", Charsets.UTF_8)
+            File(it, "libs").also {
+                it.mkdir()
+                FileUtils.copyFileToDirectory(File(".", "build/libs/plugin.jar"), it)
+                FileUtils.copyFileToDirectory(File(".", "../core/build/libs/core.jar"), it)
+            }
+        }
+
+        val result = GradleRunner.create()
+                .withProjectDir(projectDir)
+                .withArguments("customTask", "--info")
                 .withDebug(true)
                 .forwardOutput()
                 .buildAndFail()

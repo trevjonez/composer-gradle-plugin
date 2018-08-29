@@ -30,8 +30,8 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
     companion object {
         private const val MAIN_CLASS = "com.gojuno.composer.MainKt"
         private const val COMPOSER = "composer"
-        private const val ARTIFACT_DEP = "com.gojuno.composer:composer:0.3.2"
-        val DEFAULT_OUTPUT_DIR = File("composer-output")
+        private const val ARTIFACT_DEP = "com.gojuno.composer:composer:0.3.3"
+        const val DEFAULT_OUTPUT_DIR = "composer-output"
 
         fun createComposerConfiguration(project: Project) {
             if (project.configurations.findByName(COMPOSER) == null) {
@@ -39,10 +39,6 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
                 project.dependencies.add(COMPOSER, ARTIFACT_DEP)
             }
         }
-    }
-
-    init {
-        createComposerConfiguration(project)
     }
 
     @InputFile
@@ -55,7 +51,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
     override var shard: Boolean? = null
 
     @get:[Input OutputDirectory]
-    override var outputDirectory: File = DEFAULT_OUTPUT_DIR
+    override lateinit var outputDirectory: File
 
     @Input
     override val instrumentationArguments = mutableListOf<Pair<String, String>>()
@@ -80,6 +76,12 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
 
     @get:[Input Optional]
     override var apkInstallTimeout: Int? = null
+
+    init {
+        createComposerConfiguration(project)
+        @Suppress("LeakingThis")
+        outputDirectory = project.file(DEFAULT_OUTPUT_DIR)
+    }
 
     override fun exec() {
         if (outputDirectory.exists()) {
@@ -109,7 +111,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
     }
 
     override fun apk(value: String) {
-        apk(File(value))
+        apk(project.file(value))
     }
 
     override fun testApk(value: File) {
@@ -117,7 +119,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
     }
 
     override fun testApk(value: String) {
-        testApk(File(value))
+        testApk(project.file(value))
     }
 
     override fun shard(value: Boolean) {
@@ -129,7 +131,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
     }
 
     override fun outputDirectory(value: String) {
-        outputDirectory(File(value))
+        outputDirectory(project.file(value))
     }
 
     override fun instrumentationArguments(vararg values: Pair<String, String>) {

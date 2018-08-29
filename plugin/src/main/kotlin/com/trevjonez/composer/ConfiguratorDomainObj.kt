@@ -17,14 +17,15 @@
 package com.trevjonez.composer
 
 import org.gradle.api.Action
+import org.gradle.api.Project
 import java.io.File
 import kotlin.properties.Delegates
 
-open class ConfiguratorDomainObj(val name: String) : ComposerConfigurator {
+open class ConfiguratorDomainObj(val name: String, project: Project) : ComposerConfigurator {
     override var apk: File? = null
     override var testApk: File? = null
     override var shard: Boolean? = null
-    override var outputDirectory: File = ComposerTask.DEFAULT_OUTPUT_DIR
+    override var outputDirectory: File = project.file(ComposerTask.DEFAULT_OUTPUT_DIR)
     override val instrumentationArguments: MutableList<Pair<String, String>> = mutableListOf()
     override var verboseOutput: Boolean? = null
     override var devices: MutableList<String> by Delegates.observable(mutableListOf()) { _, _, newValue ->

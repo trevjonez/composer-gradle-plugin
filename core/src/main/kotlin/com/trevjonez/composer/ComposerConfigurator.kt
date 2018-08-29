@@ -20,29 +20,60 @@ import java.io.File
 
 interface ComposerConfigurator {
     var apk: File?
+
     var testApk: File?
+
     var shard: Boolean?
+
     var outputDirectory: File
+
     val instrumentationArguments: MutableList<Pair<String, String>>
+
     var verboseOutput: Boolean?
+
     var devices: MutableList<String>
+
     var devicePattern: String?
+
     var keepOutput: Boolean?
+
     var apkInstallTimeout: Int?
 
     fun apk(value: File)
+
+    /**
+     * Paths are evaluated as per {@link org.gradle.api.Project#file(Object)}.
+     */
     fun apk(value: String)
+
     fun testApk(value: File)
+    /**
+     * Paths are evaluated as per {@link org.gradle.api.Project#file(Object)}.
+     */
     fun testApk(value: String)
+
     fun shard(value: Boolean)
+
     fun outputDirectory(value: File)
+
+    /**
+     * Paths are evaluated as per {@link org.gradle.api.Project#file(Object)}.
+     */
     fun outputDirectory(value: String)
+
     fun instrumentationArgument(key: String, value: String)
+
     fun instrumentationArguments(vararg values: Pair<String, String>)
+
     fun verboseOutput(value: Boolean)
+
     fun device(value: String)
+
     fun devices(vararg values: String)
+
     fun devicePattern(value: String)
+
     fun keepOutput(value: Boolean)
+
     fun apkInstallTimeout(value: Int)
 }
