@@ -16,7 +16,6 @@
 
 package com.trevjonez.composer
 
-import org.apache.commons.io.FileUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Assume.assumeNotNull
@@ -27,20 +26,40 @@ import org.junit.rules.TemporaryFolder
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
 
-
+//TODO break the test here into pieces and verify more about how this works
+@Suppress("PrivatePropertyName")
 class ComposerTaskTest {
-    @Rule
-    @JvmField
-    val testProjectDir = TemporaryFolder()
-    val buildFile: File by lazy { testProjectDir.newFile("build.gradle") }
+    val buildDir by systemProperty { File(it) }
+    private val ANDROID_HOME by environmentVariable
 
-    val classpathManifest by lazy {
+    @get:Rule
+    val testProjectDir = TemporaryFolder()
+
+    private val buildFile: File by lazy {
+        testProjectDir.newFile("build.gradle")
+    }
+
+    private val classpathManifest by lazy {
         javaClass.classLoader.getResource("classpath-manifest.txt")
                 .openStream().use { inStream ->
                     inStream.reader().readLines().map { File(it) }
                 }
     }
+
+    //language=Groovy
+    private val buildScriptConfig = """
+buildscript {
+    dependencies {
+        classpath(files(${classpathManifest.joinToString { "\"$it\"" }}))
+    }
+}
+
+repositories {
+    jcenter()
+}"""
 
     @Before
     fun setUp() {
@@ -54,26 +73,17 @@ class ComposerTaskTest {
      */
     @Test
     fun functionalCheck() {
-        val androidHome: String? = System.getenv("ANDROID_HOME")
-        assumeNotNull(androidHome)
+        //language=Groovy
         """
 import com.trevjonez.composer.ComposerTask
 
-buildscript {
-    dependencies {
-        classpath(files(${classpathManifest.joinToString { "\"$it\"" }}))
-    }
-}
-
-repositories {
-    jcenter()
-}
+$buildScriptConfig
 
 task runComposer(type: ComposerTask) {
     apk "${testProjectDir.root.absolutePath}/app.apk"
     testApk "${testProjectDir.root.absolutePath}/app-test.apk"
-    environment.put("ANDROID_HOME", "$androidHome")
-    devicePattern "notArealPattern"
+    environment.put("ANDROID_HOME", "$ANDROID_HOME")
+    devicePattern "fakePattern"
 }
 
 dependencies {
@@ -84,25 +94,33 @@ dependencies {
 
         val runResult = GradleRunner.create()
                 .withProjectDir(testProjectDir.root)
-                .withArguments("runComposer")
+                .withArguments("runComposer", "--stacktrace")
                 .forwardOutput()
                 .buildAndFail()
 
         assertThat(runResult.output).contains("ERROR: dump failed because no AndroidManifest.xml found")
     }
 
-    private fun String.writeTo(file: File) {
-        println(this)
+    private fun String.writeTo(file: File) =
+            BufferedWriter(FileWriter(file)).use {
+                it.write(this)
+            }
 
-        var output: BufferedWriter? = null
-        try {
-            output = BufferedWriter(FileWriter(file))
-            output.write(this)
-        } finally {
-            if (output != null) {
-                output.close()
+    private inline fun <R, T : Any> systemProperty(crossinline conversion: (String) -> T)
+            : ReadOnlyProperty<R, T> {
+        return object : ReadOnlyProperty<R, T> {
+            override fun getValue(thisRef: R, property: KProperty<*>): T {
+                return conversion(System.getProperty(property.name)!!)
             }
         }
     }
 
+    private val environmentVariable: ReadOnlyProperty<Any, String>
+        get() {
+            return object : ReadOnlyProperty<Any, String> {
+                override fun getValue(thisRef: Any, property: KProperty<*>): String {
+                    return System.getenv(property.name).also { assumeNotNull(it) }
+                }
+            }
+        }
 }

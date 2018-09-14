@@ -44,3 +44,9 @@ dependencies {
 
     testRuntime(files(classpathManifest))
 }
+
+tasks.named("test").configure {
+    this as Test
+
+    systemProperty("buildDir", buildDir.absolutePath)
+}

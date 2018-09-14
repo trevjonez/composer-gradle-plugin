@@ -18,17 +18,24 @@ package com.trevjonez.composer
 
 import java.io.File
 
-interface ComposerConfiguration {
-    val apk: File
-    val testApk: File
-    val shard: Boolean?
-    val outputDirectory: File?
-    val instrumentationArguments: List<Pair<String, String>>
-    val verboseOutput: Boolean?
-    val devices: List<String>
-    val devicePattern: String?
-    val keepOutput: Boolean?
-    val apkInstallTimeout: Int?
+data class ComposerParams(
+        val apk: File,
+        val testApk: File,
+        val shard: Boolean?,
+        val outputDirectory: File?,
+        val instrumentationArguments: List<Pair<String, String>>,
+        val verboseOutput: Boolean?,
+        val devices: List<String>,
+        val devicePattern: String?,
+        val keepOutput: Boolean?,
+        val apkInstallTimeout: Int?) {
+
+    init {
+        if (devicePattern != null && devices.isNotEmpty())
+            throw IllegalArgumentException("devices and devicePattern can not be used together. " +
+                                           "devices: [${devices.joinToString()}], " +
+                                           "devicePattern: $devicePattern")
+    }
 
     fun toCliArgs(): List<String> {
         return listOf(
@@ -75,23 +82,5 @@ interface ComposerConfiguration {
                         params + arrayOf("--install-timeout", "$it")
                     } ?: params
                 }
-    }
-
-    data class DefaultImpl(
-            override val apk: File,
-            override val testApk: File,
-            override val shard: Boolean?,
-            override val outputDirectory: File?,
-            override val instrumentationArguments: List<Pair<String, String>>,
-            override val verboseOutput: Boolean?,
-            override val devices: List<String>,
-            override val devicePattern: String?,
-            override val keepOutput: Boolean?,
-            override val apkInstallTimeout: Int?)
-        : ComposerConfiguration {
-        init {
-            if (devicePattern != null && devices.isNotEmpty())
-                throw IllegalArgumentException("devices and devicePattern can not be used together. devices: [${devices.joinToString()}], devicePattern: $devicePattern")
-        }
     }
 }

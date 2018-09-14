@@ -16,173 +16,139 @@
 
 package com.trevjonez.composer
 
-import org.gradle.api.Project
+import com.trevjonez.composer.ComposerConfig.MAIN_CLASS
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputDirectory
+import org.gradle.kotlin.dsl.listProperty
+import org.gradle.kotlin.dsl.property
 import java.io.File
-import kotlin.properties.Delegates
-import kotlin.reflect.KProperty
 
-open class ComposerTask : JavaExec(), ComposerConfigurator {
+//TODO: use the worker api not JavaExec
+open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
 
-    companion object {
-        private const val MAIN_CLASS = "com.gojuno.composer.MainKt"
-        private const val COMPOSER = "composer"
-        private const val ARTIFACT_DEP = "com.gojuno.composer:composer:0.3.3"
-        const val DEFAULT_OUTPUT_DIR = "composer-output"
+    override val configuration = project.composerConfig()
 
-        fun createComposerConfiguration(project: Project) {
-            if (project.configurations.findByName(COMPOSER) == null) {
-                project.configurations.create(COMPOSER)
-                project.dependencies.add(COMPOSER, ARTIFACT_DEP)
-            }
-        }
+    @get:[Optional Input]
+    override val globalConfig = project.objects.property<ComposerDsl>()
+
+    override val apk = this.newInputFile()
+
+    override val testApk = this.newInputFile()
+
+    override val outputDirectory = this.newOutputDirectory().apply {
+        set(project.file(ComposerConfig.DEFAULT_OUTPUT_DIR))
     }
 
-    val apkProp = newInputFile()
-    val testApkProp = newInputFile()
-    val outputDirProp = newOutputDirectory()
+    @get:[Optional Input]
+    override val shard = project.objects.property<Boolean>()
 
-    override var apk: File? by apkProp
-    override var testApk: File? by testApkProp
+    @get:[Optional Input]
+    override val instrumentationArguments =
+            project.objects.listProperty<Pair<String, String>>()
 
-    @get:[Input Optional]
-    override var shard: Boolean? = null
+    @get:[Optional Input]
+    override val verboseOutput = project.objects.property<Boolean>()
 
-    override var outputDirectory: File by outputDirProp
+    @get:[Optional Input]
+    override val devices = project.objects.listProperty<String>()
 
-    @Input
-    override val instrumentationArguments = mutableListOf<Pair<String, String>>()
+    @get:[Optional Input]
+    override val devicePattern = project.objects.property<String>()
 
-    @get:[Input Optional]
-    override var verboseOutput: Boolean? = null
+    @get:[Optional Input]
+    override val keepOutput = project.objects.property<Boolean>()
 
-    @get:[Input Optional]
-    override var devices: MutableList<String> by Delegates.observable(mutableListOf()) { _, _, newValue ->
-        if (devicePattern != null && newValue.isNotEmpty())
-            throw IllegalArgumentException("devices and devicePattern can not be used together. devices: [${newValue.joinToString()}], devicePattern: $devicePattern")
-    }
-
-    @get:[Input Optional]
-    override var devicePattern: String? by Delegates.observable<String?>(null) { _, _, newValue ->
-        if (devices.isNotEmpty() && newValue != null)
-            throw IllegalArgumentException("devices and devicePattern can not be used together. devices: [${devices.joinToString()}], devicePattern: $newValue")
-    }
-
-    @get:[Input Optional]
-    override var keepOutput: Boolean? = null
-
-    @get:[Input Optional]
-    override var apkInstallTimeout: Int? = null
-
-    init {
-        createComposerConfiguration(project)
-        @Suppress("LeakingThis")
-        outputDirectory = project.file(DEFAULT_OUTPUT_DIR)
-    }
+    @get:[Optional Input]
+    override val apkInstallTimeout = project.objects.property<Int>()
 
     override fun exec() {
-        if (outputDirectory.exists()) {
-            if (!outputDirectory.deleteRecursively()) {
+        val outputDir = outputDirectory.get().asFile
+
+        if (outputDir.exists()) {
+            if (!outputDir.deleteRecursively()) {
                 throw IllegalStateException("Failed to remove existing outputs")
             }
         }
-        val config = ComposerConfiguration.DefaultImpl(
-                apkProp.asFile.get(), testApkProp.asFile.get(),
-                shard, outputDirectory, instrumentationArguments, verboseOutput,
-                devices, devicePattern, keepOutput, apkInstallTimeout)
+
+        val config = ComposerParams(
+                apk.asFile.get(),
+                testApk.asFile.get(),
+                shard.orNull,
+                outputDir,
+                instrumentationArguments.orEmpty,
+                verboseOutput.orNull,
+                devices.orEmpty,
+                devicePattern.orNull,
+                keepOutput.orNull,
+                apkInstallTimeout.orNull)
         args = config.toCliArgs()
         main = MAIN_CLASS
-        classpath = project.configurations.getByName(COMPOSER)
+        classpath = configuration
+
         try {
             super.exec()
         } finally {
-            val htmlReportIndex = File(outputDirectory, "${File.separator}html-report${File.separator}index.html")
+            val htmlReportIndex = File(
+                    outputDir,
+                    "${File.separator}html-report${File.separator}index.html")
+
             if (htmlReportIndex.exists()) {
                 println("\nComposer Html Report: file://${htmlReportIndex.absolutePath}\n")
             }
         }
     }
 
-    override fun apk(value: File) {
-        apk = value
+    override fun apk(path: Any) {
+        apk.set(project.file(path))
     }
 
-    override fun apk(value: String) {
-        apk(project.file(value))
+    override fun testApk(path: Any) {
+        testApk.set(project.file(path))
     }
 
-    override fun testApk(value: File) {
-        testApk = value
+    override fun outputDirectory(path: Any) {
+        outputDirectory.set(project.file(path))
     }
 
-    override fun testApk(value: String) {
-        testApk(project.file(value))
+    override fun shard(value: Any) {
+        shard.eval(value)
     }
 
-    override fun shard(value: Boolean) {
-        shard = value
+    override fun instrumentationArgument(value: Any) {
+        instrumentationArguments.eval(value)
     }
 
-    override fun outputDirectory(value: File) {
-        outputDirectory = value
+    override fun instrumentationArguments(value: Any) {
+        instrumentationArguments.evalAll(value)
     }
 
-    override fun outputDirectory(value: String) {
-        outputDirectory(project.file(value))
+    override fun verboseOutput(value: Any) {
+        verboseOutput.eval(value)
     }
 
-    override fun instrumentationArguments(vararg values: Pair<String, String>) {
-        values.forEach { instrumentationArguments.add(it) }
+    override fun device(value: Any) {
+        devices.eval(value)
     }
 
-    override fun instrumentationArgument(key: String, value: String) {
-        instrumentationArguments.add(key to value)
+    override fun devices(value: Any) {
+        devices.evalAll(value)
     }
 
-    override fun verboseOutput(value: Boolean) {
-        verboseOutput = value
+    override fun devicePattern(value: Any) {
+        devicePattern.eval(value)
     }
 
-    override fun device(value: String) {
-        devices.add(value)
+    override fun keepOutput(value: Any) {
+        keepOutput.eval(value)
     }
 
-    override fun devices(vararg values: String) {
-        values.forEach { devices.add(it) }
-    }
-
-    override fun devicePattern(value: String) {
-        devicePattern = value
-    }
-
-    override fun keepOutput(value: Boolean) {
-        keepOutput = value
-    }
-
-    override fun apkInstallTimeout(value: Int) {
-        apkInstallTimeout = value
-    }
-
-    private operator fun RegularFileProperty.setValue(composerTask: ComposerTask, property: KProperty<*>, file: File?) {
-        file?.let { set(it) }
-    }
-
-    private operator fun RegularFileProperty.getValue(composerTask: ComposerTask, property: KProperty<*>): File? {
-        return asFile.orNull
-    }
-
-    private operator fun DirectoryProperty.setValue(composerTask: ComposerTask, property: KProperty<*>, file: File) {
-        set(file)
-    }
-
-    private operator fun DirectoryProperty.getValue(composerTask: ComposerTask, property: KProperty<*>): File {
-        require(isPresent)
-        return asFile.get()
+    override fun apkInstallTimeout(value: Any) {
+        apkInstallTimeout.eval(value)
     }
 }
