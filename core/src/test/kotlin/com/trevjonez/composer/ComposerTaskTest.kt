@@ -30,17 +30,22 @@ import java.io.FileWriter
 
 
 class ComposerTaskTest {
-    @Rule @JvmField val testProjectDir = TemporaryFolder()
+    @Rule
+    @JvmField
+    val testProjectDir = TemporaryFolder()
     val buildFile: File by lazy { testProjectDir.newFile("build.gradle") }
-    
+
+    val classpathManifest by lazy {
+        javaClass.classLoader.getResource("classpath-manifest.txt")
+                .openStream().use { inStream ->
+                    inStream.reader().readLines().map { File(it) }
+                }
+    }
+
     @Before
     fun setUp() {
         File(testProjectDir.root, "app.apk").createNewFile()
         File(testProjectDir.root, "app-test.apk").createNewFile()
-        File(testProjectDir.root, "libs").also {
-            it.mkdir()
-            FileUtils.copyFileToDirectory(File(".", "build/libs/core.jar"), it)
-        }
     }
 
     /**
@@ -52,17 +57,17 @@ class ComposerTaskTest {
         val androidHome: String? = System.getenv("ANDROID_HOME")
         assumeNotNull(androidHome)
         """
+import com.trevjonez.composer.ComposerTask
+
 buildscript {
     dependencies {
-        classpath files("libs/core.jar")
+        classpath(files(${classpathManifest.joinToString { "\"$it\"" }}))
     }
 }
 
 repositories {
     jcenter()
 }
-
-import com.trevjonez.composer.ComposerTask
 
 task runComposer(type: ComposerTask) {
     apk "${testProjectDir.root.absolutePath}/app.apk"
