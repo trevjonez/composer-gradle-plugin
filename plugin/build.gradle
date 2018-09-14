@@ -12,6 +12,14 @@ gradlePlugin {
             id = "composer"
             implementationClass = "com.trevjonez.composer.ComposerPlugin"
         }
+        composerLibrary {
+            id = "composer-library"
+            implementationClass = "com.trevjonez.composer.internal.ComposerLibraryPlugin"
+        }
+        composerApp {
+            id = "composer-application"
+            implementationClass = "com.trevjonez.composer.internal.ComposerApplicationPlugin"
+        }
     }
 }
 
@@ -27,7 +35,6 @@ dependencies {
 }
 
 tasks.findByPath('test').dependsOn('jar')
-
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'

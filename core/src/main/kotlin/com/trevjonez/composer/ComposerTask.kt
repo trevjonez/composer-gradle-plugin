@@ -17,6 +17,8 @@
 package com.trevjonez.composer
 
 import org.gradle.api.Project
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.JavaExec
@@ -24,6 +26,7 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import java.io.File
 import kotlin.properties.Delegates
+import kotlin.reflect.KProperty
 
 open class ComposerTask : JavaExec(), ComposerConfigurator {
 
@@ -41,17 +44,17 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
         }
     }
 
-    @InputFile
-    override var apk: File? = null
+    val apkProp = newInputFile()
+    val testApkProp = newInputFile()
+    val outputDirProp = newOutputDirectory()
 
-    @InputFile
-    override var testApk: File? = null
+    override var apk: File? by apkProp
+    override var testApk: File? by testApkProp
 
     @get:[Input Optional]
     override var shard: Boolean? = null
 
-    @get:[Input OutputDirectory]
-    override lateinit var outputDirectory: File
+    override var outputDirectory: File by outputDirProp
 
     @Input
     override val instrumentationArguments = mutableListOf<Pair<String, String>>()
@@ -90,7 +93,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
             }
         }
         val config = ComposerConfiguration.DefaultImpl(
-                apk!!, testApk!!,
+                apkProp.asFile.get(), testApkProp.asFile.get(),
                 shard, outputDirectory, instrumentationArguments, verboseOutput,
                 devices, devicePattern, keepOutput, apkInstallTimeout)
         args = config.toCliArgs()
@@ -164,5 +167,22 @@ open class ComposerTask : JavaExec(), ComposerConfigurator {
 
     override fun apkInstallTimeout(value: Int) {
         apkInstallTimeout = value
+    }
+
+    private operator fun RegularFileProperty.setValue(composerTask: ComposerTask, property: KProperty<*>, file: File?) {
+        file?.let { set(it) }
+    }
+
+    private operator fun RegularFileProperty.getValue(composerTask: ComposerTask, property: KProperty<*>): File? {
+        return asFile.orNull
+    }
+
+    private operator fun DirectoryProperty.setValue(composerTask: ComposerTask, property: KProperty<*>, file: File) {
+        set(file)
+    }
+
+    private operator fun DirectoryProperty.getValue(composerTask: ComposerTask, property: KProperty<*>): File {
+        require(isPresent)
+        return asFile.get()
     }
 }

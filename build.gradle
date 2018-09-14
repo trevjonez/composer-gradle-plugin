@@ -15,7 +15,7 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.2.61'
+    ext.kotlin_version = '1.2.70'
 
     repositories {
         jcenter()
@@ -28,6 +28,7 @@ buildscript {
 }
 
 allprojects {
+    group = 'com.github.trevjonez.composer-gradle-plugin'
     repositories {
         mavenLocal()
         jcenter()
@@ -39,4 +40,3 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-group = 'com.github.trevjonez.composer-gradle-plugin'

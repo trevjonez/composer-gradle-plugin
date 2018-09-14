@@ -45,4 +45,8 @@ open class ConfigExtension(project: Project) {
     fun instrumentationArgument(key: String, value: String) {
         instrumentationArguments.add(key to value)
     }
+
+    companion object {
+        const val DEFAULT_NAME = "composer"
+    }
 }
