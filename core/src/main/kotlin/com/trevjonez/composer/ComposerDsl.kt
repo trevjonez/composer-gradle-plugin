@@ -36,6 +36,15 @@ interface ComposerDsl {
      */
     fun instrumentationArgument(value: Any)
 
+    /**
+     * Add one instrumentation argument to the configuration.
+     * Same as [instrumentationArgument] with single pair argument
+     *
+     * @param key converted via [Any.toString]
+     * @param value converted via [Any.toString]
+     */
+    fun instrumentationArgument(key: CharSequence, value: CharSequence)
+
 
     /**
      * Add many instrumentation arguments to the configuration.
