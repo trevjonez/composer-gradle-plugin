@@ -29,8 +29,8 @@ interface ComposerConfigurator {
     val configuration: Configuration
     val globalConfig: Property<ComposerDsl>
 
-    val apk: RegularFileProperty
     val testApk: RegularFileProperty
+    val apk: RegularFileProperty
     val outputDirectory: DirectoryProperty
     val shard: Property<Boolean>
     val instrumentationArguments: ListProperty<Pair<String, String>>

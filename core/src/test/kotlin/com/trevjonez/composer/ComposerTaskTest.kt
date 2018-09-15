@@ -18,7 +18,6 @@ package com.trevjonez.composer
 
 import org.assertj.core.api.Assertions.assertThat
 import org.gradle.testkit.runner.GradleRunner
-import org.intellij.lang.annotations.Language
 import org.junit.Assume.assumeNotNull
 import org.junit.Rule
 import org.junit.Test
@@ -30,15 +29,12 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.findAnnotation
 
-
 annotation class FileName(val value: String)
 
 class ComposerTaskTest {
 
   @get:Rule
   val testProjectDir = TemporaryFolder()
-
-  private val buildDir by systemProperty<File>()
 
   private val ANDROID_HOME by environmentVariable
 
@@ -63,13 +59,13 @@ class ComposerTaskTest {
     //language=Groovy
     """
     buildscript {
-        dependencies {
-            classpath(files($classpathManifest))
-        }
+      dependencies {
+        classpath(files($classpathManifest))
+      }
     }
 
     repositories {
-        jcenter()
+      jcenter()
     }
     """.trimIndent()
   }
@@ -77,8 +73,8 @@ class ComposerTaskTest {
   private val defaultTaskDsl by lazy {
     //language=Groovy
     """
-        apk "$appApk"
-        testApk "$testApk"
+      apk "$appApk"
+      testApk "$testApk"
     """.trimIndent()
   }
 
@@ -111,11 +107,23 @@ class ComposerTaskTest {
         .forwardOutput()
   }
 
-  private val dumpFailedError = "ERROR: dump failed because no AndroidManifest.xml found"
+  private val dumpFailedError =
+    "ERROR: dump failed because no AndroidManifest.xml found"
 
   @Test
   fun defaultConfig() {
     makeBuildFile().writeTo(buildFile)
+
+    val runResult = buildRunner().buildAndFail()
+
+    assertThat(runResult.output).contains(dumpFailedError)
+  }
+
+  @Test
+  fun singleApk() {
+    makeBuildFile(taskDsl = """
+      testApk "$testApk"
+    """.trimIndent()).writeTo(buildFile)
 
     val runResult = buildRunner().buildAndFail()
 
@@ -205,7 +213,7 @@ class ComposerTaskTest {
     //language=Groovy
     makeBuildFile(taskDsl = """
       $defaultTaskDsl
-      apkInstallTimeout(true)
+      apkInstallTimeout(42)
     """.trimIndent()).writeTo(buildFile)
 
     val runResult = buildRunner().buildAndFail()
@@ -217,17 +225,6 @@ class ComposerTaskTest {
     BufferedWriter(FileWriter(file)).use {
       it.write(this)
     }
-
-  private inline fun <reified T : Any> systemProperty(
-      crossinline converter: (String) -> T = {
-        T::class.java.getDeclaredConstructor(String::class.java).newInstance(it)
-      }): ReadOnlyProperty<Any, T> {
-    return object : ReadOnlyProperty<Any, T> {
-      override fun getValue(thisRef: Any, property: KProperty<*>): T {
-        return converter(System.getProperty(property.name)!!)
-      }
-    }
-  }
 
   private val environmentVariable: ReadOnlyProperty<Any, String>
     get() {

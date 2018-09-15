@@ -37,9 +37,9 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
   @get:[Optional Input]
   override val globalConfig = project.objects.property<ComposerDsl>()
 
-  override val apk = this.newInputFile()
-
   override val testApk = this.newInputFile()
+
+  override val apk = this.newInputFile().apply { set(testApk) }
 
   override val outputDirectory = this.newOutputDirectory().apply {
     set(project.file(ComposerConfig.DEFAULT_OUTPUT_DIR))
