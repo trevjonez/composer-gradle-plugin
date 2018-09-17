@@ -17,36 +17,91 @@
 package com.trevjonez.composer
 
 import groovy.lang.Closure
+import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
+import org.gradle.kotlin.dsl.invoke
+import org.gradle.kotlin.dsl.listProperty
+import org.gradle.kotlin.dsl.property
 
-open class ConfigExtension(project: Project) {
-    val configs: NamedDomainObjectContainer<ConfiguratorDomainObj> =
-            project.container(ConfiguratorDomainObj::class.java) { name ->
-                ConfiguratorDomainObj(name, project)
-            }
+open class ConfigExtension(project: Project)
+  : ComposerDsl, ComposerConfigurator {
 
-    val variants = mutableListOf<String>()
-
-    val instrumentationArguments: MutableList<Pair<String, String>> = mutableListOf()
-
-    fun configs(closure: Closure<Any>) {
-        configs.configure(closure)
+  val configs: NamedDomainObjectContainer<ConfiguratorDomainObj> =
+    project.container(ConfiguratorDomainObj::class.java) { name ->
+      ConfiguratorDomainObj(name, project)
     }
 
-    fun variants(vararg values: String) {
-        variants.addAll(values)
-    }
+  val variants = mutableListOf<String>()
 
-    fun instrumentationArguments(vararg values: Pair<String, String>) {
-        values.forEach { instrumentationArguments.add(it) }
-    }
+  fun variants(vararg values: String) {
+    variants.addAll(values)
+  }
 
-    fun instrumentationArgument(key: String, value: String) {
-        instrumentationArguments.add(key to value)
-    }
+  fun configs(closure: Closure<Any>) {
+    configs.configure(closure)
+  }
 
-    companion object {
-        const val DEFAULT_NAME = "composer"
-    }
+  fun configs(action: Action<NamedDomainObjectContainer<ConfiguratorDomainObj>>) {
+    action.execute(configs)
+  }
+
+  override val configuration: Configuration = project.composerConfig()
+  override val shard = project.objects.property<Boolean>()
+  override val instrumentationArguments =
+    project.objects.listProperty<Pair<String, String>>()
+  override val verboseOutput = project.objects.property<Boolean>()
+  override val devices = project.objects.listProperty<String>()
+  override val devicePattern = project.objects.property<String>()
+  override val keepOutput = project.objects.property<Boolean>()
+  override val apkInstallTimeout = project.objects.property<Int>()
+
+  override fun shard(value: Any) {
+    shard.eval(value)
+  }
+
+  override fun instrumentationArgument(value: Any) {
+    instrumentationArguments.eval(value)
+  }
+
+  override fun instrumentationArgument(key: CharSequence, value: CharSequence) {
+    instrumentationArgument(key.toString() to value.toString())
+  }
+
+  override fun instrumentationArguments(value: Any) {
+    instrumentationArguments.evalAll(value)
+  }
+
+  override fun verboseOutput(value: Any) {
+    verboseOutput.eval(value)
+  }
+
+  override fun device(value: Any) {
+    devices.eval(value)
+  }
+
+  override fun devices(value: Any) {
+    devices.evalAll(value)
+  }
+
+  override fun devicePattern(value: Any) {
+    devicePattern.eval(value)
+  }
+
+  override fun keepOutput(value: Any) {
+    keepOutput.eval(value)
+  }
+
+  override fun apkInstallTimeout(value: Any) {
+    apkInstallTimeout.eval(value)
+  }
+
+  companion object {
+    const val DEFAULT_NAME = "composer"
+  }
 }

@@ -25,13 +25,9 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 import java.util.concurrent.Callable
 
-interface ComposerConfigurator {
+interface ComposerConfigurator: ComposerDsl {
     val configuration: Configuration
-    val globalConfig: Property<ComposerDsl>
 
-    val testApk: RegularFileProperty
-    val apk: RegularFileProperty
-    val outputDirectory: DirectoryProperty
     val shard: Property<Boolean>
     val instrumentationArguments: ListProperty<Pair<String, String>>
     val verboseOutput: Property<Boolean>

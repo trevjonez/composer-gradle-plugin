@@ -17,11 +17,6 @@
 package com.trevjonez.composer
 
 import com.trevjonez.composer.ComposerConfig.MAIN_CLASS
-import org.gradle.api.artifacts.Configuration
-import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.Optional
@@ -35,13 +30,16 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
   override val configuration = project.composerConfig()
 
   @get:[Optional Input]
-  override val globalConfig = project.objects.property<ComposerDsl>()
+  val globalConfig = project.objects.property<ComposerDsl>()
+
+  @get:[Optional Input]
+  val externalDslConfig = project.objects.property<ComposerDsl>()
 
   override val testApk = this.newInputFile()
 
   override val apk = this.newInputFile().apply { set(testApk) }
 
-  override val outputDirectory = this.newOutputDirectory().apply {
+  override val outputDir = this.newOutputDirectory().apply {
     set(project.file(ComposerConfig.DEFAULT_OUTPUT_DIR))
   }
 
@@ -68,7 +66,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
   override val apkInstallTimeout = project.objects.property<Int>()
 
   override fun exec() {
-    val outputDir = outputDirectory.get().asFile
+    val outputDir = outputDir.get().asFile
 
     if (outputDir.exists()) {
       if (!outputDir.deleteRecursively()) {
@@ -113,7 +111,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
   }
 
   override fun outputDirectory(path: Any) {
-    outputDirectory.set(project.file(path))
+    outputDir.set(project.file(path))
   }
 
   override fun shard(value: Any) {

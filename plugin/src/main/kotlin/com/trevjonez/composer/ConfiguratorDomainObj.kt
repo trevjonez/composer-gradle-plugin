@@ -16,93 +16,78 @@
 
 package com.trevjonez.composer
 
-import org.gradle.api.Action
 import org.gradle.api.Project
-import java.io.File
-import kotlin.properties.Delegates
+import org.gradle.api.artifacts.Configuration
+import org.gradle.kotlin.dsl.listProperty
+import org.gradle.kotlin.dsl.property
 
-open class ConfiguratorDomainObj(val name: String, project: Project) : ComposerConfigurator {
-    override var apk: File? = null
-    override var testApk: File? = null
-    override var shard: Boolean? = null
-    override var outputDirectory: File = project.file(ComposerTask.DEFAULT_OUTPUT_DIR)
-    override val instrumentationArguments: MutableList<Pair<String, String>> = mutableListOf()
-    override var verboseOutput: Boolean? = null
-    override var devices: MutableList<String> by Delegates.observable(mutableListOf()) { _, _, newValue ->
-        if (devicePattern != null && newValue.isNotEmpty())
-            throw IllegalArgumentException("devices and devicePattern can not be used together. devices: [${newValue.joinToString()}], devicePattern: $devicePattern")
-    }
-    override var devicePattern: String? by Delegates.observable<String?>(null) { _, _, newValue ->
-        if (devices.isNotEmpty() && newValue != null)
-            throw IllegalArgumentException("devices and devicePattern can not be used together. devices: [${devices.joinToString()}], devicePattern: $newValue")
-    }
-    override var keepOutput: Boolean? = null
+open class ConfiguratorDomainObj(val name: String, val project: Project) :
+    ComposerTaskDsl,
+    ComposerConfigurator {
 
-    var configureTask: Action<ComposerTask>? = null
+  override val testApk = project.layout.fileProperty()
+  override val apk = project.layout.fileProperty().apply { set(testApk) }
+  override val outputDir = project.layout.directoryProperty()
 
-    override var apkInstallTimeout: Int? = null
+  override val configuration: Configuration = project.composerConfig()
+  override val shard = project.objects.property<Boolean>()
+  override val instrumentationArguments =
+    project.objects.listProperty<Pair<String, String>>()
+  override val verboseOutput = project.objects.property<Boolean>()
+  override val devices = project.objects.listProperty<String>()
+  override val devicePattern = project.objects.property<String>()
+  override val keepOutput = project.objects.property<Boolean>()
+  override val apkInstallTimeout = project.objects.property<Int>()
 
-    override fun apk(value: File) {
-        apk = value
-    }
+  override fun apk(path: Any) {
+    apk.set(project.file(path))
+  }
 
-    override fun apk(value: String) {
-        apk(File(value))
-    }
+  override fun testApk(path: Any) {
+    testApk.set(project.file(path))
+  }
 
-    override fun testApk(value: File) {
-        testApk = value
-    }
+  override fun outputDirectory(path: Any) {
+    outputDir.set(project.file(path))
+  }
 
-    override fun testApk(value: String) {
-        testApk(File(value))
-    }
+  override fun shard(value: Any) {
+    shard.eval(value)
+  }
 
-    override fun shard(value: Boolean) {
-        shard = value
-    }
+  override fun instrumentationArgument(value: Any) {
+    instrumentationArguments.eval(value)
+  }
 
-    override fun outputDirectory(value: File) {
-        outputDirectory = value
-    }
+  override fun instrumentationArgument(key: CharSequence, value: CharSequence) {
+    instrumentationArgument(key.toString() to value.toString())
+  }
 
-    override fun outputDirectory(value: String) {
-        outputDirectory(File(value))
-    }
+  override fun instrumentationArguments(value: Any) {
+    instrumentationArguments.evalAll(value)
+  }
 
-    override fun instrumentationArguments(vararg values: Pair<String, String>) {
-        values.forEach { instrumentationArguments.add(it) }
-    }
+  override fun verboseOutput(value: Any) {
+    verboseOutput.eval(value)
+  }
 
-    override fun instrumentationArgument(key: String, value: String) {
-        instrumentationArguments.add(key to value)
-    }
+  override fun device(value: Any) {
+    devices.eval(value)
+  }
 
-    override fun verboseOutput(value: Boolean) {
-        verboseOutput = value
-    }
+  override fun devices(value: Any) {
+    devices.evalAll(value)
+  }
 
-    fun configureTask(action: Action<ComposerTask>) {
-        configureTask = action
-    }
+  override fun devicePattern(value: Any) {
+    devicePattern.eval(value)
+  }
 
-    override fun device(value: String) {
-        devices.add(value)
-    }
+  override fun keepOutput(value: Any) {
+    keepOutput.eval(value)
+  }
 
-    override fun devices(vararg values: String) {
-        values.forEach { devices.add(it) }
-    }
-
-    override fun devicePattern(value: String) {
-        devicePattern = value
-    }
-
-    override fun keepOutput(value: Boolean) {
-        keepOutput = value
-    }
-
-    override fun apkInstallTimeout(value: Int) {
-        apkInstallTimeout = value
-    }
+  override fun apkInstallTimeout(value: Any) {
+    apkInstallTimeout.eval(value)
+  }
 }

@@ -25,37 +25,37 @@ import org.gradle.api.Project
 
 class ComposerPlugin : Plugin<Project> {
 
-    companion object {
-        const val GROUP = "Composer Plugin"
+  companion object {
+    const val GROUP = "Composer Plugin"
+  }
+
+  override fun apply(project: Project) {
+    project.pluginManager.withPlugin("com.android.library") {
+      project.pluginManager.apply(ComposerLibraryPlugin::class.java)
     }
 
-    override fun apply(project: Project) {
-        project.pluginManager.withPlugin("com.android.library") {
-            project.pluginManager.apply(ComposerLibraryPlugin::class.java)
-        }
-
-        project.pluginManager.withPlugin("com.android.application") {
-            project.pluginManager.apply(ComposerApplicationPlugin::class.java)
-        }
-
-        project.afterEvaluate {
-            it.extensions.findByType(ConfigExtension::class.java)
-            ?: it.missingPlugin<AndroidBasePlugin>(genericExceptionMessage)
-        }
+    project.pluginManager.withPlugin("com.android.application") {
+      project.pluginManager.apply(ComposerApplicationPlugin::class.java)
     }
 
-    private val genericExceptionMessage =
-            """If you believe this is an issue or missing feature, please consider opening an issue on github.
-                |https://github.com/trevjonez/composer-gradle-plugin
-                |""".trimMargin()
-
-    private inline fun <reified T : Plugin<Project>> Project.missingPlugin(msg: String = ""): Nothing {
-        throw MissingPluginException(
-                """Failed to configure ${ComposerPlugin::class.java.name} plugin on project: $path
-                    |  Expected plugin: `${T::class.java.name}` was not applied.
-                    |  $msg""".trimMargin()
-                                    )
+    project.afterEvaluate {
+      extensions.findByType(ConfigExtension::class.java)
+      ?: missingPlugin<AndroidBasePlugin>(genericExceptionMessage)
     }
+  }
 
-    class MissingPluginException(message: String) : GradleException(message)
+  private val genericExceptionMessage =
+    """If you believe this is an issue or missing feature, please consider opening an issue on github.
+      |https://github.com/trevjonez/composer-gradle-plugin
+      |""".trimMargin()
+
+  private inline fun <reified T : Plugin<Project>> Project.missingPlugin(msg: String = ""): Nothing {
+    throw MissingPluginException(
+        """Failed to configure ${ComposerPlugin::class.java.name} plugin on project: $path
+          |  Expected plugin: `${T::class.java.name}` was not applied.
+          |  $msg""".trimMargin()
+    )
+  }
+
+  class MissingPluginException(message: String) : GradleException(message)
 }

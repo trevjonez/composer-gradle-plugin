@@ -16,6 +16,9 @@
 
 package com.trevjonez.composer
 
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
+
 /**
  * Global configuration options
  */
@@ -103,15 +106,19 @@ interface ComposerDsl {
  */
 interface ComposerTaskDsl : ComposerDsl {
 
-    /**
-     * @param path evaluated as per [org.gradle.api.Project.file].
-     */
-    fun apk(path: Any)
+    val testApk: RegularFileProperty
+    val apk: RegularFileProperty
+    val outputDir: DirectoryProperty
 
     /**
      * @param path evaluated as per [org.gradle.api.Project.file].
      */
     fun testApk(path: Any)
+
+    /**
+     * @param path evaluated as per [org.gradle.api.Project.file].
+     */
+    fun apk(path: Any)
 
     /**
      * @param path evaluated as per [org.gradle.api.Project.file].
