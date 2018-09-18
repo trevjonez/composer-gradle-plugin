@@ -4,3 +4,4 @@ build/
 .idea/
 !.idea/codeStyleSettings.xml
 !.idea/copyright
+local.properties

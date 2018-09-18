@@ -1,5 +1,5 @@
 /*
- *    Copyright 2017 Trevor Jones
+ *    Copyright 2018 Trevor Jones
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,29 +14,18 @@
  *    limitations under the License.
  */
 
-buildscript {
-    ext.kotlin_version = '1.2.61'
 
+pluginManagement {
     repositories {
-        jcenter()
         google()
-    }
-    dependencies {
-        classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: kotlin_version
-        classpath group: 'com.netflix.nebula', name: 'nebula-kotlin-plugin', version: kotlin_version
-    }
-}
-
-allprojects {
-    repositories {
-        mavenLocal()
         jcenter()
-        google()
+    }
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id.startsWith("com.android"))
+                useModule("com.android.tools.build:gradle:$AGP_VERSION")
+        }
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
-
-group = 'com.github.trevjonez.composer-gradle-plugin'
+rootProject.name = "and-app"

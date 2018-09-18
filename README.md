@@ -13,7 +13,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.7.0'
+        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.8.0'
     }
 }
 ```
@@ -33,23 +33,37 @@ If you want to limit the variants that get tasks or provide custom configuration
 ```groovy
 composer {
   variants "redDebug" // optional, variant names to create composer tasks for. If empty all testable variants will receive a task.
-  instrumentationArgument('key1', 'value1') //optional. args that apply to all created tasks
+  
+  //These dsl functions are combined with variant specific config additively
+  instrumentationArgument('key1', 'value1') 
   instrumentationArgument('key2', 'value2')
   instrumentationArgument('keyN', 'valueN')
+  
+  device 'emulator-5558'
+  devices(['emulator-5558', 'emulator-5559'])
+      
+  //These dsl functions are overwritten by variant specific config if any exists
+  shard false 
+  verboseOutput false
+  keepOutput true
+  devicePattern 'somePattern'
+  apkInstallTimeout 90
+ 
 
   configs { 
     redDebug {
       apk "build/outputs/apk/debug/example-debug.apk" //optional override, string paths are evaluated as per {@link org.gradle.api.Project#file(Object)}.
       testApk = new File(buildDir, "outputs/apk/androidTest/debug/example-debug-androidTest.apk") //optional override
-      shard true //optional. default true
       outputDirectory 'artifacts/composer-output' //optional override. default 'build/reports/composer/redDebug'
-      instrumentationArgument('key1', 'value1') //optional
+      shard true //optional. default true
+      instrumentationArgument('key1', 'value1') //optional, additive
       instrumentationArgument('key2', 'value2')
       instrumentationArgument('keyN', 'valueN')
       verboseOutput false //optional default false
+      keepOutput true //optional, default false
       device 'emulator-5554' //optional, additive
       device 'emulator-5558'
-      devices('emulator-5554', 'emulator-5558') //optional, additive
+      devices(['emulator-5554', 'emulator-5558']) //optional, additive
       devicePattern 'somePattern' //optional
       apkInstallTimeout 90 //optional, timeout in seconds default 120
     }
@@ -136,7 +150,7 @@ version of gradle is 4.0 or whatever minimum is mandated by the android gradle p
 
 Composer plugin version | Gradle version | Android plugin version
 ----- | ---- | -----
-0.7.0 | 4.10  | 3.1.4
+0.8.0 | 4.10  | 3.1.4
 
 ## License
 

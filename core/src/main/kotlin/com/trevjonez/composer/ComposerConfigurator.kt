@@ -16,64 +16,23 @@
 
 package com.trevjonez.composer
 
-import java.io.File
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
+import org.gradle.api.provider.ProviderFactory
+import java.util.concurrent.Callable
 
-interface ComposerConfigurator {
-    var apk: File?
+interface ComposerConfigurator: ComposerDsl {
+    val configuration: Configuration
 
-    var testApk: File?
-
-    var shard: Boolean?
-
-    var outputDirectory: File
-
-    val instrumentationArguments: MutableList<Pair<String, String>>
-
-    var verboseOutput: Boolean?
-
-    var devices: MutableList<String>
-
-    var devicePattern: String?
-
-    var keepOutput: Boolean?
-
-    var apkInstallTimeout: Int?
-
-    fun apk(value: File)
-
-    /**
-     * Paths are evaluated as per {@link org.gradle.api.Project#file(Object)}.
-     */
-    fun apk(value: String)
-
-    fun testApk(value: File)
-    /**
-     * Paths are evaluated as per {@link org.gradle.api.Project#file(Object)}.
-     */
-    fun testApk(value: String)
-
-    fun shard(value: Boolean)
-
-    fun outputDirectory(value: File)
-
-    /**
-     * Paths are evaluated as per {@link org.gradle.api.Project#file(Object)}.
-     */
-    fun outputDirectory(value: String)
-
-    fun instrumentationArgument(key: String, value: String)
-
-    fun instrumentationArguments(vararg values: Pair<String, String>)
-
-    fun verboseOutput(value: Boolean)
-
-    fun device(value: String)
-
-    fun devices(vararg values: String)
-
-    fun devicePattern(value: String)
-
-    fun keepOutput(value: Boolean)
-
-    fun apkInstallTimeout(value: Int)
+    val shard: Property<Boolean>
+    val instrumentationArguments: ListProperty<Pair<String, String>>
+    val verboseOutput: Property<Boolean>
+    val devices: ListProperty<String>
+    val devicePattern: Property<String>
+    val keepOutput: Property<Boolean>
+    val apkInstallTimeout: Property<Int>
 }

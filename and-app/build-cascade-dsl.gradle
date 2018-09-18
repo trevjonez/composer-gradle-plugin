@@ -1,5 +1,5 @@
 /*
- *    Copyright 2017 Trevor Jones
+ *    Copyright 2018 Trevor Jones
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,16 +14,9 @@
  *    limitations under the License.
  */
 
-buildscript {
-    repositories {
-        google()
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.0'
-        classpath files("libs/core.jar")
-        classpath files("libs/plugin.jar")
-    }
+plugins {
+    id "com.android.application"
+    id "composer"
 }
 
 repositories {
@@ -31,15 +24,12 @@ repositories {
     jcenter()
 }
 
-apply plugin: 'com.android.application'
-apply plugin: 'composer'
-
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
     defaultConfig {
-        applicationId "com.trevjonez.example"
+        applicationId "com.trevjonez.andapp"
         minSdkVersion 21
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -54,26 +44,18 @@ android {
 }
 
 dependencies {
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:3.0.0'
-    androidTestCompile 'com.android.support.test:runner:1.0.0'
-
-    composer "com.gojuno.composer:composer:0.3.2"
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
 }
 
 composer {
+    verboseOutput true
+    instrumentationArgument('screenshotsDisabled', 'false')
+    apkInstallTimeout 10
     configs {
         debug {
-            verboseOutput true
-            device "emulator-5554"
-            instrumentationArgument('screenshotsDisabled', 'false')
             instrumentationArgument('screenshotsEngine', 'uiAutomator')
             keepOutput true
         }
     }
-}
-
-import com.trevjonez.composer.ComposerTask
-task customTask(type: ComposerTask, dependsOn: ['assembleDebug', 'assembleDebugAndroidTest']) {
-    apk "${project.projectDir}/build/outputs/apk/debug/vanilla-debug.apk"
-    testApk "${project.projectDir}/build/outputs/apk/androidTest/debug/vanilla-debug-androidTest.apk"
 }
