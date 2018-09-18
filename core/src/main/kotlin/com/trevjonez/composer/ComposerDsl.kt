@@ -23,82 +23,93 @@ import org.gradle.api.file.RegularFileProperty
  * Global configuration options
  */
 interface ComposerDsl {
-    /**
-     * @param value evaluated as per [org.gradle.api.provider.Property.set].
-     */
-    fun shard(value: Any)
+  /**
+   * Defaults to true
+   *
+   * @param value evaluated as per [org.gradle.api.provider.Property.set].
+   */
+  fun shard(value: Any)
 
-    /**
-     * Add one instrumentation argument to the configuration.
-     *
-     * @param value Accepts the following argument types:
-     * - [org.gradle.api.provider.Provider]
-     * of type [Pair] of [String]'s
-     *
-     * - [Pair] of [String]'s
-     */
-    fun instrumentationArgument(value: Any)
+  /**
+   * Add one instrumentation argument to the configuration.
+   *
+   * @param value Accepts the following argument types:
+   * - [org.gradle.api.provider.Provider]
+   * of type [Pair] of [String]'s
+   *
+   * - [Pair] of [String]'s
+   */
+  fun instrumentationArgument(value: Any)
 
-    /**
-     * Add one instrumentation argument to the configuration.
-     * Same as [instrumentationArgument] with single pair argument
-     *
-     * @param key converted via [Any.toString]
-     * @param value converted via [Any.toString]
-     */
-    fun instrumentationArgument(key: CharSequence, value: CharSequence)
+  /**
+   * Add one instrumentation argument to the configuration.
+   * Same as [instrumentationArgument] with single pair argument
+   *
+   * @param key converted via [Any.toString]
+   * @param value converted via [Any.toString]
+   */
+  fun instrumentationArgument(key: CharSequence, value: CharSequence)
 
 
-    /**
-     * Add many instrumentation arguments to the configuration.
-     *
-     * @param value Accepts the following argument types:
-     * - [org.gradle.api.provider.Provider]
-     * of type [Iterable] of [Pair] of [String]'s
-     *
-     * - [Iterable] of [Pair] of [String]'s
-     */
-    fun instrumentationArguments(value: Any)
+  /**
+   * Add many instrumentation arguments to the configuration.
+   *
+   * @param value Accepts the following argument types:
+   * - [org.gradle.api.provider.Provider]
+   * of type [Iterable] of [Pair] of [String]'s
+   *
+   * - [Iterable] of [Pair] of [String]'s
+   */
+  fun instrumentationArguments(value: Any)
 
-    /**
-     * @param value evaluated as per [org.gradle.api.provider.Property.set].
-     */
-    fun verboseOutput(value: Any)
+  /**
+   * Default false
+   *
+   * @param value evaluated as per [org.gradle.api.provider.Property.set].
+   */
+  fun verboseOutput(value: Any)
 
-    /**
-     * Add one device ID to the configuration.
-     *
-     * @param value Accepts the following argument types:
-     * - [org.gradle.api.provider.Provider] of type [String]
-     *
-     * - [String]
-     */
-    fun device(value: Any)
+  /**
+   * Add one device ID to the configuration.
+   *
+   * @param value Accepts the following argument types:
+   * - [org.gradle.api.provider.Provider] of type [String]
+   *
+   * - [String]
+   */
+  fun device(value: Any)
 
-    /**
-     * Add one or many device ID's to the configuration.
-     *
-     * @param value Accepts the following argument types:
-     * - [org.gradle.api.provider.Provider] of type [Iterable] of [String]
-     *
-     * - [Iterable] of [String]
-     */
-    fun devices(value: Any)
+  /**
+   * Add one or many device ID's to the configuration.
+   *
+   * @param value Accepts the following argument types:
+   * - [org.gradle.api.provider.Provider] of type [Iterable] of [String]
+   *
+   * - [Iterable] of [String]
+   */
+  fun devices(value: Any)
 
-    /**
-     * @param value evaluated as per [org.gradle.api.provider.Property.set].
-     */
-    fun devicePattern(value: Any)
+  /**
+   * Add one or many device ID's to the configuration
+   */
+  fun devices(vararg values: CharSequence)
 
-    /**
-     * @param value evaluated as per [org.gradle.api.provider.Property.set].
-     */
-    fun keepOutput(value: Any)
+  /**
+   * @param value evaluated as per [org.gradle.api.provider.Property.set].
+   */
+  fun devicePattern(value: Any)
 
-    /**
-     * @param value evaluated as per [org.gradle.api.provider.Property.set].
-     */
-    fun apkInstallTimeout(value: Any)
+  /**
+   * Default false
+   *
+   * @param value evaluated as per [org.gradle.api.provider.Property.set].
+   */
+  fun keepOutput(value: Any)
+
+  /**
+   * @param value evaluated as per [org.gradle.api.provider.Property.set].
+   */
+  fun apkInstallTimeout(value: Any)
 }
 
 /**
@@ -106,22 +117,22 @@ interface ComposerDsl {
  */
 interface ComposerTaskDsl : ComposerDsl {
 
-    val testApk: RegularFileProperty
-    val apk: RegularFileProperty
-    val outputDir: DirectoryProperty
+  val testApk: RegularFileProperty
+  val apk: RegularFileProperty
+  val outputDir: DirectoryProperty
 
-    /**
-     * @param path evaluated as per [org.gradle.api.Project.file].
-     */
-    fun testApk(path: Any)
+  /**
+   * @param path evaluated as per [org.gradle.api.Project.file].
+   */
+  fun testApk(path: Any)
 
-    /**
-     * @param path evaluated as per [org.gradle.api.Project.file].
-     */
-    fun apk(path: Any)
+  /**
+   * @param path evaluated as per [org.gradle.api.Project.file].
+   */
+  fun apk(path: Any)
 
-    /**
-     * @param path evaluated as per [org.gradle.api.Project.file].
-     */
-    fun outputDirectory(path: Any)
+  /**
+   * @param path evaluated as per [org.gradle.api.Project.file].
+   */
+  fun outputDirectory(path: Any)
 }

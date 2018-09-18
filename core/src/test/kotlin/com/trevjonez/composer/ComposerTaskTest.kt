@@ -107,6 +107,10 @@ class ComposerTaskTest {
         .forwardOutput()
   }
 
+  /**
+   * The apk is fake so AAPT fails with this error.
+   * It is an indicator that the plugin task invoked composer as expected.
+   */
   private val dumpFailedError =
     "ERROR: dump failed because no AndroidManifest.xml found"
 
@@ -162,6 +166,19 @@ class ComposerTaskTest {
     makeBuildFile(taskDsl = """
       $defaultTaskDsl
       devices(["dev1", "dev2"])
+    """.trimIndent()).writeTo(buildFile)
+
+    val runResult = buildRunner().buildAndFail()
+
+    assertThat(runResult.output).contains(dumpFailedError)
+  }
+
+  @Test
+  fun `Task DSL devicesVarArgDsl`() {
+    //language=Groovy
+    makeBuildFile(taskDsl = """
+      $defaultTaskDsl
+      devices("dev1", "dev2")
     """.trimIndent()).writeTo(buildFile)
 
     val runResult = buildRunner().buildAndFail()

@@ -17,13 +17,13 @@
 package com.trevjonez.composer.internal
 
 import com.android.build.gradle.LibraryExtension
+import com.android.build.gradle.api.ApplicationVariant
 import com.android.build.gradle.api.LibraryVariant
 import com.trevjonez.composer.ComposerTask
-import com.trevjonez.composer.ConfiguratorDomainObj
 import org.gradle.api.DomainObjectCollection
+import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
-import org.gradle.platform.base.Library
 import java.io.File
 
 class ComposerLibraryPlugin : ComposerBasePlugin<LibraryVariant>() {
@@ -39,21 +39,14 @@ class ComposerLibraryPlugin : ComposerBasePlugin<LibraryVariant>() {
   override val testableVariants: DomainObjectCollection<LibraryVariant>
     get() = androidExtension.libraryVariants
 
-  override fun LibraryVariant.getApk(configurator: ConfiguratorDomainObj?,
-      task: ComposerTask): Provider<RegularFile> {
-    return getTestApk(configurator, task)
+  override fun LibraryVariant.getApk(task: ComposerTask): Provider<RegularFile> {
+    return getTestApk(task)
   }
 
-  override fun LibraryVariant.getTestApk(configurator: ConfiguratorDomainObj?,
-      task: ComposerTask): Provider<RegularFile> {
-    return if (configurator != null && configurator.testApk.isPresent) {
-      task.dependsOn(configurator.testApk)
-      configurator.testApk
-    } else {
-      task.dependsOn(testVariant.assemble)
-      return project.layout.file(project.provider {
-        testVariant.outputs.single().outputFile
-      })
-    }
+  override fun LibraryVariant.getTestApk(task: ComposerTask): Provider<RegularFile> {
+    task.dependsOn(testVariant.assemble)
+    return project.layout.file(project.provider {
+      testVariant.outputs.single().outputFile
+    })
   }
 }

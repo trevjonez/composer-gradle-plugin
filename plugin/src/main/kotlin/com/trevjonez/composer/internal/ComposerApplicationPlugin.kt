@@ -21,8 +21,10 @@ import com.android.build.gradle.api.ApplicationVariant
 import com.trevjonez.composer.ComposerTask
 import com.trevjonez.composer.ConfiguratorDomainObj
 import org.gradle.api.DomainObjectCollection
+import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
+import org.gradle.util.Path
 import java.io.File
 
 class ComposerApplicationPlugin : ComposerBasePlugin<ApplicationVariant>() {
@@ -38,29 +40,17 @@ class ComposerApplicationPlugin : ComposerBasePlugin<ApplicationVariant>() {
   override val testableVariants: DomainObjectCollection<ApplicationVariant>
     get() = androidExtension.applicationVariants
 
-  override fun ApplicationVariant.getApk(configurator: ConfiguratorDomainObj?,
-      task: ComposerTask): Provider<RegularFile> {
-    return if (configurator != null && configurator.apk.isPresent) {
-      task.dependsOn(configurator.apk)
-      configurator.apk
-    } else {
-      task.dependsOn(assemble)
-      return project.layout.file(project.provider {
-        outputs.single().outputFile
-      })
-    }
+  override fun ApplicationVariant.getApk(task: ComposerTask): Provider<RegularFile> {
+    task.dependsOn(assemble)
+    return project.layout.file(project.provider {
+      outputs.single().outputFile
+    })
   }
 
-  override fun ApplicationVariant.getTestApk(configurator: ConfiguratorDomainObj?,
-      task: ComposerTask): Provider<RegularFile> {
-    return if (configurator != null && configurator.testApk.isPresent) {
-      task.dependsOn(configurator.testApk)
-      configurator.testApk
-    } else {
-      task.dependsOn(testVariant.assemble)
-      return project.layout.file(project.provider {
-        testVariant.outputs.single().outputFile
-      })
-    }
+  override fun ApplicationVariant.getTestApk(task: ComposerTask): Provider<RegularFile> {
+    task.dependsOn(testVariant.assemble)
+    return project.layout.file(project.provider {
+      testVariant.outputs.single().outputFile
+    })
   }
 }

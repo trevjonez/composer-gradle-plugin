@@ -22,15 +22,14 @@ import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.kotlin.dsl.listProperty
-import org.gradle.kotlin.dsl.property
 
 open class ConfigExtension(project: Project)
   : ComposerDsl, ComposerConfigurator {
 
   val configs: NamedDomainObjectContainer<ConfiguratorDomainObj> =
-    project.container(ConfiguratorDomainObj::class.java) { name ->
-      ConfiguratorDomainObj(name, project)
-    }
+      project.container(ConfiguratorDomainObj::class.java) { name ->
+        ConfiguratorDomainObj(name, project)
+      }
 
   val variants = mutableListOf<String>()
 
@@ -47,14 +46,17 @@ open class ConfigExtension(project: Project)
   }
 
   override val configuration: Configuration = project.composerConfig()
-  override val shard = project.objects.property<Boolean>()
+
+  override val shard = project.emptyProperty<Boolean>()
+
   override val instrumentationArguments =
-    project.objects.listProperty<Pair<String, String>>()
-  override val verboseOutput = project.objects.property<Boolean>()
+      project.objects.listProperty<Pair<String, String>>()
+
+  override val verboseOutput = project.emptyProperty<Boolean>()
   override val devices = project.objects.listProperty<String>()
-  override val devicePattern = project.objects.property<String>()
-  override val keepOutput = project.objects.property<Boolean>()
-  override val apkInstallTimeout = project.objects.property<Int>()
+  override val devicePattern = project.emptyProperty<String>()
+  override val keepOutput = project.emptyProperty<Boolean>()
+  override val apkInstallTimeout = project.emptyProperty<Int>()
 
   override fun shard(value: Any) {
     shard.eval(value)
@@ -82,6 +84,10 @@ open class ConfigExtension(project: Project)
 
   override fun devices(value: Any) {
     devices.evalAll(value)
+  }
+
+  override fun devices(vararg values: CharSequence) {
+    devices.evalAll(values.toList())
   }
 
   override fun devicePattern(value: Any) {

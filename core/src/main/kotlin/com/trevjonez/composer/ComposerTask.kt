@@ -45,34 +45,26 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
   }
 
   @get:[Optional Input]
-  override val shard = project.objects.property<Boolean>().apply {
-    set(true)
-  }
+  override val shard = project.emptyProperty<Boolean>()
 
   @get:[Optional Input]
   override val instrumentationArguments =
       project.objects.listProperty<Pair<String, String>>()
 
   @get:[Optional Input]
-  override val verboseOutput = project.objects.property<Boolean>().apply {
-    set(false)
-  }
+  override val verboseOutput = project.emptyProperty<Boolean>()
 
   @get:[Optional Input]
   override val devices = project.objects.listProperty<String>()
 
   @get:[Optional Input]
-  override val devicePattern = project.objects.property<String>()
+  override val devicePattern = project.emptyProperty<String>()
 
   @get:[Optional Input]
-  override val keepOutput = project.objects.property<Boolean>().apply {
-    set(false)
-  }
+  override val keepOutput = project.emptyProperty<Boolean>()
 
   @get:[Optional Input]
-  override val apkInstallTimeout = project.objects.property<Int>().apply {
-    set(120)
-  }
+  override val apkInstallTimeout = project.emptyProperty<Int>()
 
   override fun exec() {
     val outputDir = outputDir.get().asFile
@@ -93,8 +85,13 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
         devices.orEmpty,
         devicePattern.orNull,
         keepOutput.orNull,
-        apkInstallTimeout.getOrElse(120))
-    args = config.toCliArgs()
+        apkInstallTimeout.orNull)
+
+    args = config.toCliArgs().also {
+      project.logger.info(
+          it.joinToString(prefix = "ComposerTask: args: =`", postfix = "`")
+      )
+    }
     main = MAIN_CLASS
     classpath = configuration
 
@@ -149,6 +146,10 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
 
   override fun devices(value: Any) {
     devices.evalAll(value)
+  }
+
+  override fun devices(vararg values: CharSequence) {
+    devices.evalAll(values.toList())
   }
 
   override fun devicePattern(value: Any) {

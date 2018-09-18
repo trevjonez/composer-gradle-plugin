@@ -104,13 +104,42 @@ class ComposerPluginTest {
     }
 
     val result = gradleRunner(projectDir,
-                              "-b", "build-custom-task.gradle", "customTask")
+                              "-b", "build-custom-task.gradle",
+                              "customTask")
         .buildAndFail()
 
     assertThat(result.output).contains("Successfully installed apk",
                                        "Starting tests",
                                        "Test run finished, 0 passed, 0 failed",
                                        "Error: 0 tests were run.")
+  }
+
+
+  /**
+   * Run with at least one device/emulator connected
+   *
+   * This test is non exhaustive.
+   * Might be nice to do a parameterized setup to ensure it collects things correctly?
+   *
+   */
+  @Test
+  fun `plugin cascades and collects dsl inputs`() {
+    val projectDir = testProjectDir.newFolder("basicApp").apply {
+      andApp.copyRecursively(this, true)
+      writeLocalProps()
+    }
+
+    val result = gradleRunner(projectDir,
+                              "-b", "build-cascade-dsl.gradle",
+                              "testDebugComposer")
+        .buildAndFail()
+
+    assertThat(result.output).contains(
+        "--instrumentation-arguments, screenshotsDisabled, false, screenshotsEngine, uiAutomator, --verbose-output, true, --keep-output-on-exit, --install-timeout, 10",
+        "Successfully installed apk",
+        "Starting tests",
+        "Test run finished, 0 passed, 0 failed",
+        "Error: 0 tests were run.")
   }
 
   private val environmentVariable: ReadOnlyProperty<Any, String>

@@ -30,14 +30,14 @@ open class ConfiguratorDomainObj(val name: String, val project: Project) :
   override val outputDir = project.layout.directoryProperty()
 
   override val configuration: Configuration = project.composerConfig()
-  override val shard = project.objects.property<Boolean>()
+  override val shard = project.emptyProperty<Boolean>()
   override val instrumentationArguments =
     project.objects.listProperty<Pair<String, String>>()
-  override val verboseOutput = project.objects.property<Boolean>()
+  override val verboseOutput = project.emptyProperty<Boolean>()
   override val devices = project.objects.listProperty<String>()
-  override val devicePattern = project.objects.property<String>()
-  override val keepOutput = project.objects.property<Boolean>()
-  override val apkInstallTimeout = project.objects.property<Int>()
+  override val devicePattern = project.emptyProperty<String>()
+  override val keepOutput = project.emptyProperty<Boolean>()
+  override val apkInstallTimeout = project.emptyProperty<Int>()
 
   override fun apk(path: Any) {
     apk.set(project.file(path))
@@ -77,6 +77,10 @@ open class ConfiguratorDomainObj(val name: String, val project: Project) :
 
   override fun devices(value: Any) {
     devices.evalAll(value)
+  }
+
+  override fun devices(vararg values: CharSequence) {
+    devices.evalAll(values.toList())
   }
 
   override fun devicePattern(value: Any) {

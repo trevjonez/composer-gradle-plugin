@@ -15,38 +15,57 @@
  */
 
 plugins {
-    kotlin("jvm")
-    `maven-publish`
-    `kotlin-dsl`
+  kotlin("jvm")
+  `maven-publish`
+  `kotlin-dsl`
 }
 
 val classpathManifest = tasks.register("createClasspathManifest") {
-    val outputDir = file("$buildDir/$name")
+  val outputDir = file("$buildDir/$name")
 
-    val runtimeClasspath = sourceSets.getByName("main").runtimeClasspath
-    inputs.files(runtimeClasspath)
-    outputs.dir(outputDir)
+  val runtimeClasspath = sourceSets.getByName("main").runtimeClasspath
+  inputs.files(runtimeClasspath)
+  outputs.dir(outputDir)
 
-    doLast {
-        outputDir.mkdirs()
-        file("$outputDir/classpath-manifest.txt")
-                .writeText(runtimeClasspath.joinToString(separator = "\n"))
-    }
+  doLast {
+    outputDir.mkdirs()
+    file("$outputDir/classpath-manifest.txt")
+        .writeText(runtimeClasspath.joinToString(separator = "\n"))
+  }
 }
 
 dependencies {
-    compile(gradleApi())
+  compile(gradleApi())
 
-    testCompile(gradleTestKit())
-    testCompile("junit:junit:4.12")
-    testCompile("org.assertj:assertj-core:3.5.2")
-    testCompile("commons-io:commons-io:2.5")
+  testCompile(gradleTestKit())
+  testCompile("junit:junit:4.12")
+  testCompile("org.assertj:assertj-core:3.5.2")
+  testCompile("commons-io:commons-io:2.5")
 
-    testRuntime(files(classpathManifest))
+  testRuntime(files(classpathManifest))
 }
 
-tasks.named("test").configure {
-    this as Test
+val sourcesJar = tasks.register<Jar>("sourcesJar") {
+  classifier = "sources"
+  from(sourceSets["main"].allSource)
+  dependsOn(sourceSets["main"].classesTaskName)
+}
 
-    systemProperty("buildDir", buildDir.absolutePath)
+publishing {
+  publications {
+    register<MavenPublication>("core") {
+      from(project.components.getByName("java"))
+      artifact(sourcesJar.get())
+      pom {
+        inceptionYear.set("2017")
+        licenses {
+          license {
+            name.set("The Apache Software License, Version 2.0")
+            url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+            distribution.set("repo")
+          }
+        }
+      }
+    }
+  }
 }

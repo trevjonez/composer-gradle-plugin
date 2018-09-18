@@ -47,3 +47,15 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
 }
+
+composer {
+    verboseOutput true
+    instrumentationArgument('screenshotsDisabled', 'false')
+    apkInstallTimeout 10
+    configs {
+        debug {
+            instrumentationArgument('screenshotsEngine', 'uiAutomator')
+            keepOutput true
+        }
+    }
+}
