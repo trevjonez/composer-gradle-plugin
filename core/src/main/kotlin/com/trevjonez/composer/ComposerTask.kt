@@ -17,41 +17,46 @@
 package com.trevjonez.composer
 
 import com.trevjonez.composer.ComposerConfig.MAIN_CLASS
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.kotlin.dsl.listProperty
 import org.gradle.kotlin.dsl.property
 import java.io.File
 
 //TODO: use the worker api not JavaExec
+@CacheableTask
 open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
 
   override val configuration = project.composerConfig()
 
-  @get:[Optional Input]
-  val globalConfig = project.objects.property<ComposerDsl>()
-
-  @get:[Optional Input]
-  val externalDslConfig = project.objects.property<ComposerDsl>()
-
+  @InputFile
   override val testApk = this.newInputFile()
 
+  @InputFile
   override val apk = this.newInputFile().apply { set(testApk) }
 
+  @OutputDirectory
   override val outputDir = this.newOutputDirectory().apply {
     set(project.file(ComposerConfig.DEFAULT_OUTPUT_DIR))
   }
 
   @get:[Optional Input]
-  override val shard = project.objects.property<Boolean>()
+  override val shard = project.objects.property<Boolean>().apply {
+    set(true)
+  }
 
   @get:[Optional Input]
   override val instrumentationArguments =
-    project.objects.listProperty<Pair<String, String>>()
+      project.objects.listProperty<Pair<String, String>>()
 
   @get:[Optional Input]
-  override val verboseOutput = project.objects.property<Boolean>()
+  override val verboseOutput = project.objects.property<Boolean>().apply {
+    set(false)
+  }
 
   @get:[Optional Input]
   override val devices = project.objects.listProperty<String>()
@@ -60,10 +65,14 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
   override val devicePattern = project.objects.property<String>()
 
   @get:[Optional Input]
-  override val keepOutput = project.objects.property<Boolean>()
+  override val keepOutput = project.objects.property<Boolean>().apply {
+    set(false)
+  }
 
   @get:[Optional Input]
-  override val apkInstallTimeout = project.objects.property<Int>()
+  override val apkInstallTimeout = project.objects.property<Int>().apply {
+    set(120)
+  }
 
   override fun exec() {
     val outputDir = outputDir.get().asFile
@@ -84,7 +93,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
         devices.orEmpty,
         devicePattern.orNull,
         keepOutput.orNull,
-        apkInstallTimeout.orNull)
+        apkInstallTimeout.getOrElse(120))
     args = config.toCliArgs()
     main = MAIN_CLASS
     classpath = configuration

@@ -27,6 +27,8 @@ import org.gradle.api.DomainObjectCollection
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
+import org.gradle.api.file.RegularFile
+import org.gradle.api.provider.Provider
 import java.io.File
 
 abstract class ComposerBasePlugin<T> : Plugin<Project>
@@ -34,6 +36,12 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
 
   abstract val sdkDir: File
   abstract val testableVariants: DomainObjectCollection<T>
+
+  abstract fun T.getApk(configurator: ConfiguratorDomainObj?,
+      task: ComposerTask): Provider<RegularFile>
+
+  abstract fun T.getTestApk(configurator: ConfiguratorDomainObj?,
+      task: ComposerTask): Provider<RegularFile>
 
   lateinit var project: Project
   lateinit var config: ConfigExtension
@@ -53,50 +61,15 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
         if (testVariant == null) return@all
 
         val configurator: ConfiguratorDomainObj? =
-          config.configs.findByName(name)
+            config.configs.findByName(name)
 
         project.tasks.register(
             "test${name.capitalize()}Composer", ComposerTask::class.java
         ) {
           description = "Run composer for $name variant"
-          apk.set(getApk(configurator).singleFile)
-          testApk.set(getTestApk(configurator).singleFile)
+          apk.set(getApk(configurator, this))
+          testApk.set(getTestApk(configurator, this))
         }
-      }
-    }
-  }
-
-  private fun T.getApk(configurator: ConfiguratorDomainObj?): FileCollection {
-    return if (configurator != null && configurator.apk.isPresent) {
-      project.files(configurator.apk)
-    } else {
-      apkForVariant(this)
-    }
-  }
-
-  private fun T.getTestApk(configurator: ConfiguratorDomainObj?): FileCollection {
-    return if (configurator != null && configurator.testApk.isPresent) {
-      project.files(configurator.testApk)
-    } else {
-      testApkForVariant(this)
-    }
-  }
-
-  private fun apkForVariant(variant: T): FileCollection {
-    return project.files().apply {
-      variant.outputs.all {
-        builtBy(assemble)
-        from(outputFile)
-      }
-    }
-  }
-
-  private fun testApkForVariant(variant: T): FileCollection {
-    return project.files().apply {
-      builtBy(variant.assemble)
-      variant.testVariant.outputs.all {
-        builtBy(assemble)
-        from(outputFile)
       }
     }
   }

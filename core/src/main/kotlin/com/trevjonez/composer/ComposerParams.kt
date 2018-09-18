@@ -68,17 +68,17 @@ data class ComposerParams(
                     } ?: params
                 }
                 .let { params ->
-                    devicePattern?.let {
+                    devicePattern?.takeIf { it.isNotBlank() }?.let {
                         params + arrayOf("--device-pattern", it)
                     } ?: params
                 }
                 .let { params ->
-                    keepOutput?.let {
+                    keepOutput?.takeIf { it }?.let {
                         params + arrayOf("--keep-output-on-exit")
                     } ?: params
                 }
                 .let { params ->
-                    apkInstallTimeout?.let {
+                    apkInstallTimeout?.takeIf { it > 0 }?.let {
                         params + arrayOf("--install-timeout", "$it")
                     } ?: params
                 }

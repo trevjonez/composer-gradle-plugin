@@ -28,6 +28,8 @@ dependencies {
 tasks.named("test").configure {
     this as Test
     systemProperty("buildDir", buildDir.absolutePath)
+    systemProperty("andApp", File(rootProject.projectDir, "and-app").absolutePath)
+    systemProperty("andLib", File(rootProject.projectDir, "and-lib").absolutePath)
     systemProperty("org.gradle.testkit.debug", false)
 
     inputs.files("gradle.properties")
