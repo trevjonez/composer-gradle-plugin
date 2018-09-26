@@ -68,6 +68,8 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
         ) {
           description = "Run composer for $name variant"
 
+          environment("ANDROID_HOME", sdkDir.absolutePath)
+
           val variantConfigurator = globalConfig.configs.findByName(this@all.name)
           if (variantConfigurator == null)
             project.logger.info("ComposerBasePlugin: Variant configurator for `${this@all.name}` is null")

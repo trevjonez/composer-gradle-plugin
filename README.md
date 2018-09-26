@@ -13,7 +13,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.8.0'
+        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.8.1'
     }
 }
 ```
@@ -149,8 +149,8 @@ In most cases using the latest version of gradle is safe but the minimum support
 version of gradle is 4.0 or whatever minimum is mandated by the android gradle plugin. 
 
 Composer plugin version | Gradle version | Android plugin version
------ | ---- | -----
-0.8.0 | 4.10  | 3.1.4
+| ------ | ------ | ------ |
+| 0.8.1  | 4.10   | 3.2.0  |
 
 ## License
 
