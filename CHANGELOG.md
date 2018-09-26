@@ -1,6 +1,9 @@
 # Changelist
 Items listed here may not be exhaustive, if you are seeing issues, check the git commits for more specific change information &| open an issue.
 
+## 0.8.1
+Regression fix for ANDROID_HOME being set on ComposerTask instances that are created via plugin.
+
 ## 0.8.0
 Large implementation overhaul:
 - User facing plugin delegates to AGP specific plugin.
