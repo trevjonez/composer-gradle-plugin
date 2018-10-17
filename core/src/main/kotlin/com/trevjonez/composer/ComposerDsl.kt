@@ -24,6 +24,13 @@ import org.gradle.api.file.RegularFileProperty
  */
 interface ComposerDsl {
   /**
+   * Default false
+   *
+   * @param value evaluated as per [org.gradle.api.provider.Property.set].
+   */
+  fun withOrchestrator(value: Any)
+
+  /**
    * Defaults to true
    *
    * @param value evaluated as per [org.gradle.api.provider.Property.set].

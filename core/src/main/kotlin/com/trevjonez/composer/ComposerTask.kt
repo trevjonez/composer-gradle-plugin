@@ -24,7 +24,6 @@ import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.kotlin.dsl.listProperty
-import org.gradle.kotlin.dsl.property
 import java.io.File
 
 //TODO: use the worker api not JavaExec
@@ -43,6 +42,9 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
   override val outputDir = this.newOutputDirectory().apply {
     set(project.file(ComposerConfig.DEFAULT_OUTPUT_DIR))
   }
+
+  @get:[Optional Input]
+  override val withOrchestrator = project.emptyProperty<Boolean>()
 
   @get:[Optional Input]
   override val shard = project.emptyProperty<Boolean>()
@@ -78,6 +80,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
     val config = ComposerParams(
         apk.asFile.get(),
         testApk.asFile.get(),
+        withOrchestrator.orNull,
         shard.orNull,
         outputDir,
         instrumentationArguments.orEmpty,
@@ -118,6 +121,10 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
 
   override fun outputDirectory(path: Any) {
     outputDir.set(project.file(path))
+  }
+
+  override fun withOrchestrator(value: Any) {
+    withOrchestrator.eval(value)
   }
 
   override fun shard(value: Any) {
