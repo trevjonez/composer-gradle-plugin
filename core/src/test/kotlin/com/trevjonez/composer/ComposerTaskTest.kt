@@ -200,6 +200,19 @@ class ComposerTaskTest {
   }
 
   @Test
+  fun `Task DSL withOrchestrator`() {
+    //language=Groovy
+    makeBuildFile(taskDsl = """
+      $defaultTaskDsl
+      withOrchestrator(true)
+    """.trimIndent()).writeTo(buildFile)
+
+    val runResult = buildRunner().buildAndFail()
+
+    assertThat(runResult.output).contains(dumpFailedError)
+  }
+
+  @Test
   fun `Task DSL instArg`() {
     //language=Groovy
     makeBuildFile(taskDsl = """
