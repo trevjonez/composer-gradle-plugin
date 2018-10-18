@@ -16,13 +16,14 @@
 
 package com.trevjonez.composer
 
+import org.gradle.api.file.FileCollection
 import java.io.File
 
 data class ComposerParams(
         val apk: File,
         val testApk: File,
         val withOrchestrator: Boolean?,
-        val orchestratorApks: List<File>,
+        val extraApks: FileCollection,
         val shard: Boolean?,
         val outputDirectory: File?,
         val instrumentationArguments: List<Pair<String, String>>,
@@ -40,14 +41,19 @@ data class ComposerParams(
     }
 
     fun toCliArgs(): List<String> {
-        return listOf(
+      return listOf(
                 "--apk", apk.absolutePath,
                 "--test-apk", testApk.absolutePath)
                 .let { params ->
                   withOrchestrator?.takeIf { it }?.let {
-                    val apks = orchestratorApks.map { file -> file.absolutePath }.toTypedArray()
-                    params + arrayOf("--with-orchestrator", "--orchestrator-apks", *apks)
+                    params + arrayOf("--with-orchestrator")
                   } ?: params
+                }
+                .let { params ->
+                    extraApks.takeIf { !it.isEmpty }?.let {
+                      val apks = extraApks.map { file -> file.absolutePath }.toTypedArray()
+                      params + arrayOf("--orchestrator-apks", *apks)
+                    } ?: params
                 }
                 .let { params ->
                     shard?.let {

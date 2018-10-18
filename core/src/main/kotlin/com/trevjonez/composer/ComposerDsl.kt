@@ -16,6 +16,7 @@
 
 package com.trevjonez.composer
 
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 
@@ -127,6 +128,7 @@ interface ComposerTaskDsl : ComposerDsl {
   val testApk: RegularFileProperty
   val apk: RegularFileProperty
   val outputDir: DirectoryProperty
+  val extraApks: ConfigurableFileCollection
 
   /**
    * @param path evaluated as per [org.gradle.api.Project.file].
@@ -142,4 +144,6 @@ interface ComposerTaskDsl : ComposerDsl {
    * @param path evaluated as per [org.gradle.api.Project.file].
    */
   fun outputDirectory(path: Any)
+
+  fun extraApks(paths: Any)
 }
