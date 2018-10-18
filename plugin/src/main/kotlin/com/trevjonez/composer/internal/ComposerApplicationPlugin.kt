@@ -33,7 +33,7 @@ class ComposerApplicationPlugin : ComposerBasePlugin<ApplicationVariant>() {
   }
 
   private val androidTestUtil by lazy(LazyThreadSafetyMode.NONE) {
-    project.configurations.findByName(androidTestUtil)
+    project.configurations.findByName("androidTestUtil")
   }
 
   override val sdkDir: File
