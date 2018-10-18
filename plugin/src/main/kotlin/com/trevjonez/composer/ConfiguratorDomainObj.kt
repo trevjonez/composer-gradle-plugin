@@ -19,7 +19,6 @@ package com.trevjonez.composer
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.kotlin.dsl.listProperty
-import org.gradle.kotlin.dsl.property
 
 open class ConfiguratorDomainObj(val name: String, val project: Project) :
     ComposerTaskDsl,
@@ -30,6 +29,7 @@ open class ConfiguratorDomainObj(val name: String, val project: Project) :
   override val outputDir = project.layout.directoryProperty()
 
   override val configuration: Configuration = project.composerConfig()
+  override val withOrchestrator = project.emptyProperty<Boolean>()
   override val shard = project.emptyProperty<Boolean>()
   override val instrumentationArguments =
     project.objects.listProperty<Pair<String, String>>()
@@ -49,6 +49,10 @@ open class ConfiguratorDomainObj(val name: String, val project: Project) :
 
   override fun outputDirectory(path: Any) {
     outputDir.set(project.file(path))
+  }
+
+  override fun withOrchestrator(value: Any) {
+    withOrchestrator.eval(value)
   }
 
   override fun shard(value: Any) {

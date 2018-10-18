@@ -43,7 +43,8 @@ composer {
   devices(['emulator-5558', 'emulator-5559'])
       
   //These dsl functions are overwritten by variant specific config if any exists
-  shard false 
+  withOrchestrator true
+  shard false
   verboseOutput false
   keepOutput true
   devicePattern 'somePattern'
@@ -55,6 +56,7 @@ composer {
       apk "build/outputs/apk/debug/example-debug.apk" //optional override, string paths are evaluated as per {@link org.gradle.api.Project#file(Object)}.
       testApk = new File(buildDir, "outputs/apk/androidTest/debug/example-debug-androidTest.apk") //optional override
       outputDirectory 'artifacts/composer-output' //optional override. default 'build/reports/composer/redDebug'
+      withOrchestrator false // optional, default false
       shard true //optional. default true
       instrumentationArgument('key1', 'value1') //optional, additive
       instrumentationArgument('key2', 'value2')
@@ -78,6 +80,7 @@ Manual task creation looks something like this:
 task customTaskName(type: ComposerTask) {
   apk "build/outputs/apk/example-debug.apk" //required
   testApk "build/outputs/apk/example-debug-androidTest.apk" //required
+  withOrchestrator true // optional
   shard true //optional
   outputDirectory 'artifacts/composer-output' //optional
   instrumentationArgument('key1', 'value1') //optional
