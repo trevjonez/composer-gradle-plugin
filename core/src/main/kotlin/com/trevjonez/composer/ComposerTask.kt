@@ -77,10 +77,14 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
       }
     }
 
+    val apks: List<File> = project.configurations.findByName("androidTestUtil")?.resolvedConfiguration?.files?.toList()
+        ?: emptyList()
+
     val config = ComposerParams(
         apk.asFile.get(),
         testApk.asFile.get(),
         withOrchestrator.orNull,
+        apks,
         shard.orNull,
         outputDir,
         instrumentationArguments.orEmpty,

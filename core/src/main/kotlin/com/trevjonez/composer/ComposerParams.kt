@@ -22,6 +22,7 @@ data class ComposerParams(
         val apk: File,
         val testApk: File,
         val withOrchestrator: Boolean?,
+        val orchestratorApks: List<File>,
         val shard: Boolean?,
         val outputDirectory: File?,
         val instrumentationArguments: List<Pair<String, String>>,
@@ -44,7 +45,8 @@ data class ComposerParams(
                 "--test-apk", testApk.absolutePath)
                 .let { params ->
                   withOrchestrator?.takeIf { it }?.let {
-                    params + arrayOf("--with-orchestrator")
+                    val apks = orchestratorApks.map { file -> file.absolutePath }.toTypedArray()
+                    params + arrayOf("--with-orchestrator", "--orchestrator-apks", *apks)
                   } ?: params
                 }
                 .let { params ->
