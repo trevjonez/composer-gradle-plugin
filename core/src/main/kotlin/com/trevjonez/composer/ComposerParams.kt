@@ -21,6 +21,7 @@ import java.io.File
 data class ComposerParams(
         val apk: File,
         val testApk: File,
+        val withOrchestrator: Boolean?,
         val shard: Boolean?,
         val outputDirectory: File?,
         val instrumentationArguments: List<Pair<String, String>>,
@@ -41,6 +42,11 @@ data class ComposerParams(
         return listOf(
                 "--apk", apk.absolutePath,
                 "--test-apk", testApk.absolutePath)
+                .let { params ->
+                  withOrchestrator?.takeIf { it }?.let {
+                    params + arrayOf("--with-orchestrator")
+                  } ?: params
+                }
                 .let { params ->
                     shard?.let {
                         params + arrayOf("--shard", "$it")

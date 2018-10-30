@@ -47,6 +47,8 @@ open class ConfigExtension(project: Project)
 
   override val configuration: Configuration = project.composerConfig()
 
+  override val withOrchestrator = project.emptyProperty<Boolean>()
+
   override val shard = project.emptyProperty<Boolean>()
 
   override val instrumentationArguments =
@@ -57,6 +59,10 @@ open class ConfigExtension(project: Project)
   override val devicePattern = project.emptyProperty<String>()
   override val keepOutput = project.emptyProperty<Boolean>()
   override val apkInstallTimeout = project.emptyProperty<Int>()
+
+  override fun withOrchestrator(value: Any) {
+    withOrchestrator.eval(value)
+  }
 
   override fun shard(value: Any) {
     shard.eval(value)

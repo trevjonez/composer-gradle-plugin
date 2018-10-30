@@ -110,6 +110,16 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
       composerTask: ComposerTask,
       variantConfigurator: ConfiguratorDomainObj?
   ) {
+    if (globalConfig.withOrchestrator.isPresent) {
+      logDslSelection("withOrchestrator", "global")
+      composerTask.withOrchestrator(globalConfig.withOrchestrator)
+    }
+
+    if (variantConfigurator?.withOrchestrator?.isPresent == true) {
+      logDslSelection("withOrchestrator", "variant")
+      composerTask.withOrchestrator(variantConfigurator.withOrchestrator)
+    }
+
     if (globalConfig.shard.isPresent) {
       logDslSelection("shard", "global")
       composerTask.shard(globalConfig.shard)
