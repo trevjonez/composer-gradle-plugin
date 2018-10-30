@@ -17,11 +17,10 @@
 package com.trevjonez.composer.internal
 
 import com.android.build.gradle.LibraryExtension
-import com.android.build.gradle.api.ApplicationVariant
 import com.android.build.gradle.api.LibraryVariant
 import com.trevjonez.composer.ComposerTask
 import org.gradle.api.DomainObjectCollection
-import org.gradle.api.file.Directory
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import java.io.File
@@ -31,6 +30,10 @@ class ComposerLibraryPlugin : ComposerBasePlugin<LibraryVariant>() {
     requireNotNull(project.extensions.findByName("android") as? LibraryExtension) {
       "Failed to find android library extension"
     }
+  }
+
+  private val androidTestUtil by lazy(LazyThreadSafetyMode.NONE) {
+    project.configurations.findByName("androidTestUtil")
   }
 
   override val sdkDir: File
@@ -49,4 +52,9 @@ class ComposerLibraryPlugin : ComposerBasePlugin<LibraryVariant>() {
       testVariant.outputs.single().outputFile
     })
   }
+
+  override val extraApks: ConfigurableFileCollection
+    get() = project.layout.configurableFiles(project.provider{
+      androidTestUtil?.resolvedConfiguration?.files?.toList() ?: emptyList()
+    })
 }

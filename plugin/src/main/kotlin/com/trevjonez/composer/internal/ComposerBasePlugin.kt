@@ -25,6 +25,7 @@ import com.trevjonez.composer.composerConfig
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
@@ -42,6 +43,8 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
   open fun T.getOutputDir(task: ComposerTask): Provider<Directory> {
     return project.layout.buildDirectory.dir("reports/composer/$dirName")
   }
+
+  abstract val extraApks: ConfigurableFileCollection
 
   lateinit var project: Project
   lateinit var globalConfig: ConfigExtension
@@ -100,6 +103,11 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
                                    ?.takeIf { it.isPresent }
                                    ?.also { composerTask.dependsOn(it) }
                                ?: getOutputDir(composerTask))
+
+    composerTask.extraApks.setFrom(variantConfigurator?.extraApks
+        ?.takeUnless{ it.isEmpty }
+        ?.also { composerTask.dependsOn(it) }
+        ?: extraApks)
   }
 
   fun logDslSelection(propertyName: String, source: String) {

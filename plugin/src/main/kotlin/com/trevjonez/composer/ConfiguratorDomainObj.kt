@@ -27,6 +27,7 @@ open class ConfiguratorDomainObj(val name: String, val project: Project) :
   override val testApk = project.layout.fileProperty()
   override val apk = project.layout.fileProperty()
   override val outputDir = project.layout.directoryProperty()
+  override val extraApks = project.layout.configurableFiles()
 
   override val configuration: Configuration = project.composerConfig()
   override val withOrchestrator = project.emptyProperty<Boolean>()
@@ -49,6 +50,10 @@ open class ConfiguratorDomainObj(val name: String, val project: Project) :
 
   override fun outputDirectory(path: Any) {
     outputDir.set(project.file(path))
+  }
+
+  override fun extraApks(paths: Any) {
+    extraApks.setFrom(paths)
   }
 
   override fun withOrchestrator(value: Any) {

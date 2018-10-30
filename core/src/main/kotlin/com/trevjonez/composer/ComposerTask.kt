@@ -17,9 +17,12 @@
 package com.trevjonez.composer
 
 import com.trevjonez.composer.ComposerConfig.MAIN_CLASS
+import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.internal.file.TaskFileVarFactory
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
@@ -68,6 +71,9 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
   @get:[Optional Input]
   override val apkInstallTimeout = project.emptyProperty<Int>()
 
+  @InputFiles
+  override val extraApks = newInputFiles()
+
   override fun exec() {
     val outputDir = outputDir.get().asFile
 
@@ -81,6 +87,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
         apk.asFile.get(),
         testApk.asFile.get(),
         withOrchestrator.orNull,
+        extraApks,
         shard.orNull,
         outputDir,
         instrumentationArguments.orEmpty,
@@ -117,6 +124,10 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
 
   override fun testApk(path: Any) {
     testApk.set(project.file(path))
+  }
+
+  override fun extraApks(paths: Any) {
+    extraApks.from(paths)
   }
 
   override fun outputDirectory(path: Any) {
@@ -169,5 +180,9 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
 
   override fun apkInstallTimeout(value: Any) {
     apkInstallTimeout.eval(value)
+  }
+
+  internal fun newInputFiles(): ConfigurableFileCollection {
+    return services.get(TaskFileVarFactory::class.java).newInputFileCollection(this)
   }
 }
