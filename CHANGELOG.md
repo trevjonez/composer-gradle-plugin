@@ -1,6 +1,12 @@
 # Changelist
 Items listed here may not be exhaustive, if you are seeing issues, check the git commits for more specific change information &| open an issue.
 
+## 0.9.0
+Support Orchestrator
+ - update to Composer 0.5.0
+ - add withOrchestrator
+ - install APKs declared on AndroidTestUtils
+
 ## 0.8.1
 Regression fix for ANDROID_HOME being set on ComposerTask instances that are created via plugin.
 

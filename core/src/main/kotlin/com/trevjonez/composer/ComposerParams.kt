@@ -52,7 +52,7 @@ data class ComposerParams(
                 .let { params ->
                     extraApks.takeIf { !it.isEmpty }?.let {
                       val apks = extraApks.map { file -> file.absolutePath }.toTypedArray()
-                      params + arrayOf("--orchestrator-apks", *apks)
+                      params + arrayOf("--extra-apks", *apks)
                     } ?: params
                 }
                 .let { params ->
