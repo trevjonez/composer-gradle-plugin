@@ -127,6 +127,15 @@ composer {
 }
 ```
 
+When you use it with Orchestrator you may want to enable clearPackageData, you can do it adding an 
+instrumentationArgument like this: 
+```groovy
+composer {
+  withOrchestrator true
+  instrumentationArgument("clearPackageData","true")
+}
+```
+
 As always I recommend you read the wealth of information available on [d.android.com](https://developer.android.com/).
 
 Or specifically the [documentation for `InstrumentationTestRunner`](https://developer.android.com/reference/android/test/InstrumentationTestRunner)    
