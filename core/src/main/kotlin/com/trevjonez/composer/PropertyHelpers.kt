@@ -18,12 +18,9 @@ package com.trevjonez.composer
 
 import org.gradle.api.Project
 import org.gradle.api.internal.provider.DefaultPropertyState
-import org.gradle.api.internal.provider.Providers
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.provider.PropertyState
 import org.gradle.api.provider.Provider
-import org.gradle.kotlin.dsl.property
 
 /**
  * This is using internal API.

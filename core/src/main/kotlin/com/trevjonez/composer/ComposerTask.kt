@@ -36,13 +36,13 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
   override val configuration = project.composerConfig()
 
   @InputFile
-  override val testApk = this.newInputFile()
+  override val testApk = project.objects.fileProperty()
 
   @InputFile
-  override val apk = this.newInputFile().apply { set(testApk) }
+  override val apk = project.objects.fileProperty().apply { set(testApk) }
 
   @OutputDirectory
-  override val outputDir = this.newOutputDirectory().apply {
+  override val outputDir = project.objects.directoryProperty().apply {
     set(project.file(ComposerConfig.DEFAULT_OUTPUT_DIR))
   }
 
@@ -183,6 +183,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
   }
 
   internal fun newInputFiles(): ConfigurableFileCollection {
-    return services.get(TaskFileVarFactory::class.java).newInputFileCollection(this)
+    return services.get(TaskFileVarFactory::class.java)
+        .newInputFileCollection(this)
   }
 }

@@ -24,9 +24,9 @@ open class ConfiguratorDomainObj(val name: String, val project: Project) :
     ComposerTaskDsl,
     ComposerConfigurator {
 
-  override val testApk = project.layout.fileProperty()
-  override val apk = project.layout.fileProperty()
-  override val outputDir = project.layout.directoryProperty()
+  override val testApk = project.objects.fileProperty()
+  override val apk = project.objects.fileProperty()
+  override val outputDir = project.objects.directoryProperty()
   override val extraApks = project.layout.configurableFiles()
 
   override val configuration: Configuration = project.composerConfig()
