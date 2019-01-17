@@ -18,12 +18,9 @@ package com.trevjonez.composer
 
 import org.gradle.api.Project
 import org.gradle.api.internal.provider.DefaultPropertyState
-import org.gradle.api.internal.provider.Providers
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.provider.PropertyState
 import org.gradle.api.provider.Provider
-import org.gradle.kotlin.dsl.property
 
 /**
  * This is using internal API.
@@ -32,11 +29,6 @@ import org.gradle.kotlin.dsl.property
 inline fun <reified T> Project.emptyProperty(): Property<T> {
   return DefaultPropertyState<T>(T::class.java)
 }
-
-inline val <T> ListProperty<T>.orEmpty: List<T>
-  get() {
-    return orNull ?: emptyList()
-  }
 
 inline fun <reified T> Property<T>.eval(value: Any) {
   @Suppress("UNCHECKED_CAST")

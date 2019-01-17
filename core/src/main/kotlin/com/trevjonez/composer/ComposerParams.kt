@@ -68,7 +68,7 @@ data class ComposerParams(
                 .let { params ->
                     instrumentationArguments.takeIf { it.isNotEmpty() }?.let {
                         params + arrayOf("--instrumentation-arguments",
-                                         *it.flatMap { listOf(it.first, it.second) }.toTypedArray())
+                                         *it.flatMap { (key, value) -> listOf(key, value) }.toTypedArray())
                     } ?: params
                 }
                 .let { params ->

@@ -24,18 +24,18 @@ open class ConfiguratorDomainObj(val name: String, val project: Project) :
     ComposerTaskDsl,
     ComposerConfigurator {
 
-  override val testApk = project.layout.fileProperty()
-  override val apk = project.layout.fileProperty()
-  override val outputDir = project.layout.directoryProperty()
+  override val testApk = project.objects.fileProperty()
+  override val apk = project.objects.fileProperty()
+  override val outputDir = project.objects.directoryProperty()
   override val extraApks = project.layout.configurableFiles()
 
   override val configuration: Configuration = project.composerConfig()
   override val withOrchestrator = project.emptyProperty<Boolean>()
   override val shard = project.emptyProperty<Boolean>()
   override val instrumentationArguments =
-    project.objects.listProperty<Pair<String, String>>()
+    project.objects.listProperty<Pair<String, String>>().empty()
   override val verboseOutput = project.emptyProperty<Boolean>()
-  override val devices = project.objects.listProperty<String>()
+  override val devices = project.objects.listProperty<String>().empty()
   override val devicePattern = project.emptyProperty<String>()
   override val keepOutput = project.emptyProperty<Boolean>()
   override val apkInstallTimeout = project.emptyProperty<Int>()

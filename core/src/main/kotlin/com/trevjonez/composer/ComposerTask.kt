@@ -36,13 +36,13 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
   override val configuration = project.composerConfig()
 
   @InputFile
-  override val testApk = this.newInputFile()
+  override val testApk = project.objects.fileProperty()
 
   @InputFile
-  override val apk = this.newInputFile().apply { set(testApk) }
+  override val apk = project.objects.fileProperty().apply { set(testApk) }
 
   @OutputDirectory
-  override val outputDir = this.newOutputDirectory().apply {
+  override val outputDir = project.objects.directoryProperty().apply {
     set(project.file(ComposerConfig.DEFAULT_OUTPUT_DIR))
   }
 
@@ -54,13 +54,13 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
 
   @get:[Optional Input]
   override val instrumentationArguments =
-      project.objects.listProperty<Pair<String, String>>()
+      project.objects.listProperty<Pair<String, String>>().empty()
 
   @get:[Optional Input]
   override val verboseOutput = project.emptyProperty<Boolean>()
 
   @get:[Optional Input]
-  override val devices = project.objects.listProperty<String>()
+  override val devices = project.objects.listProperty<String>().empty()
 
   @get:[Optional Input]
   override val devicePattern = project.emptyProperty<String>()
@@ -90,9 +90,9 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
         extraApks,
         shard.orNull,
         outputDir,
-        instrumentationArguments.orEmpty,
+        instrumentationArguments.getOrElse(emptyList()),
         verboseOutput.orNull,
-        devices.orEmpty,
+        devices.getOrElse(emptyList()),
         devicePattern.orNull,
         keepOutput.orNull,
         apkInstallTimeout.orNull)
@@ -183,6 +183,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
   }
 
   internal fun newInputFiles(): ConfigurableFileCollection {
-    return services.get(TaskFileVarFactory::class.java).newInputFileCollection(this)
+    return services.get(TaskFileVarFactory::class.java)
+        .newInputFileCollection(this)
   }
 }
