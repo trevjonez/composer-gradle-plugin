@@ -54,13 +54,13 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
 
   @get:[Optional Input]
   override val instrumentationArguments =
-      project.objects.listProperty<Pair<String, String>>()
+      project.objects.listProperty<Pair<String, String>>().empty()
 
   @get:[Optional Input]
   override val verboseOutput = project.emptyProperty<Boolean>()
 
   @get:[Optional Input]
-  override val devices = project.objects.listProperty<String>()
+  override val devices = project.objects.listProperty<String>().empty()
 
   @get:[Optional Input]
   override val devicePattern = project.emptyProperty<String>()
@@ -90,9 +90,9 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
         extraApks,
         shard.orNull,
         outputDir,
-        instrumentationArguments.orEmpty,
+        instrumentationArguments.getOrElse(emptyList()),
         verboseOutput.orNull,
-        devices.orEmpty,
+        devices.getOrElse(emptyList()),
         devicePattern.orNull,
         keepOutput.orNull,
         apkInstallTimeout.orNull)

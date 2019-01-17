@@ -16,7 +16,6 @@
 
 package com.trevjonez.composer
 
-import org.apache.commons.io.FileUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Assume
@@ -48,6 +47,7 @@ class ComposerPluginTest {
         .withProjectDir(projectDir)
         .withPluginClasspath()
         .withArguments(argList)
+        .withGradleVersion("5.1")
         .forwardOutput()
   }
 
@@ -135,7 +135,10 @@ class ComposerPluginTest {
         .buildAndFail()
 
     assertThat(result.output).contains(
-        "--instrumentation-arguments, screenshotsDisabled, false, screenshotsEngine, uiAutomator, --verbose-output, true, --keep-output-on-exit, --install-timeout, 10",
+        "--instrumentation-arguments, screenshotsDisabled, false, screenshotsEngine, uiAutomator",
+        "--verbose-output, true",
+        "--keep-output-on-exit",
+        "--install-timeout, 10",
         "Successfully installed apk",
         "Starting tests",
         "Test run finished, 0 passed, 0 failed",

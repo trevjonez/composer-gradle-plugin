@@ -33,9 +33,9 @@ open class ConfiguratorDomainObj(val name: String, val project: Project) :
   override val withOrchestrator = project.emptyProperty<Boolean>()
   override val shard = project.emptyProperty<Boolean>()
   override val instrumentationArguments =
-    project.objects.listProperty<Pair<String, String>>()
+    project.objects.listProperty<Pair<String, String>>().empty()
   override val verboseOutput = project.emptyProperty<Boolean>()
-  override val devices = project.objects.listProperty<String>()
+  override val devices = project.objects.listProperty<String>().empty()
   override val devicePattern = project.emptyProperty<String>()
   override val keepOutput = project.emptyProperty<Boolean>()
   override val apkInstallTimeout = project.emptyProperty<Int>()

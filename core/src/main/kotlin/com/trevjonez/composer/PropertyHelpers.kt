@@ -30,11 +30,6 @@ inline fun <reified T> Project.emptyProperty(): Property<T> {
   return DefaultPropertyState<T>(T::class.java)
 }
 
-inline val <T> ListProperty<T>.orEmpty: List<T>
-  get() {
-    return orNull ?: emptyList()
-  }
-
 inline fun <reified T> Property<T>.eval(value: Any) {
   @Suppress("UNCHECKED_CAST")
   when (value) {
