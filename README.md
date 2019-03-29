@@ -8,7 +8,7 @@ Gradle task type and plugin for running [gojuno/composer](https://github.com/goj
 
 ##### Via Gradle Plugin Portal:
 
-The plugin is available via the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/com.trevjonez.composer) <sup>pending approval</sup>
+The plugin is available via the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/com.trevjonez.composer)
 
 ```groovy
 plugins {
