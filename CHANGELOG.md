@@ -1,6 +1,18 @@
 # Changelist
 Items listed here may not be exhaustive, if you are seeing issues, check the git commits for more specific change information &| open an issue.
 
+## 0.11.0
+Mostly bug fixes and quality of life items.
+
+**BREAKING CHANGE**: plugin id changed from `composer` to `com.trevjonez.composer` in order to be gradle plugin portal compliant.
+ 
+ - update to Composer 0.6.0 (androidx orchestrator support) 0.5 -> 0.6 has cli breaking change so you must be at 0.6 or greater.
+ - possible breaking change: core and plugin modules were merged to plugin to be plugin portal compliant
+ - target latest gradle version: 5.3.1
+ 
+## 0.10.0
+Gradle 5.0 support
+
 ## 0.9.0
 Support Orchestrator
  - update to Composer 0.5.0

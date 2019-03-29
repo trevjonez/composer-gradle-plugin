@@ -6,6 +6,33 @@ Gradle task type and plugin for running [gojuno/composer](https://github.com/goj
 
 ## Installation & Usage
 
+##### Via Gradle Plugin Portal:
+
+The plugin is available via the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/com.trevjonez.composer) <sup>pending approval</sup>
+
+```groovy
+plugins {
+  id "com.trevjonez.composer" version "0.11.0"
+}
+```
+
+or
+
+```groovy
+buildscript {
+  repositories {
+    gradlePluginPortal()
+  }
+  dependencies {
+    classpath "com.trevjonez.composer:plugin:0.11.0"
+  }
+}
+
+apply plugin: "com.trevjonez.composer"
+```
+
+##### Via Jitpack:
+
 In the appropriate `build.gradle` file add the jitpack repository and classpath dependency.
 ```groovy
 buildscript {
@@ -23,7 +50,7 @@ This repo can be consumed in two ways, via a android variant aware plugin or as 
 ##### Plugin Usage
 
 ```groovy
-apply plugin: 'composer'
+apply plugin: 'com.trevjonez.composer'
 ```
 The above should be all you need to get started and will create a task for each testable variant in the project.
 
