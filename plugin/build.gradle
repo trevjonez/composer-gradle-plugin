@@ -1,6 +1,7 @@
 apply plugin: "java-gradle-plugin"
 apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "maven-publish"
+apply plugin: "com.gradle.plugin-publish"
 
 gradlePlugin {
   plugins {
@@ -9,6 +10,12 @@ gradlePlugin {
       implementationClass = "com.trevjonez.composer.ComposerPlugin"
     }
   }
+}
+
+pluginBundle {
+  website = "https://github.com/trevjonez/composer-gradle-plugin"
+  vcsUrl = "git@github.com:trevjonez/composer-gradle-plugin.git"
+  tags = ["android", "composer", "test", "orchestrator", "report"]
 }
 
 dependencies {

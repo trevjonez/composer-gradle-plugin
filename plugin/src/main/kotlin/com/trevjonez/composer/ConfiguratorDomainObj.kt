@@ -27,11 +27,12 @@ open class ConfiguratorDomainObj(val name: String, val project: Project) :
   override val testApk = project.objects.fileProperty()
   override val apk = project.objects.fileProperty()
   override val outputDir = project.objects.directoryProperty()
-  override val extraApks = project.layout.configurableFiles()
+  override val extraApks = project.objects.fileCollection()
 
   override val configuration: Configuration = project.composerConfig()
   override val withOrchestrator = project.emptyProperty<Boolean>()
   override val shard = project.emptyProperty<Boolean>()
+  @Suppress("UNCHECKED_CAST")
   override val instrumentationArguments =
     project.objects.listProperty(Pair::class.java).empty() as ListProperty<Pair<String, String>>
   override val verboseOutput = project.emptyProperty<Boolean>()

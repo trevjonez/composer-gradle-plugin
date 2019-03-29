@@ -21,8 +21,9 @@ buildscript {
     google()
   }
   dependencies {
-    classpath("com.gradle:build-scan-plugin:$GRADLE_SCAN_VERSION")
     classpath("org.gradle.kotlin:plugins:1.2.6")
+    classpath("com.gradle.publish:plugin-publish-plugin:0.10.1")
+    classpath("com.gradle:build-scan-plugin:$GRADLE_SCAN_VERSION")
     classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION")
   }
 }

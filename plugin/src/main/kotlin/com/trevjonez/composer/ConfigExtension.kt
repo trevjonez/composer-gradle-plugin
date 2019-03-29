@@ -51,6 +51,7 @@ open class ConfigExtension(project: Project)
 
   override val shard = project.emptyProperty<Boolean>()
 
+  @Suppress("UNCHECKED_CAST")
   override val instrumentationArguments =
     project.objects.listProperty(Pair::class.java).empty() as ListProperty<Pair<String, String>>
 

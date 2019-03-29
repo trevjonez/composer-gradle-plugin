@@ -52,6 +52,7 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
   @get:[Optional Input]
   override val shard = project.emptyProperty<Boolean>()
 
+  @Suppress("UNCHECKED_CAST")
   @get:[Optional Input]
   override val instrumentationArguments =
       project.objects.listProperty(Pair::class.java).empty() as ListProperty<Pair<String, String>>
