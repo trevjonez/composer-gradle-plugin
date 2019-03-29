@@ -72,7 +72,7 @@ class ComposerTaskTest {
     //language=Groovy
     return """
       plugins {
-        id "composer"
+        id "com.trevjonez.composer"
       }
 
       import com.trevjonez.composer.ComposerTask

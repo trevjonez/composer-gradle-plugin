@@ -6,7 +6,7 @@ apply plugin: "com.gradle.plugin-publish"
 gradlePlugin {
   plugins {
     create("composer") {
-      id = "composer"
+      id = "com.trevjonez.composer"
       implementationClass = "com.trevjonez.composer.ComposerPlugin"
     }
   }
