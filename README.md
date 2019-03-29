@@ -192,7 +192,7 @@ Composer plugin version | Gradle version | Android plugin version
 | 0.10.0  | 5.0, 5.1, 5.1.1    | 3.3.0, 3.4.0-beta01<sup>\*</sup>, 3.5.0-alpha01<sup>\*</sup>  |
 | 0.11.0  | 5.3.1              | 3.3.2, 3.5.0-alpha09<sup>\*</sup>                |
 
-\* Alpha, Beta and RC versions of the android plugin are quicly tested by building against them.
+\* Alpha, Beta and RC versions of the android plugin are quickly tested by building against them.
 This usually means the published composer plugin will work with those version 
 however the lite smoke testing done will not find binary incompatibilities.
 
