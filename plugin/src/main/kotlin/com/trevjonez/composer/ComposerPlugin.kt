@@ -39,8 +39,9 @@ class ComposerPlugin : Plugin<Project> {
     }
 
     project.afterEvaluate {
-      extensions.findByType(ConfigExtension::class.java)
-      ?: missingPlugin<AndroidBasePlugin>(genericExceptionMessage)
+      project.extensions.findByType(ConfigExtension::class.java)
+      ?: project.tasks.find { it is ComposerTask } //check if manually created tasks exist before throwing
+      ?: project.missingPlugin<AndroidBasePlugin>(genericExceptionMessage)
     }
   }
 

@@ -47,14 +47,16 @@ class ComposerLibraryPlugin : ComposerBasePlugin<LibraryVariant>() {
   }
 
   override fun LibraryVariant.getTestApk(task: ComposerTask): Provider<RegularFile> {
-    task.dependsOn(testVariant.assemble)
+    task.dependsOn(testVariant.assembleProvider)
     return project.layout.file(project.provider {
       testVariant.outputs.single().outputFile
     })
   }
 
   override val extraApks: ConfigurableFileCollection
-    get() = project.layout.configurableFiles(project.provider{
-      androidTestUtil?.resolvedConfiguration?.files?.toList() ?: emptyList()
-    })
+    get() = project.objects.fileCollection().also {
+      it.from(project.provider {
+        androidTestUtil?.resolvedConfiguration?.files?.toList() ?: emptyList()
+      })
+    }
 }

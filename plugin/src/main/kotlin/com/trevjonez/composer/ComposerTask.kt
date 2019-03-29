@@ -1,5 +1,5 @@
 /*
- *    Copyright 2017 Trevor Jones
+ *    Copyright 2019 Trevor Jones
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package com.trevjonez.composer
 import com.trevjonez.composer.ComposerConfig.MAIN_CLASS
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.internal.file.TaskFileVarFactory
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
@@ -26,7 +27,6 @@ import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
-import org.gradle.kotlin.dsl.listProperty
 import java.io.File
 
 //TODO: use the worker api not JavaExec
@@ -52,15 +52,17 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
   @get:[Optional Input]
   override val shard = project.emptyProperty<Boolean>()
 
+  @Suppress("UNCHECKED_CAST")
   @get:[Optional Input]
   override val instrumentationArguments =
-      project.objects.listProperty<Pair<String, String>>().empty()
+      project.objects.listProperty(Pair::class.java).empty() as ListProperty<Pair<String, String>>
 
   @get:[Optional Input]
   override val verboseOutput = project.emptyProperty<Boolean>()
 
   @get:[Optional Input]
-  override val devices = project.objects.listProperty<String>().empty()
+  override val devices =
+          project.objects.listProperty<String>(String::class.java).empty()
 
   @get:[Optional Input]
   override val devicePattern = project.emptyProperty<String>()

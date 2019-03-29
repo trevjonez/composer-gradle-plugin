@@ -18,7 +18,7 @@ package com.trevjonez.composer
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
-import org.gradle.kotlin.dsl.listProperty
+import org.gradle.api.provider.ListProperty
 
 open class ConfiguratorDomainObj(val name: String, val project: Project) :
     ComposerTaskDsl,
@@ -27,15 +27,16 @@ open class ConfiguratorDomainObj(val name: String, val project: Project) :
   override val testApk = project.objects.fileProperty()
   override val apk = project.objects.fileProperty()
   override val outputDir = project.objects.directoryProperty()
-  override val extraApks = project.layout.configurableFiles()
+  override val extraApks = project.objects.fileCollection()
 
   override val configuration: Configuration = project.composerConfig()
   override val withOrchestrator = project.emptyProperty<Boolean>()
   override val shard = project.emptyProperty<Boolean>()
+  @Suppress("UNCHECKED_CAST")
   override val instrumentationArguments =
-    project.objects.listProperty<Pair<String, String>>().empty()
+    project.objects.listProperty(Pair::class.java).empty() as ListProperty<Pair<String, String>>
   override val verboseOutput = project.emptyProperty<Boolean>()
-  override val devices = project.objects.listProperty<String>().empty()
+  override val devices = project.objects.listProperty(String::class.java).empty()
   override val devicePattern = project.emptyProperty<String>()
   override val keepOutput = project.emptyProperty<Boolean>()
   override val apkInstallTimeout = project.emptyProperty<Int>()

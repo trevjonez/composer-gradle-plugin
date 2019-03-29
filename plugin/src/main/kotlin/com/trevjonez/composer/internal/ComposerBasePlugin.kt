@@ -59,26 +59,26 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
   }
 
   private fun observeVariants() {
-    testableVariants.all {
-      if (globalConfig.variants.isEmpty() || globalConfig.variants.contains(name)) {
-        if (testVariant == null) {
-          project.logger.info("variant: ${this.name}. has no test variant. skipping composer task registration.")
+    testableVariants.all { testableVariant ->
+      if (globalConfig.variants.isEmpty() || globalConfig.variants.contains(testableVariant.name)) {
+        if (testableVariant.testVariant == null) {
+          project.logger.info("variant: ${testableVariant.name}. has no test variant. skipping composer task registration.")
           return@all
         }
 
         project.tasks.register(
-            "test${name.capitalize()}Composer", ComposerTask::class.java
-        ) {
-          description = "Run composer for $name variant"
+            "test${testableVariant.name.capitalize()}Composer", ComposerTask::class.java
+        ) {task ->
+          task.group = "Composer"
+          task.description = "Run composer for ${testableVariant.name} variant"
+          task.environment("ANDROID_HOME", sdkDir.absolutePath)
 
-          environment("ANDROID_HOME", sdkDir.absolutePath)
-
-          val variantConfigurator = globalConfig.configs.findByName(this@all.name)
+          val variantConfigurator = globalConfig.configs.findByName(testableVariant.name)
           if (variantConfigurator == null)
-            project.logger.info("ComposerBasePlugin: Variant configurator for `${this@all.name}` is null")
+            project.logger.info("ComposerBasePlugin: Variant configurator for `${testableVariant.name}` is null")
 
-          configureTaskDslLevelProperties(this, variantConfigurator)
-          configureGlobalDslLevelProperties(this, variantConfigurator)
+          testableVariant.configureTaskDslLevelProperties(task, variantConfigurator)
+          configureGlobalDslLevelProperties(task, variantConfigurator)
         }
       }
     }

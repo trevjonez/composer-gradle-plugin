@@ -1,5 +1,5 @@
 /*
- *    Copyright 2018 Trevor Jones
+ *    Copyright 2017 Trevor Jones
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,28 +14,18 @@
  *    limitations under the License.
  */
 
-plugins {
-    id "com.android.library"
-    id "com.trevjonez.composer"
-}
+rootProject.name = "composer-gradle-plugin"
+include("plugin")
 
-repositories {
+gradle.allprojects {
+  version = CGP_VERSION
+
+  repositories {
     google()
     jcenter()
+  }
 }
 
-android {
-    compileSdkVersion 28
-    defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
-}
-
-dependencies {
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-}
+enableFeaturePreview("STABLE_PUBLISHING")
+enableFeaturePreview("IMPROVED_POM_SUPPORT")
+enableFeaturePreview("GRADLE_METADATA")
