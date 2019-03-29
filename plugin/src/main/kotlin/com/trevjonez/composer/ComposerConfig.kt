@@ -1,5 +1,5 @@
 /*
- *    Copyright 2018 Trevor Jones
+ *    Copyright 2019 Trevor Jones
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -32,9 +32,9 @@ object ComposerConfig {
 fun Project.composerConfig(): Configuration {
     val defaultComposerArtifact = dependencies.create(ARTIFACT_DEP)
     return configurations.findByName(COMPOSER)
-           ?: configurations.create(COMPOSER) {
-               defaultDependencies {
-                   add(defaultComposerArtifact)
+           ?: configurations.create(COMPOSER) { config ->
+               config.defaultDependencies { depSet ->
+                   depSet.add(defaultComposerArtifact)
                }
            }
 }

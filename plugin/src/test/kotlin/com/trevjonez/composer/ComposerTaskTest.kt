@@ -1,5 +1,5 @@
 /*
- *    Copyright 2017 Trevor Jones
+ *    Copyright 2019 Trevor Jones
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -47,23 +47,9 @@ class ComposerTaskTest {
   @FileName("test.apk")
   private val testApk by testProjectDir.makeFile()
 
-  private val classpathManifest by lazy {
-    javaClass.classLoader.getResource("classpath-manifest.txt")
-        .openStream().use { inStream ->
-          inStream.reader().readLines().map { File(it) }
-        }
-        .joinToString { "\"$it\"" }
-  }
-
   private val defaultConfig by lazy {
     //language=Groovy
     """
-    buildscript {
-      dependencies {
-        classpath(files($classpathManifest))
-      }
-    }
-
     repositories {
       jcenter()
     }
@@ -85,6 +71,10 @@ class ComposerTaskTest {
   ): String {
     //language=Groovy
     return """
+      plugins {
+        id "composer"
+      }
+
       import com.trevjonez.composer.ComposerTask
 
       $buildScriptConfig
@@ -102,14 +92,16 @@ class ComposerTaskTest {
 
   private fun buildRunner(): GradleRunner {
     return GradleRunner.create()
+        .withPluginClasspath()
         .withProjectDir(testProjectDir.root)
         .withArguments("runComposer", "--stacktrace")
+        .withGradleVersion("5.3.1")
         .forwardOutput()
   }
 
   /**
    * The apk is fake so AAPT fails with this error.
-   * It is an indicator that the plugin task invoked composer as expected.
+   * It is an indicator that the plugin task invoked composer
    */
   private val dumpFailedError =
     "ERROR: dump failed because no AndroidManifest.xml found"

@@ -39,7 +39,6 @@ class ComposerPluginTest {
 
   fun gradleRunner(projectDir: File, vararg args: String): GradleRunner {
     val argList = args.toMutableList().apply {
-      add("--info")
       add("--stacktrace")
     }
 
@@ -47,7 +46,7 @@ class ComposerPluginTest {
         .withProjectDir(projectDir)
         .withPluginClasspath()
         .withArguments(argList)
-        .withGradleVersion("5.1")
+        .withGradleVersion("5.3.1")
         .forwardOutput()
   }
 
@@ -72,6 +71,20 @@ class ComposerPluginTest {
                                        "Starting tests",
                                        "Test run finished, 0 passed, 0 failed",
                                        "Error: 0 tests were run.")
+  }
+
+  @Test
+  fun `plugin registered tasks listed in tasks command`() {
+    val projectDir = testProjectDir.newFolder("basicApp_taskList").apply {
+      andApp.copyRecursively(this, true)
+      writeLocalProps()
+    }
+
+    val result = gradleRunner(projectDir, "tasks")
+        .build()
+
+    assertThat(result.output).contains("Composer tasks",
+                                       "testDebugComposer - Run composer for debug variant")
   }
 
   /**
@@ -130,6 +143,7 @@ class ComposerPluginTest {
     }
 
     val result = gradleRunner(projectDir,
+                              "--info",
                               "-b", "build-cascade-dsl.gradle",
                               "testDebugComposer")
         .buildAndFail()

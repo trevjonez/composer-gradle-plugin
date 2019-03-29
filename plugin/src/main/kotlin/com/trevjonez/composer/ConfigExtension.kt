@@ -21,7 +21,7 @@ import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
-import org.gradle.kotlin.dsl.listProperty
+import org.gradle.api.provider.ListProperty
 
 open class ConfigExtension(project: Project)
   : ComposerDsl, ComposerConfigurator {
@@ -52,10 +52,10 @@ open class ConfigExtension(project: Project)
   override val shard = project.emptyProperty<Boolean>()
 
   override val instrumentationArguments =
-      project.objects.listProperty<Pair<String, String>>().empty()
+    project.objects.listProperty(Pair::class.java).empty() as ListProperty<Pair<String, String>>
 
   override val verboseOutput = project.emptyProperty<Boolean>()
-  override val devices = project.objects.listProperty<String>().empty()
+  override val devices = project.objects.listProperty<String>(String::class.java).empty()
   override val devicePattern = project.emptyProperty<String>()
   override val keepOutput = project.emptyProperty<Boolean>()
   override val apkInstallTimeout = project.emptyProperty<Int>()

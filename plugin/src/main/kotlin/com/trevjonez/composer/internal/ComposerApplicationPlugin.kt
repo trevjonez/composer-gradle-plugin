@@ -43,21 +43,23 @@ class ComposerApplicationPlugin : ComposerBasePlugin<ApplicationVariant>() {
     get() = androidExtension.applicationVariants
 
   override fun ApplicationVariant.getApk(task: ComposerTask): Provider<RegularFile> {
-    task.dependsOn(assemble)
+    task.dependsOn(assembleProvider)
     return project.layout.file(project.provider {
       outputs.single().outputFile
     })
   }
 
   override fun ApplicationVariant.getTestApk(task: ComposerTask): Provider<RegularFile> {
-    task.dependsOn(testVariant.assemble)
+    task.dependsOn(testVariant.assembleProvider)
     return project.layout.file(project.provider {
       testVariant.outputs.single().outputFile
     })
   }
 
   override val extraApks: ConfigurableFileCollection
-   get() = project.layout.configurableFiles(project.provider{
-     androidTestUtil?.resolvedConfiguration?.files?.toList() ?: emptyList()
-   })
+    get() = project.objects.fileCollection().also {
+      it.from(project.provider {
+        androidTestUtil?.resolvedConfiguration?.files?.toList() ?: emptyList()
+      })
+    }
 }

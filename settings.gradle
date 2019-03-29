@@ -1,5 +1,5 @@
 /*
- *    Copyright 2018 Trevor Jones
+ *    Copyright 2017 Trevor Jones
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,10 +14,17 @@
  *    limitations under the License.
  */
 
-buildscript {
-    repositories {
-        gradlePluginPortal()
-        jcenter()
-        google()
-    }
+rootProject.name = "composer-gradle-plugin"
+include("plugin")
+
+gradle.allprojects {
+  version = CGP_VERSION
+
+  repositories {
+    google()
+    jcenter()
+  }
 }
+
+enableFeaturePreview("STABLE_PUBLISHING")
+enableFeaturePreview("IMPROVED_POM_SUPPORT")
