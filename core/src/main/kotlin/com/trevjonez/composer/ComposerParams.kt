@@ -46,7 +46,7 @@ data class ComposerParams(
                 "--test-apk", testApk.absolutePath)
                 .let { params ->
                   withOrchestrator?.takeIf { it }?.let {
-                    params + arrayOf("--with-orchestrator")
+                    params + arrayOf("--with-orchestrator", "true")
                   } ?: params
                 }
                 .let { params ->
