@@ -1,6 +1,9 @@
 # Changelist
 Items listed here may not be exhaustive, if you are seeing issues, check the git commits for more specific change information &| open an issue.
 
+## 0.11.1
+"--with-orchestrator" arity consistency fix, thank you for the find and fix. [@JKMirko](https://github.com/JKMirko)
+
 ## 0.11.0
 Mostly bug fixes and quality of life items.
 
