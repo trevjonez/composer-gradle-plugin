@@ -6,6 +6,8 @@ apply plugin: "com.gradle.plugin-publish"
 gradlePlugin {
   plugins {
     create("composer") {
+      displayName = "com.trevjonez.composer"
+      description = "Gradle task type and plugin for interacting with https://github.com/gojuno/composer"
       id = "com.trevjonez.composer"
       implementationClass = "com.trevjonez.composer.ComposerPlugin"
     }
@@ -14,7 +16,7 @@ gradlePlugin {
 
 pluginBundle {
   website = "https://github.com/trevjonez/composer-gradle-plugin"
-  vcsUrl = "git@github.com:trevjonez/composer-gradle-plugin.git"
+  vcsUrl = "https://github.com/trevjonez/composer-gradle-plugin.git"
   tags = ["android", "composer", "test", "orchestrator", "report"]
 }
 
