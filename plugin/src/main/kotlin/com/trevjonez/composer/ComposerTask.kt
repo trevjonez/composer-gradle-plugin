@@ -21,6 +21,7 @@ import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.internal.file.TaskFileVarFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.CacheableTask
+import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
@@ -35,9 +36,11 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
 
   override val configuration = project.composerConfig()
 
+  @Classpath
   @InputFile
   override val testApk = project.objects.fileProperty()
 
+  @Classpath
   @InputFile
   override val apk = project.objects.fileProperty().apply { set(testApk) }
 
