@@ -1,6 +1,9 @@
 # Changelist
 Items listed here may not be exhaustive, if you are seeing issues, check the git commits for more specific change information &| open an issue.
 
+## 0.12.0
+Gradle cache support thanks to [@CristianGM](https://github.com/CristianGM) via #05fa40275bf3958495a1d1f5207e8acd23279e6a (pending gradle 5.6?)
+
 ## 0.11.1
 "--with-orchestrator" arity consistency fix, thank you for the find and fix. [@JKMirko](https://github.com/JKMirko)
 

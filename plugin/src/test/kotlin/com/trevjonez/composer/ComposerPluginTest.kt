@@ -46,7 +46,6 @@ class ComposerPluginTest {
         .withProjectDir(projectDir)
         .withPluginClasspath()
         .withArguments(argList)
-        .withGradleVersion("5.3.1")
         .forwardOutput()
   }
 
