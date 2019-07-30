@@ -12,7 +12,7 @@ The plugin is available via the [Gradle Plugin Portal](https://plugins.gradle.or
 
 ```groovy
 plugins {
-  id "com.trevjonez.composer" version "0.12.0"
+  id "com.trevjonez.composer" version "0.13.0"
 }
 ```
 
@@ -24,7 +24,7 @@ buildscript {
     gradlePluginPortal()
   }
   dependencies {
-    classpath "com.trevjonez.composer:plugin:0.12.0"
+    classpath "com.trevjonez.composer:plugin:0.13.0"
   }
 }
 
@@ -40,7 +40,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.12.0'
+        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.13.0'
     }
 }
 ```
