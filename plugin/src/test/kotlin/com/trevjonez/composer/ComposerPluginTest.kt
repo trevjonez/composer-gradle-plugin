@@ -151,11 +151,7 @@ class ComposerPluginTest {
         "--instrumentation-arguments, screenshotsDisabled, false, screenshotsEngine, uiAutomator",
         "--verbose-output, true",
         "--keep-output-on-exit",
-        "--install-timeout, 10",
-        "Successfully installed apk",
-        "Starting tests",
-        "Test run finished, 0 passed, 0 failed",
-        "Error: 0 tests were run.")
+        "--install-timeout, 10")
   }
 
   private val environmentVariable: ReadOnlyProperty<Any, String>

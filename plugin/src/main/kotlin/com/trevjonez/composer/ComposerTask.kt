@@ -17,9 +17,13 @@
 package com.trevjonez.composer
 
 import com.trevjonez.composer.ComposerConfig.MAIN_CLASS
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.internal.file.TaskFileVarFactory
 import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.Input
@@ -32,52 +36,51 @@ import java.io.File
 
 //TODO: use the worker api not JavaExec
 @CacheableTask
-open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
+abstract class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
 
-  override val configuration = project.composerConfig()
+  private val configuration: Configuration = project.composerConfig()
 
-  @Classpath
-  @InputFile
-  override val testApk = project.objects.fileProperty()
+  @get:[Classpath InputFile]
+  abstract override val testApk: RegularFileProperty
 
-  @Classpath
-  @InputFile
-  override val apk = project.objects.fileProperty().apply { set(testApk) }
-
-  @OutputDirectory
-  override val outputDir = project.objects.directoryProperty().apply {
-    set(project.file(ComposerConfig.DEFAULT_OUTPUT_DIR))
-  }
+  @get:[Classpath InputFile]
+  abstract override val apk: RegularFileProperty
 
   @get:[Optional Input]
-  override val withOrchestrator = project.emptyProperty<Boolean>()
+  abstract override val withOrchestrator: Property<Boolean>
 
   @get:[Optional Input]
-  override val shard = project.emptyProperty<Boolean>()
+  abstract override val shard: Property<Boolean>
 
   @Suppress("UNCHECKED_CAST")
   @get:[Optional Input]
-  override val instrumentationArguments =
-      project.objects.listProperty(Pair::class.java).empty() as ListProperty<Pair<String, String>>
+  abstract override val instrumentationArguments: ListProperty<Pair<String, String>>
 
   @get:[Optional Input]
-  override val verboseOutput = project.emptyProperty<Boolean>()
+  abstract override val verboseOutput: Property<Boolean>
 
   @get:[Optional Input]
-  override val devices =
-          project.objects.listProperty<String>(String::class.java).empty()
+  abstract override val devices: ListProperty<String>
 
   @get:[Optional Input]
-  override val devicePattern = project.emptyProperty<String>()
+  abstract override val devicePattern: Property<String>
 
   @get:[Optional Input]
-  override val keepOutput = project.emptyProperty<Boolean>()
+  abstract override val keepOutput: Property<Boolean>
 
   @get:[Optional Input]
-  override val apkInstallTimeout = project.emptyProperty<Int>()
+  abstract override val apkInstallTimeout: Property<Int>
 
-  @InputFiles
-  override val extraApks = newInputFiles()
+  @get:InputFiles
+  abstract override val extraApks: ConfigurableFileCollection
+
+  @get:OutputDirectory
+  abstract override val outputDir: DirectoryProperty
+
+  init {
+    apk.convention(testApk)
+    outputDir.convention(project.layout.buildDirectory.dir(ComposerConfig.DEFAULT_OUTPUT_DIR))
+  }
 
   override fun exec() {
     val outputDir = outputDir.get().asFile
@@ -185,10 +188,5 @@ open class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
 
   override fun apkInstallTimeout(value: Any) {
     apkInstallTimeout.eval(value)
-  }
-
-  internal fun newInputFiles(): ConfigurableFileCollection {
-    return services.get(TaskFileVarFactory::class.java)
-        .newInputFileCollection(this)
   }
 }

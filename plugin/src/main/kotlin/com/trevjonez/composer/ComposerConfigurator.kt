@@ -16,13 +16,10 @@
 
 package com.trevjonez.composer
 
-import org.gradle.api.artifacts.Configuration
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 
 interface ComposerConfigurator: ComposerDsl {
-    val configuration: Configuration
-
     val withOrchestrator: Property<Boolean>
     val shard: Property<Boolean>
     val instrumentationArguments: ListProperty<Pair<String, String>>

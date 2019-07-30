@@ -80,7 +80,7 @@ composer {
 
   configs { 
     redDebug {
-      apk "build/outputs/apk/debug/example-debug.apk" //optional override, string paths are evaluated as per {@link org.gradle.api.Project#file(Object)}.
+      apk file("build/outputs/apk/debug/example-debug.apk") //optional override
       testApk = new File(buildDir, "outputs/apk/androidTest/debug/example-debug-androidTest.apk") //optional override
       outputDirectory 'artifacts/composer-output' //optional override. default 'build/reports/composer/redDebug'
       withOrchestrator false // optional, default false
@@ -105,8 +105,8 @@ composer {
 Manual task creation looks something like this:
 ```groovy
 task customTaskName(type: ComposerTask) {
-  apk "build/outputs/apk/example-debug.apk" //required
-  testApk "build/outputs/apk/example-debug-androidTest.apk" //required
+  apk file("build/outputs/apk/example-debug.apk") //required
+  testApk file("build/outputs/apk/example-debug-androidTest.apk") //required
   withOrchestrator true // optional
   shard true //optional
   outputDirectory 'artifacts/composer-output' //optional
@@ -192,6 +192,7 @@ Composer plugin version | Gradle version | Android plugin version
 | 0.10.0  | 5.0, 5.1, 5.1.1    | 3.3.0, 3.4.0-beta01<sup>\*</sup>, 3.5.0-alpha01<sup>\*</sup> |
 | 0.11.*  | 5.3.1              | 3.3.2, 3.5.0-alpha09<sup>\*</sup> |
 | 0.12.0  | 5.4.1              | 3.4.1, 3.5.0-beta03<sup>\*</sup>, 3.6.0-alpha02<sup>\*</sup> |
+| 0.13.0  | 5.6                | 3.4.2, 3.5.0-rc01<sup>\*</sup>, 3.6.0-alpha05<sup>\*</sup> |
 
 \* Alpha, Beta and RC versions of the android plugin are quickly tested by building against them.
 This usually means the published composer plugin will work with those version 

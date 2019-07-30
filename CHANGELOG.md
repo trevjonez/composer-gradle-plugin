@@ -1,6 +1,11 @@
 # Changelist
 Items listed here may not be exhaustive, if you are seeing issues, check the git commits for more specific change information &| open an issue.
 
+## 0.13.0
+Requires gradle 5.6
+Use of internal gradle API's broke the plugin, this refactors to use the automatic instantiation features of gradle.
+Breaking changes of DSL for apk, testApk, outputDirectory. Error messages will prompt with fixes. 
+
 ## 0.12.0
 Gradle cache support thanks to [@CristianGM](https://github.com/CristianGM) via #05fa40275bf3958495a1d1f5207e8acd23279e6a (pending gradle 5.6?)
 

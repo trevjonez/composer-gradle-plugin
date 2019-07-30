@@ -95,7 +95,6 @@ class ComposerTaskTest {
         .withPluginClasspath()
         .withProjectDir(testProjectDir.root)
         .withArguments("runComposer", "--stacktrace")
-        .withGradleVersion("5.3.1")
         .forwardOutput()
   }
 

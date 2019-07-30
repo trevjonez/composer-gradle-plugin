@@ -16,41 +16,39 @@
 
 package com.trevjonez.composer
 
-import org.gradle.api.Project
-import org.gradle.api.artifacts.Configuration
+import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
 
-open class ConfiguratorDomainObj(val name: String, val project: Project) :
+abstract class ConfiguratorDomainObj(val name: String) :
     ComposerTaskDsl,
     ComposerConfigurator {
 
-  override val testApk = project.objects.fileProperty()
-  override val apk = project.objects.fileProperty()
-  override val outputDir = project.objects.directoryProperty()
-  override val extraApks = project.objects.fileCollection()
-
-  override val configuration: Configuration = project.composerConfig()
-  override val withOrchestrator = project.emptyProperty<Boolean>()
-  override val shard = project.emptyProperty<Boolean>()
-  @Suppress("UNCHECKED_CAST")
-  override val instrumentationArguments =
-    project.objects.listProperty(Pair::class.java).empty() as ListProperty<Pair<String, String>>
-  override val verboseOutput = project.emptyProperty<Boolean>()
-  override val devices = project.objects.listProperty(String::class.java).empty()
-  override val devicePattern = project.emptyProperty<String>()
-  override val keepOutput = project.emptyProperty<Boolean>()
-  override val apkInstallTimeout = project.emptyProperty<Int>()
+  abstract override val testApk: RegularFileProperty
+  abstract override val apk: RegularFileProperty
+  abstract override val outputDir: DirectoryProperty
+  abstract override val extraApks: ConfigurableFileCollection
+  abstract override val withOrchestrator: Property<Boolean>
+  abstract override val shard: Property<Boolean>
+  abstract override val instrumentationArguments: ListProperty<Pair<String, String>>
+  abstract override val verboseOutput: Property<Boolean>
+  abstract override val devices: ListProperty<String>
+  abstract override val devicePattern: Property<String>
+  abstract override val keepOutput: Property<Boolean>
+  abstract override val apkInstallTimeout: Property<Int>
 
   override fun apk(path: Any) {
-    apk.set(project.file(path))
+    apk.eval(path)
   }
 
   override fun testApk(path: Any) {
-    testApk.set(project.file(path))
+    testApk.eval(path)
   }
 
   override fun outputDirectory(path: Any) {
-    outputDir.set(project.file(path))
+    outputDir.eval(path)
   }
 
   override fun extraApks(paths: Any) {

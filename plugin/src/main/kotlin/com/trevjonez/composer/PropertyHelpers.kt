@@ -16,19 +16,9 @@
 
 package com.trevjonez.composer
 
-import org.gradle.api.Project
-import org.gradle.api.internal.provider.DefaultPropertyState
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
-
-/**
- * This is using internal API.
- * Probably shouldn't but need better optional prop support on primitives
- */
-inline fun <reified T> Project.emptyProperty(): Property<T> {
-  return DefaultPropertyState<T>(T::class.java)
-}
 
 inline fun <reified T> Property<T>.eval(value: Any) {
   @Suppress("UNCHECKED_CAST")

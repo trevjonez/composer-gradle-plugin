@@ -22,14 +22,13 @@ import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
 
-open class ConfigExtension(project: Project)
+abstract class ConfigExtension(project: Project)
   : ComposerDsl, ComposerConfigurator {
 
   val configs: NamedDomainObjectContainer<ConfiguratorDomainObj> =
-      project.container(ConfiguratorDomainObj::class.java) { name ->
-        ConfiguratorDomainObj(name, project)
-      }
+      project.container(ConfiguratorDomainObj::class.java)
 
   val variants = mutableListOf<String>()
 
@@ -45,21 +44,14 @@ open class ConfigExtension(project: Project)
     action.execute(configs)
   }
 
-  override val configuration: Configuration = project.composerConfig()
-
-  override val withOrchestrator = project.emptyProperty<Boolean>()
-
-  override val shard = project.emptyProperty<Boolean>()
-
-  @Suppress("UNCHECKED_CAST")
-  override val instrumentationArguments =
-    project.objects.listProperty(Pair::class.java).empty() as ListProperty<Pair<String, String>>
-
-  override val verboseOutput = project.emptyProperty<Boolean>()
-  override val devices = project.objects.listProperty<String>(String::class.java).empty()
-  override val devicePattern = project.emptyProperty<String>()
-  override val keepOutput = project.emptyProperty<Boolean>()
-  override val apkInstallTimeout = project.emptyProperty<Int>()
+  abstract override val withOrchestrator: Property<Boolean>
+  abstract override val shard: Property<Boolean>
+  abstract override val instrumentationArguments: ListProperty<Pair<String, String>>
+  abstract override val verboseOutput: Property<Boolean>
+  abstract override val devices: ListProperty<String>
+  abstract override val devicePattern: Property<String>
+  abstract override val keepOutput: Property<Boolean>
+  abstract override val apkInstallTimeout: Property<Int>
 
   override fun withOrchestrator(value: Any) {
     withOrchestrator.eval(value)
