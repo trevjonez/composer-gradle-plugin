@@ -91,22 +91,18 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
 
     composerTask.apk.set(variantConfigurator?.apk
                              ?.takeIf { it.isPresent }
-                             ?.also { composerTask.dependsOn(it) }
                          ?: getApk(composerTask))
 
     composerTask.testApk.set(variantConfigurator?.testApk
                                  ?.takeIf { it.isPresent }
-                                 ?.also { composerTask.dependsOn(it) }
                              ?: getTestApk(composerTask))
 
     composerTask.outputDir.set(variantConfigurator?.outputDir
                                    ?.takeIf { it.isPresent }
-                                   ?.also { composerTask.dependsOn(it) }
                                ?: getOutputDir(composerTask))
 
     composerTask.extraApks.setFrom(variantConfigurator?.extraApks
         ?.takeUnless{ it.isEmpty }
-        ?.also { composerTask.dependsOn(it) }
         ?: extraApks)
   }
 
