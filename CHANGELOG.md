@@ -1,6 +1,9 @@
 # Changelist
 Items listed here may not be exhaustive, if you are seeing issues, check the git commits for more specific change information &| open an issue.
 
+## 0.13.1
+Bug fix for #54 don't force task dependency. Thanks for the find and fix [@dkostyrev](https://github.com/dkostyrev)
+ 
 ## 0.13.0
 Requires gradle 5.6
 Use of internal gradle API's broke the plugin, this refactors to use the automatic instantiation features of gradle.
