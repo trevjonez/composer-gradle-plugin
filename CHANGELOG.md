@@ -1,6 +1,11 @@
 # Changelist
 Items listed here may not be exhaustive, if you are seeing issues, check the git commits for more specific change information &| open an issue.
 
+## 1.0.0-rc1
+Republish commander and composer from this repo. based on my changes here:
+ https://github.com/gojuno/commander/pull/28
+ https://github.com/gojuno/composer/pull/172
+
 ## 0.13.1
 Bug fix for #54 don't force task dependency. Thanks for the find and fix [@dkostyrev](https://github.com/dkostyrev)
  
