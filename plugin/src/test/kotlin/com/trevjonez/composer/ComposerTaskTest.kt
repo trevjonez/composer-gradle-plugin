@@ -51,6 +51,7 @@ class ComposerTaskTest {
     //language=Groovy
     """
     repositories {
+      mavenLocal()
       jcenter()
     }
     """.trimIndent()

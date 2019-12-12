@@ -24,8 +24,8 @@ import org.gradle.api.artifacts.Configuration
 object ComposerConfig {
     const val MAIN_CLASS = "com.gojuno.composer.MainKt"
     const val COMPOSER = "composer"
-    const val COMPOSER_VER = "0.6.0"
-    const val ARTIFACT_DEP = "com.gojuno.composer:composer:$COMPOSER_VER"
+    const val COMPOSER_VER = "1.0.0-rc1"
+    const val ARTIFACT_DEP = "com.trevjonez.composer:composer:$COMPOSER_VER"
     const val DEFAULT_OUTPUT_DIR = "composer-output"
 }
 

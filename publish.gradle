@@ -1,0 +1,82 @@
+
+/*
+ *    Copyright 2019 Trevor Jones
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    archiveClassifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+publishing {
+    publications {
+        MainJar(MavenPublication) {
+            from components.java
+
+            artifact sourcesJar
+            artifact javadocJar
+
+            pom {
+                url ='https://github.com/trevjonez/composer-gradle-plugin'
+                licenses {
+                    license {
+                        name = 'The Apache Software License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution = 'repo'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'gojuno'
+                        name = 'Juno Inc.'
+                        email = 'opensource@gojuno.com'
+                    }
+                    developer {
+                        id = 'TrevJonez'
+                        name = 'Trevor Jones'
+                        email = 'trevorjones141@gmail.com'
+                    }
+                }
+            }
+        }
+    }
+}
+
+bintray {
+    user = System.getenv('bintray_user')
+    key = System.getenv('bintray_api_key')
+    publish = true
+
+    pkg {
+        repo = 'maven'
+        name = 'composer'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/trevjonez/composer-gradle-plugin.git'
+        issueTrackerUrl = 'https://github.com/trevjonez/composer-gradle-plugin/issues'
+        publications = ['MainJar']
+
+        version {
+            name = project.version
+        }
+    }
+}

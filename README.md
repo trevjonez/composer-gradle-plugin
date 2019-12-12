@@ -4,6 +4,18 @@
 
 Gradle task type and plugin for running [gojuno/composer](https://github.com/gojuno/composer) from gradle.
 
+## Project Status
+
+After Juno was consumed by Lyft the upstream composer and commander projects 
+became unmaintained as a result. While unfortunate that those projects have 
+concluded I want to try and provide at least the same baseline of features.
+
+To do so I will provide releases based on hard forks (new gradle modules here) 
+of the upstream projects. The commander and composer artifacts will be published 
+to jcenter and be used as the default dependency when applying the plugin to your projects.
+
+Composer from this project will not be published as a fat jar for standalone consumption.
+
 ## Installation & Usage
 
 ##### Via Gradle Plugin Portal:

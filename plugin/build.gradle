@@ -21,7 +21,7 @@ pluginBundle {
 }
 
 dependencies {
-  compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$KOTLIN_VERSION")
+  compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
   compile("com.android.tools.build:gradle:$AGP_VERSION")
   compile(gradleApi())
 
@@ -29,7 +29,7 @@ dependencies {
   testCompile("junit:junit:4.12")
   testCompile("org.assertj:assertj-core:3.5.2")
   testCompile("commons-io:commons-io:2.5")
-  testCompile("org.jetbrains.kotlin:kotlin-reflect:$KOTLIN_VERSION")
+  testCompile("org.jetbrains.kotlin:kotlin-reflect")
 }
 
 tasks.named("test").configure {
@@ -52,6 +52,10 @@ tasks.named("test").configure {
   inputs.dir(new File(rootProject.projectDir, "and-lib/src"))
   inputs.files(new File(rootProject.projectDir, "and-lib/build.gradle"))
   inputs.files(new File(rootProject.projectDir, "and-lib/settings.gradle"))
+
+  dependsOn(":composer:composer:publishToMavenLocal")
+  dependsOn(":commander:os:publishToMavenLocal")
+  dependsOn(":commander:android:publishToMavenLocal")
 }
 
 def sourcesJar = tasks.register("sourcesJar", Jar) {

@@ -15,7 +15,9 @@
  */
 
 rootProject.name = "composer-gradle-plugin"
-include("plugin")
+include(":plugin")
+include(":commander", ":commander:os", ":commander:android")
+include(":composer:composer")
 
 gradle.allprojects {
   version = CGP_VERSION
@@ -23,6 +25,7 @@ gradle.allprojects {
   repositories {
     google()
     jcenter()
+    mavenLocal()
   }
 }
 

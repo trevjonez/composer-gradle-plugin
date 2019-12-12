@@ -1,3 +1,4 @@
+.DS_Store
 .gradle
 build/
 *.iml
@@ -5,3 +6,5 @@ build/
 !.idea/codeStyleSettings.xml
 !.idea/copyright
 local.properties
+node_modules/
+package-lock.json
