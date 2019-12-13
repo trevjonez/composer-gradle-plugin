@@ -1,6 +1,7 @@
 apply plugin: "org.jetbrains.kotlin.jvm"
 apply from: "$rootProject.projectDir/publish.gradle"
 
+ext.artifactId = "commander-android"
 description = "Functions to work with Android SDK Tools like adb, avdmanager, sdkmanager."
 
 dependencies {

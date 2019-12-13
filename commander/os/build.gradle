@@ -1,6 +1,7 @@
 apply plugin: "org.jetbrains.kotlin.jvm"
 apply from: "$rootProject.projectDir/publish.gradle"
 
+ext.artifactId = "commander-os"
 description = "Functions to work with processes and files on different Operating Systems."
 
 dependencies {

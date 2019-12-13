@@ -2,6 +2,7 @@ apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: 'application'
 apply from: "$rootProject.projectDir/publish.gradle"
 
+ext.artifactId = "composer"
 description ='Reactive Android Instrumentation Test Runner.'
 mainClassName = 'com.gojuno.composer.MainKt'
 

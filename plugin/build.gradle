@@ -3,6 +3,8 @@ apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "maven-publish"
 apply plugin: "com.gradle.plugin-publish"
 
+ext.artifactId = "plugin"
+
 gradlePlugin {
   plugins {
     create("composer") {
