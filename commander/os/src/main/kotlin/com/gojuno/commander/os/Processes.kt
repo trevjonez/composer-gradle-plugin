@@ -49,16 +49,14 @@ fun process(
         log("$commandAndArgs\n, outputFile = $outputFile")
     }
 
-    val command: List<String> = when (unbufferedOutput) {
-        false -> commandAndArgs
-        true -> when (os()) {
-            // Some programs, in particular "emulator" do not always flush output
-            // after printing so we have to force unbuffered mode to make sure
-            // that output will be available for consuming.
-            Linux -> listOf("script", outputFile.absolutePath, "--flush", "-c", commandAndArgs.joinToString(separator = " "))
-            Mac -> listOf("script", "-F", outputFile.absolutePath, *commandAndArgs.toTypedArray())
-            Windows -> commandAndArgs
-        }
+    val command: List<String> = if (!unbufferedOutput) commandAndArgs
+    else when (os()) {
+        // Some programs, in particular "emulator" do not always flush output
+        // after printing so we have to force unbuffered mode to make sure
+        // that output will be available for consuming.
+        Linux -> listOf("script", outputFile.absolutePath, "--flush", "-c", commandAndArgs.joinToString(separator = " "))
+        Mac -> listOf("script", "-F", outputFile.absolutePath, *commandAndArgs.toTypedArray())
+        Windows -> commandAndArgs
     }
 
     val process: Process = ProcessBuilder(command)
@@ -148,8 +146,8 @@ internal fun Os.nullDeviceFile(): File {
     return File(path)
 }
 
-fun Long.nanosToHumanReadableTime(): String {
-    var seconds: Long = TimeUnit.NANOSECONDS.toSeconds(this)
+fun Long.secondsToHumanReadableTime(): String {
+    var seconds: Long = this
     var minutes: Long = (seconds / 60).apply {
         seconds -= this * 60
     }
@@ -184,4 +182,8 @@ fun Long.nanosToHumanReadableTime(): String {
             append("s")
         }
     }
+}
+
+fun Long.nanosToHumanReadableTime(): String {
+    return TimeUnit.NANOSECONDS.toSeconds(this).secondsToHumanReadableTime()
 }

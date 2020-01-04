@@ -1,5 +1,6 @@
 package com.gojuno.composer
 
+import com.gojuno.commander.android.acquireDeviceLock
 import com.gojuno.commander.android.connectedAdbDevices
 import com.gojuno.commander.android.installApk
 import com.gojuno.commander.os.log
@@ -10,8 +11,9 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import java.io.File
-import java.util.*
+import java.util.Date
 import java.util.concurrent.TimeUnit
+import kotlin.system.exitProcess
 
 sealed class Exit(val code: Int, val message: String?) {
     object Ok : Exit(code = 0, message = null)
@@ -26,7 +28,7 @@ fun exit(exit: Exit) {
     if (exit.message != null) {
         log(exit.message)
     }
-    System.exit(exit.code)
+    exitProcess(exit.code)
 }
 
 fun main(rawArgs: Array<String>) {
@@ -49,7 +51,7 @@ fun main(rawArgs: Array<String>) {
     }
 
     val testRunner: TestRunner.Valid =
-            if (!args.testRunner.isEmpty()) {
+            if (args.testRunner.isNotEmpty()) {
                 TestRunner.Valid(args.testRunner)
             } else {
                 parseTestRunner(args.testApkPath).let {
@@ -75,7 +77,7 @@ fun main(rawArgs: Array<String>) {
 
     when {
         totalPassed > 0 && totalFailed == 0 -> exit(Exit.Ok)
-        totalPassed == 0 && totalFailed == 0 -> if(args.failIfNoTests) exit(Exit.NoTests) else exit(Exit.Ok)
+        totalPassed == 0 && totalFailed == 0 -> if (args.failIfNoTests) exit(Exit.NoTests) else exit(Exit.Ok)
         else -> exit(Exit.ThereWereFailedTests)
     }
 
@@ -88,19 +90,18 @@ private fun runAllTests(args: Args, testPackage: TestPackage.Valid, testRunner: 
 
     return connectedAdbDevices()
             .map { devices ->
-                when (args.devicePattern.isEmpty()) {
-                    true -> devices
-                    false -> Regex(args.devicePattern).let { regex -> devices.filter { regex.matches(it.id) } }
+                if (args.devicePattern.isEmpty()) devices
+                else {
+                    val regex = Regex(args.devicePattern)
+                    devices.filter { regex.matches(it.id) }
                 }
             }
-            .map {
-                when (args.devices.isEmpty()) {
-                    true -> it
-                    false -> it.filter { args.devices.contains(it.id) }
-                }
+            .map { devices ->
+                if (args.devices.isEmpty()) devices
+                else devices.filter { args.devices.contains(it.id) }
             }
-            .map {
-                it.filter { it.online }.apply {
+            .map { devices ->
+                devices.filter { it.online }.apply {
                     if (isEmpty()) {
                         exit(Exit.NoDevicesAvailableForTests)
                     }
@@ -114,11 +115,12 @@ private fun runAllTests(args: Args, testPackage: TestPackage.Valid, testRunner: 
                     val installTestApk = device.installApk(pathToApk = args.testApkPath, timeout = installTimeout)
                     val installApks = mutableListOf(installAppApk, installTestApk)
                     installApks.addAll(args.extraApks.map {
-                      device.installApk(pathToApk = it, timeout = installTimeout)
+                        device.installApk(pathToApk = it, timeout = installTimeout)
                     })
 
                     Observable
                             .concat(installApks)
+                            .acquireDeviceLock(device)
                             // Work with each device in parallel, but install apks sequentially on a device.
                             .subscribeOn(Schedulers.io())
                             .toList()
@@ -163,17 +165,17 @@ private fun runAllTests(args: Args, testPackage: TestPackage.Valid, testRunner: 
                                         .subscribeOn(Schedulers.io())
                             }
                 }
-                Single.zip(runTestsOnDevices, { results: Array<Any> -> results.map { it as AdbDeviceTestRun } })
+                Single.zip(runTestsOnDevices) { results: Array<Any> -> results.map { it as AdbDeviceTestRun } }
             }
             .map { adbDeviceTestRuns ->
-                when (args.shard) {
-                true -> {// In "shard=true" mode test runs from all devices arecombined into one suite of tests.
-                     listOf(Suite(
+                if (args.shard) {
+                    // In "shard=true" mode test runs from all devices are combined into one suite of tests.
+                    listOf(Suite(
                             testPackage = testPackage.value,
                             devices = adbDeviceTestRuns.fold(emptyList()) { devices, adbDeviceTestRun ->
                                 devices + Device(
                                         id = adbDeviceTestRun.adbDevice.id,
-                                        model = adbDeviceTestRun.adbDevice.model,logcat = adbDeviceTestRun.logcat,
+                                        model = adbDeviceTestRun.adbDevice.model, logcat = adbDeviceTestRun.logcat,
                                         instrumentationOutput = adbDeviceTestRun.instrumentationOutput
                                 )
                             },
@@ -183,15 +185,15 @@ private fun runAllTests(args: Args, testPackage: TestPackage.Valid, testRunner: 
                             passedCount = adbDeviceTestRuns.sumBy { it.passedCount },
                             ignoredCount = adbDeviceTestRuns.sumBy { it.ignoredCount },
                             failedCount = adbDeviceTestRuns.sumBy { it.failedCount },
-                            durationNanos = adbDeviceTestRuns.map { it.durationNanos }.max() ?: -1,
-                            timestampMillis = adbDeviceTestRuns.map { it.timestampMillis }.min() ?: -1
-                    ))}
-
-                    false -> {
-                        // In "shard=false" mode test run from each device is represented as own suite of tests.
-                        adbDeviceTestRuns.map {
-                            it.toSuite(testPackage.value)
-                        }
+                            durationNanos = adbDeviceTestRuns.map { it.durationNanos }.max()
+                                            ?: -1,
+                            timestampMillis = adbDeviceTestRuns.map { it.timestampMillis }.min()
+                                              ?: -1
+                    ))
+                } else {
+                    // In "shard=false" mode test run from each device is represented as own suite of tests.
+                    adbDeviceTestRuns.map {
+                        it.toSuite(testPackage.value)
                     }
                 }
             }
@@ -216,22 +218,17 @@ private fun List<String>.pairArguments(): List<Pair<String, String>> =
             }
         }
 
-private fun buildSingleTestArguments(testMethod : String) : List<Pair<String,String>> =
-        listOf("class" to testMethod)
-
 private fun buildShardArguments(shardingOn: Boolean, shardIndex: Int, devices: Int): List<Pair<String, String>> = when {
     shardingOn && devices > 1 -> listOf(
             "numShards" to "$devices",
-            "shardIndex" to "$shardIndex"
-    )
+            "shardIndex" to "$shardIndex")
 
     else -> emptyList()
 }
 
-private fun List<Pair<String, String>>.formatInstrumentationArguments(): String = when (isEmpty()) {
-    true -> ""
-    false -> " " + joinToString(separator = " ") { "-e ${it.first} ${it.second}" }
-}
+private fun List<Pair<String, String>>.formatInstrumentationArguments(): String =
+        if (isEmpty()) ""
+        else " " + joinToString(separator = " ") { "-e ${it.first} ${it.second}" }
 
 data class Suite(
         val testPackage: String,
@@ -241,15 +238,13 @@ data class Suite(
         val ignoredCount: Int,
         val failedCount: Int,
         val durationNanos: Long,
-        val timestampMillis: Long
-)
+        val timestampMillis: Long)
 
 data class Device(
         val id: String,
-        val model:String,
+        val model: String,
         val logcat: File,
-        val instrumentationOutput: File
-)
+        val instrumentationOutput: File)
 
 fun AdbDeviceTestRun.toSuite(testPackage: String): Suite = Suite(
         testPackage = testPackage,
@@ -257,12 +252,10 @@ fun AdbDeviceTestRun.toSuite(testPackage: String): Suite = Suite(
                 id = adbDevice.id,
                 model = adbDevice.model,
                 logcat = logcat,
-                instrumentationOutput = instrumentationOutput
-        )),
+                instrumentationOutput = instrumentationOutput)),
         tests = tests,
         passedCount = passedCount,
         ignoredCount = ignoredCount,
         failedCount = failedCount,
         durationNanos = durationNanos,
-        timestampMillis = timestampMillis
-)
+        timestampMillis = timestampMillis)

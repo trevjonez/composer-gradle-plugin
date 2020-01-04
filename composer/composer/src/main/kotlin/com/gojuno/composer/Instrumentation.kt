@@ -13,7 +13,7 @@ data class InstrumentationTest(
         val testName: String,
         val status: Status,
         val durationNanos: Long
-) {
+                              ) {
 
     sealed class Status {
         object Passed : Status()
@@ -43,7 +43,7 @@ data class InstrumentationEntry(
         val stack: String,
         val statusCode: StatusCode,
         val timestampNanos: Long
-)
+                               )
 
 private fun String.substringBetween(first: String, second: String): String {
     val indexOfFirst = indexOf(first)
@@ -74,7 +74,7 @@ private fun String.throwIfError(output: File) = when {
                 "Most likely you forgot to declare test runner in AndroidManifest.xml or build.gradle.\n" +
                 "Detailed log can be found in ${output.path} or Logcat output.\n" +
                 "See https://github.com/gojuno/composer/issues/79 for more info."
-        )
+                       )
     }
 
     else -> this
@@ -102,7 +102,7 @@ private fun parseInstrumentationEntry(str: String): InstrumentationEntry =
                             }
                         },
                 timestampNanos = System.nanoTime()
-        )
+                            )
 
 // Reads stream in "tail -f" mode.
 fun readInstrumentationOutput(output: File): Observable<InstrumentationEntry> {
@@ -116,10 +116,8 @@ fun readInstrumentationOutput(output: File): Observable<InstrumentationEntry> {
                 !it.startsWith("INSTRUMENTATION_CODE")
             }
             .scan(Result()) { previousResult, newLine ->
-                val buffer = when (previousResult.readyForProcessing) {
-                    true -> newLine
-                    false -> "${previousResult.buffer}${System.lineSeparator()}$newLine"
-                }
+                val buffer = if (previousResult.readyForProcessing) newLine
+                else "${previousResult.buffer}${System.lineSeparator()}$newLine"
 
                 Result(buffer = buffer, readyForProcessing = newLine.startsWith("INSTRUMENTATION_STATUS_CODE"))
             }
@@ -156,23 +154,23 @@ fun Observable<InstrumentationEntry>.asTests(): Observable<InstrumentationTest> 
                                     testName = first.test,
                                     status = when (second.statusCode) {
                                         StatusCode.Ok -> Passed
-                                        StatusCode.Ignored  -> Ignored()
+                                        StatusCode.Ignored -> Ignored()
                                         StatusCode.AssumptionFailure -> Ignored(stacktrace = second.stack)
                                         StatusCode.Failure -> Failed(stacktrace = second.stack)
                                         StatusCode.Start -> throw IllegalStateException(
                                                 "Unexpected status code [Start] in second entry, " +
                                                 "please report that to Composer maintainers ($first, $second)"
-                                        )
+                                                                                       )
                                     },
                                     durationNanos = second.timestampNanos - first.timestampNanos
-                            )
+                                               )
                         }
 
                 Result(
                         entries = entries.filter { entry -> tests.firstOrNull { it.className == entry.clazz && it.testName == entry.test } == null },
                         tests = tests,
                         totalTestsCount = previousResult.totalTestsCount + tests.size
-                )
+                      )
             }
             .takeUntil {
                 if (it.entries.count { it.current == it.numTests } == 2) {

@@ -70,10 +70,8 @@ class HtmlReportSpec : Spek({
         }
 
         fun File.deleteOnExitRecursively() {
-            when (isDirectory) {
-                false -> deleteOnExit()
-                true -> listFiles()?.forEach { inner -> inner.deleteOnExitRecursively() }
-            }
+            if (!isDirectory) deleteOnExit()
+            else listFiles()?.forEach { inner -> inner.deleteOnExitRecursively() }
         }
 
         val date by memoized { Date(1496848677000) }
