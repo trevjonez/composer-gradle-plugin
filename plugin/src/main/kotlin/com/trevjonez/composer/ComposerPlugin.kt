@@ -38,6 +38,10 @@ class ComposerPlugin : Plugin<Project> {
       project.pluginManager.apply(ComposerApplicationPlugin::class.java)
     }
 
+    project.pluginManager.withPlugin("com.android.dynamic-feature") {
+      project.pluginManager.apply(ComposerApplicationPlugin::class.java)
+    }
+
     project.afterEvaluate {
       project.extensions.findByType(ConfigExtension::class.java)
       ?: project.tasks.find { it is ComposerTask } //check if manually created tasks exist before throwing
