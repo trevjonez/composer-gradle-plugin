@@ -1,6 +1,7 @@
 # composer-gradle-plugin
 
-[![](https://jitpack.io/v/trevjonez/composer-gradle-plugin.svg)](https://jitpack.io/#trevjonez/composer-gradle-plugin)
+[ ![Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/com/trevjonez/composer/com.trevjonez.composer.gradle.plugin/maven-metadata.xml.svg?label=Plugin%20Portal) ](https://plugins.gradle.org/plugin/com.trevjonez.composer)
+[ ![JCenter](https://api.bintray.com/packages/trevorjones141/maven/composer/images/download.svg) ](https://bintray.com/trevorjones141/maven/composer/_latestVersion)
 
 Gradle task type and plugin for running [gojuno/composer](https://github.com/gojuno/composer) from gradle.
 
@@ -24,7 +25,7 @@ The plugin is available via the [Gradle Plugin Portal](https://plugins.gradle.or
 
 ```groovy
 plugins {
-  id "com.trevjonez.composer" version "0.13.1"
+  id "com.trevjonez.composer" version "$version"
 }
 ```
 
@@ -36,28 +37,14 @@ buildscript {
     gradlePluginPortal()
   }
   dependencies {
-    classpath "com.trevjonez.composer:plugin:0.13.1"
+    classpath "com.trevjonez.composer:plugin:$version"
   }
 }
 
 apply plugin: "com.trevjonez.composer"
 ```
 
-##### Via Jitpack:
-
-In the appropriate `build.gradle` file add the jitpack repository and classpath dependency.
-```groovy
-buildscript {
-    repositories {
-        maven { url "https://jitpack.io" }
-    }
-    dependencies {
-        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.13.1'
-    }
-}
-```
-
-This repo can be consumed in two ways, via a android variant aware plugin or as a pre-provided task type.
+This repo can be consumed in two ways, via the android variant aware plugin or as a pre-provided task type.
 
 ##### Plugin Usage
 
@@ -189,9 +176,11 @@ The `composer` configuration is automatically added to your project once a
 
 ```groovy
 dependencies {
- composer "com.gojuno.composer:composer:0.6.0"
+ composer "com.trevjonez.composer:composer:$version" //This is the default dependency path used.
 }
 ```
+
+The default is added via the [Configuration.defaultDependencies api](https://docs.gradle.org/current/javadoc/org/gradle/api/artifacts/Configuration.html#defaultDependencies-org.gradle.api.Action-) meaning any dependency changes will result in the default not being added to the configuration.
 
 ## Notes on Compatibility
 
@@ -200,11 +189,12 @@ In most cases using the latest version of gradle and agp is safe but the minimum
 version of gradle is 5.0 or higher if mandated by the android gradle plugin. 
 
 Composer plugin version | Gradle version | Android plugin version
-| ------  | ------             | ------ |
-| 0.10.0  | 5.0, 5.1, 5.1.1    | 3.3.0, 3.4.0-beta01<sup>\*</sup>, 3.5.0-alpha01<sup>\*</sup> |
-| 0.11.*  | 5.3.1              | 3.3.2, 3.5.0-alpha09<sup>\*</sup> |
-| 0.12.0  | 5.4.1              | 3.4.1, 3.5.0-beta03<sup>\*</sup>, 3.6.0-alpha02<sup>\*</sup> |
-| 0.13.0  | 5.6                | 3.4.2, 3.5.0-rc01<sup>\*</sup>, 3.6.0-alpha05<sup>\*</sup> |
+| ------    | ------             | ------ |
+| 0.10.0    | 5.0, 5.1, 5.1.1    | 3.3.0, 3.4.0-beta01<sup>\*</sup>, 3.5.0-alpha01<sup>\*</sup> |
+| 0.11.*    | 5.3.1              | 3.3.2, 3.5.0-alpha09<sup>\*</sup> |
+| 0.12.0    | 5.4.1              | 3.4.1, 3.5.0-beta03<sup>\*</sup>, 3.6.0-alpha02<sup>\*</sup> |
+| 0.13.0    | 5.6                | 3.4.2, 3.5.0-rc01<sup>\*</sup>, 3.6.0-alpha05<sup>\*</sup> |
+| 1.0.0-rc2 | 5.6.4              | 3.5.3, 3.6.0-rc01<sup>\*</sup> |
 
 \* Alpha, Beta and RC versions of the android plugin are quickly tested by building against them.
 This usually means the published composer plugin will work with those version 
@@ -212,7 +202,7 @@ however the lite smoke testing done will not find binary incompatibilities.
 
 ## License
 
-    Copyright 2017 Trevor Jones
+    Copyright 2019 Trevor Jones
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
