@@ -1,6 +1,10 @@
 # Changelist
 Items listed here may not be exhaustive, if you are seeing issues, check the git commits for more specific change information &| open an issue.
 
+## 1.0.0-rc03
+Fix deadlocking in device install/test stream when using device locks.
+Only invoke adb install for unique APK's
+
 ## 1.0.0-rc2
 Add device locks for commander/composer device observables.
 Add dynamic feature module support to the plugin (via application plugin impl)

@@ -189,12 +189,12 @@ In most cases using the latest version of gradle and agp is safe but the minimum
 version of gradle is 5.0 or higher if mandated by the android gradle plugin. 
 
 Composer plugin version | Gradle version | Android plugin version
-| ------    | ------             | ------ |
-| 0.10.0    | 5.0, 5.1, 5.1.1    | 3.3.0, 3.4.0-beta01<sup>\*</sup>, 3.5.0-alpha01<sup>\*</sup> |
-| 0.11.*    | 5.3.1              | 3.3.2, 3.5.0-alpha09<sup>\*</sup> |
-| 0.12.0    | 5.4.1              | 3.4.1, 3.5.0-beta03<sup>\*</sup>, 3.6.0-alpha02<sup>\*</sup> |
-| 0.13.0    | 5.6                | 3.4.2, 3.5.0-rc01<sup>\*</sup>, 3.6.0-alpha05<sup>\*</sup> |
-| 1.0.0-rc2 | 5.6.4              | 3.5.3, 3.6.0-rc01<sup>\*</sup> |
+| ------     | ------             | ------ |
+| 0.10.0     | 5.0, 5.1, 5.1.1    | 3.3.0, 3.4.0-beta01<sup>\*</sup>, 3.5.0-alpha01<sup>\*</sup> |
+| 0.11.*     | 5.3.1              | 3.3.2, 3.5.0-alpha09<sup>\*</sup> |
+| 0.12.0     | 5.4.1              | 3.4.1, 3.5.0-beta03<sup>\*</sup>, 3.6.0-alpha02<sup>\*</sup> |
+| 0.13.0     | 5.6                | 3.4.2, 3.5.0-rc01<sup>\*</sup>, 3.6.0-alpha05<sup>\*</sup> |
+| 1.0.0-rc03 | 5.6.4              | 3.5.3, 3.6.0-rc01<sup>\*</sup> |
 
 \* Alpha, Beta and RC versions of the android plugin are quickly tested by building against them.
 This usually means the published composer plugin will work with those version 

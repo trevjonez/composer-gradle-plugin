@@ -13,6 +13,7 @@ data class AdbDevice(
         File(lockFileDir, "$id.lock").also { lock ->
             lock.parentFile.mkdirs()
             lock.createNewFile()
+            lock.deleteOnExit()
         }
     }
 }
