@@ -208,7 +208,14 @@ fun AdbDevice.deleteFile(fileOnDevice: String, logErrors: Boolean, timeout: Pair
 
 fun AdbDevice.redirectLogcatToFile(file: File): Single<Process> = Single
     .fromCallable { file.parentFile.mkdirs() }
-    .flatMapObservable { process(listOf(adb, "-s", id, "logcat"), redirectOutputTo = file, timeout = null) }
+    .flatMapObservable {
+        process(
+            listOf(adb, "-s", id, "logcat"),
+            redirectOutputTo = file,
+            timeout = null,
+            destroyOnUnsubscribe = true
+        )
+    }
     .ofType(Notification.Start::class.java)
     .doOnError {
         when (it) {

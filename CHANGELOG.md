@@ -1,6 +1,10 @@
 # Changelist
 Items listed here may not be exhaustive, if you are seeing issues, check the git commits for more specific change information &| open an issue.
 
+## 1.0.0-rc04
+Force process death on unsubscribe for processes redirecting to kept files. (logcat & instrumentation)
+This should resolve issues with files continuing to change after gradle tasks have completing and breaks gradle caching.
+
 ## 1.0.0-rc03
 Fix deadlocking in device install/test stream when using device locks.
 Only invoke adb install for unique APK's
