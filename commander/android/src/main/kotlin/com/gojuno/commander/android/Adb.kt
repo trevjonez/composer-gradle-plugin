@@ -7,7 +7,6 @@ import com.gojuno.commander.os.home
 import com.gojuno.commander.os.log
 import com.gojuno.commander.os.nanosToHumanReadableTime
 import com.gojuno.commander.os.process
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.Disposables
@@ -206,23 +205,14 @@ fun AdbDevice.deleteFile(fileOnDevice: String, logErrors: Boolean, timeout: Pair
         .singleOrError()
 }
 
-fun AdbDevice.redirectLogcatToFile(file: File): Single<Process> = Single
-    .fromCallable { file.parentFile.mkdirs() }
-    .flatMapObservable {
-        process(
-            listOf(adb, "-s", id, "logcat"),
-            redirectOutputTo = file,
-            timeout = null,
-            destroyOnUnsubscribe = true
-        )
-    }
-    .ofType(Notification.Start::class.java)
-    .doOnError {
-        when (it) {
-            is InterruptedException -> Unit // Expected case, interrupt comes from System.exit(0).
-            else -> this.log("Error during redirecting logcat to file $file, error = $it")
-        }
-    }
-    .map { it.process }
-    .take(1)
-    .singleOrError()
+fun AdbDevice.redirectLogcatToFile(file: File): Observable<Process> =
+    process(
+        listOf(adb, "-s", id, "logcat"),
+        redirectOutputTo = file,
+        timeout = null,
+        destroyOnUnsubscribe = true
+    )
+        .doOnSubscribe { file.parentFile.mkdirs() }
+        .ofType(Notification.Start::class.java)
+        .doOnError { this.log("Error during redirecting logcat to file $file, error = $it") }
+        .map { it.process }

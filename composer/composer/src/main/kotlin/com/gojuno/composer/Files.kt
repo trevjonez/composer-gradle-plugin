@@ -13,5 +13,5 @@ fun tail(file: File): Observable<String> = Observable.create { emitter ->
         override fun handle(e: Exception) = emitter.onError(e)
         override fun fileRotated() = emitter.onError(IllegalStateException("Output rotation detected $file"))
         override fun fileNotFound() = emitter.onError(FileNotFoundException("$file file was not found"))
-    })
+    },100, false)
 }

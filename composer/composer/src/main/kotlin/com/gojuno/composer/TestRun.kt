@@ -212,44 +212,45 @@ internal fun String.parseTestClassAndName(): Pair<String, String>? {
     return null
 }
 
-private fun saveLogcat(adbDevice: AdbDevice, logsDir: File): Observable<Pair<String, String>> = Single
-        .just(logsDir to logcatFileForDevice(logsDir))
-        .flatMap { (logsDir, fullLogcatFile) -> adbDevice.redirectLogcatToFile(fullLogcatFile).map { logsDir to fullLogcatFile } }
-        .flatMapObservable { (logsDir, fullLogcatFile) ->
+private fun saveLogcat(adbDevice: AdbDevice, logsDir: File): Observable<Pair<String, String>> {
+    val fullLogcatFile = logcatFileForDevice(logsDir)
+    return adbDevice.redirectLogcatToFile(fullLogcatFile)
+        .flatMap { _: Process ->
             data class CaptureState(
-                    val logcat: String = "",
-                    val startedTestClassAndName: Pair<String, String>? = null,
-                    val finishedTestClassAndName: Pair<String, String>? = null
-                                   )
+                val logcat: String = "",
+                val startedTestClassAndName: Pair<String, String>? = null,
+                val finishedTestClassAndName: Pair<String, String>? = null
+            )
 
             tail(fullLogcatFile)
-                    .scan(CaptureState()) { previous, newline ->
-                        val logcat = when (previous.startedTestClassAndName != null && previous.finishedTestClassAndName != null) {
-                            true  -> newline
-                            false -> "${previous.logcat}\n$newline"
-                        }
-
-                        // Implicitly expecting to see logs from `android.support.test.internal.runner.listener.LogRunListener`.
-                        // Was not able to find more reliable solution to capture logcat per test.
-                        val startedTest: Pair<String, String>? = newline.parseTestClassAndName()
-                        val finishedTest: Pair<String, String>? = newline.parseTestClassAndName()
-
-                        CaptureState(
-                                logcat = logcat,
-                                startedTestClassAndName = startedTest
-                                                          ?: previous.startedTestClassAndName,
-                                finishedTestClassAndName = finishedTest // Actual finished test should always overwrite previous.
-                                    )
+                .scan(CaptureState()) { previous, newline ->
+                    val logcat = when (previous.startedTestClassAndName != null && previous.finishedTestClassAndName != null) {
+                        true  -> newline
+                        false -> "${previous.logcat}\n$newline"
                     }
-                    .filter { it.startedTestClassAndName != null && it.startedTestClassAndName == it.finishedTestClassAndName }
-                    .map { result ->
-                        logcatFileForTest(logsDir, className = result.startedTestClassAndName!!.first, testName = result.startedTestClassAndName.second)
-                                .apply { parentFile.mkdirs() }
-                                .writeText(result.logcat)
 
-                        result.startedTestClassAndName
-                    }
+                    // Implicitly expecting to see logs from `android.support.test.internal.runner.listener.LogRunListener`.
+                    // Was not able to find more reliable solution to capture logcat per test.
+                    val startedTest: Pair<String, String>? = newline.parseTestClassAndName()
+                    val finishedTest: Pair<String, String>? = newline.parseTestClassAndName()
+
+                    CaptureState(
+                        logcat = logcat,
+                        startedTestClassAndName = startedTest
+                                ?: previous.startedTestClassAndName,
+                        finishedTestClassAndName = finishedTest // Actual finished test should always overwrite previous.
+                    )
+                }
+                .filter { it.startedTestClassAndName != null && it.startedTestClassAndName == it.finishedTestClassAndName }
+                .map { result ->
+                    logcatFileForTest(logsDir, className = result.startedTestClassAndName!!.first, testName = result.startedTestClassAndName.second)
+                        .apply { parentFile.mkdirs() }
+                        .writeText(result.logcat)
+
+                    result.startedTestClassAndName
+                }
         }
+}
 
 private fun logcatFileForDevice(logsDir: File) = File(logsDir, "full.logcat")
 

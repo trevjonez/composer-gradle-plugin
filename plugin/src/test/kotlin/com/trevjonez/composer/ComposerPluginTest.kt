@@ -21,7 +21,9 @@ import org.gradle.testkit.runner.GradleRunner
 import org.junit.Assume
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TemporaryFolder
+import org.junit.rules.TestRule
+import org.junit.runner.Description
+import org.junit.runners.model.Statement
 import java.io.File
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
@@ -35,11 +37,12 @@ class ComposerPluginTest {
   private val andLib by systemProperty
 
   @get:Rule
-  val testProjectDir = TemporaryFolder()
+  val testProjectDir = BuildDir(buildDir)
 
   fun gradleRunner(projectDir: File, vararg args: String): GradleRunner {
     val argList = args.toMutableList().apply {
       add("--stacktrace")
+
     }
 
     return GradleRunner.create()
@@ -170,5 +173,21 @@ class ComposerPluginTest {
           return File(System.getProperty(property.name))
         }
       }
+    }
+
+    class BuildDir(val parentDir: File): TestRule {
+        lateinit var root: File
+        override fun apply(base: Statement, description: Description): Statement {
+            return object : Statement() {
+                override fun evaluate() {
+                    root = File(parentDir, "testDir-${description.methodName.replace("\\s+".toRegex(), "_")}")
+                    if(root.exists()) root.deleteRecursively()
+                    root.mkdirs()
+                    base.evaluate()
+                }
+            }
+        }
+
+        fun newFolder(name: String) = File(root, name).apply { mkdirs() }
     }
 }

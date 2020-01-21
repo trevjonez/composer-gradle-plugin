@@ -55,6 +55,17 @@ tasks.named("test").configure {
   inputs.files(new File(rootProject.projectDir, "and-lib/build.gradle"))
   inputs.files(new File(rootProject.projectDir, "and-lib/settings.gradle"))
 
+  inputs.dir(new File(rootProject.projectDir, "commander/os/src/main"))
+  inputs.files(new File(rootProject.projectDir, "commander/os/build.gradle"))
+
+  inputs.dir(new File(rootProject.projectDir, "commander/android/src/main"))
+  inputs.files(new File(rootProject.projectDir, "commander/android/build.gradle"))
+
+  inputs.dir(new File(rootProject.projectDir, "composer/composer/src/main"))
+  inputs.files(new File(rootProject.projectDir, "composer/composer/build.gradle"))
+
+  inputs.dir(new File(rootProject.projectDir, "composer/html-report"))
+
   dependsOn(":composer:composer:publishToMavenLocal")
   dependsOn(":commander:os:publishToMavenLocal")
   dependsOn(":commander:android:publishToMavenLocal")

@@ -1,5 +1,7 @@
 package com.trevjonez.andlib;
 
+import android.util.Log;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Test;
@@ -14,6 +16,7 @@ public class LibTesting {
 
     @Test
     public void basicMaths() {
+        Log.w("LibTesting", "Can do maths and log?");
         assertEquals(4, 2 + 2);
     }
 

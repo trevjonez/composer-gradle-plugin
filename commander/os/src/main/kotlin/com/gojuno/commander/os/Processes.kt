@@ -8,8 +8,8 @@ import io.reactivex.ObservableEmitter
 import io.reactivex.schedulers.Schedulers.io
 import java.io.File
 import java.util.Date
-import java.util.Random
 import java.util.Locale
+import java.util.Random
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeUnit.SECONDS
 import java.util.concurrent.TimeoutException
@@ -24,13 +24,13 @@ sealed class Notification {
 }
 
 fun process(
-        commandAndArgs: List<String>,
-        timeout: Pair<Int, TimeUnit>? = 30 to SECONDS,
-        redirectOutputTo: File? = null,
-        keepOutputOnExit: Boolean = false,
-        unbufferedOutput: Boolean = false,
-        print: Boolean = false,
-        destroyOnUnsubscribe: Boolean = false
+    commandAndArgs: List<String>,
+    timeout: Pair<Int, TimeUnit>? = 30 to SECONDS,
+    redirectOutputTo: File? = null,
+    keepOutputOnExit: Boolean = false,
+    unbufferedOutput: Boolean = false,
+    print: Boolean = false,
+    destroyOnUnsubscribe: Boolean = false
 ): Observable<Notification> = Observable.create { emitter: ObservableEmitter<Notification> ->
     if (print) {
         log("\nRun: $commandAndArgs")
@@ -80,17 +80,25 @@ fun process(
     emitter.onNext(Notification.Start(process, outputFile))
 
     if (timeout == null) {
-        try {
-            process.waitFor()
-        }
-        catch(interrupted: InterruptedException) {
-
-        }
+        do {
+            try {
+                process.waitFor()
+            } catch (interrupted: InterruptedException) {
+                if (!emitter.isDisposed) {
+                    val exitCode = runCatching { process.exitValue() }.getOrNull()
+                    val codeMessage = exitCode?.let { "Exit code: $it" } ?: ""
+                    emitter.onError(IllegalStateException("Process $command thread was interrupted. $codeMessage", interrupted))
+                    break
+                }
+            }
+        } while (process.isAlive)
     } else {
-        if (process.waitFor(timeout.first.toLong(), timeout.second).not()) {
+        if (!process.waitFor(timeout.first.toLong(), timeout.second)) {
             throw TimeoutException("Process $command timed out ${timeout.first} ${timeout.second} waiting for exit code ${outputFile.readText()}")
         }
     }
+
+    if(emitter.isDisposed) return@create
 
     val exitCode = process.exitValue()
 
@@ -112,20 +120,20 @@ fun process(
         }
     }
 }
-        .subscribeOn(io()) // Prevent subscriber thread from unnecessary blocking.
-        .observeOn(io())   // Allow to wait for process exit code.
+    .subscribeOn(io()) // Prevent subscriber thread from unnecessary blocking.
+    .observeOn(io())   // Allow to wait for process exit code.
 
 private fun prepareOutputFile(parent: File?, keepOnExit: Boolean): File = Random()
-        .nextInt()
-        .let { System.nanoTime() + it }
-        .let { name ->
-            File(parent, "$name.output").apply {
-                createNewFile()
-                if (!keepOnExit) {
-                    deleteOnExit()
-                }
+    .nextInt()
+    .let { System.nanoTime() + it }
+    .let { name ->
+        File(parent, "$name.output").apply {
+            createNewFile()
+            if (!keepOnExit) {
+                deleteOnExit()
             }
         }
+    }
 
 enum class Os {
     Linux,
