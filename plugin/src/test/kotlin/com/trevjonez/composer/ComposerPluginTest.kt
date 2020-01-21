@@ -68,8 +68,8 @@ class ComposerPluginTest {
 
     assertThat(result.output).contains("Successfully installed apk",
                                        "Starting tests",
-                                       "Test run finished, 0 passed, 0 failed",
-                                       "Error: 0 tests were run.")
+                                       "Test run finished, total passed = 1, total failed = 1, total ignored = 1",
+                                       "Error: There were failed tests.")
   }
 
   @Test
@@ -101,8 +101,8 @@ class ComposerPluginTest {
 
     assertThat(result.output).contains("Successfully installed apk",
                                        "Starting tests",
-                                       "Test run finished, 0 passed, 0 failed",
-                                       "Error: 0 tests were run.")
+                                       "Test run finished, total passed = 1, total failed = 1, total ignored = 1",
+                                       "Error: There were failed tests.")
   }
 
   /**
@@ -122,8 +122,8 @@ class ComposerPluginTest {
 
     assertThat(result.output).contains("Successfully installed apk",
                                        "Starting tests",
-                                       "Test run finished, 0 passed, 0 failed",
-                                       "Error: 0 tests were run.")
+                                       "Test run finished, total passed = 1, total failed = 1, total ignored = 1",
+                                       "Error: There were failed tests.")
   }
 
 

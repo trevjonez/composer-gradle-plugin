@@ -80,7 +80,12 @@ fun process(
     emitter.onNext(Notification.Start(process, outputFile))
 
     if (timeout == null) {
-        process.waitFor()
+        try {
+            process.waitFor()
+        }
+        catch(interrupted: InterruptedException) {
+
+        }
     } else {
         if (process.waitFor(timeout.first.toLong(), timeout.second).not()) {
             throw TimeoutException("Process $command timed out ${timeout.first} ${timeout.second} waiting for exit code ${outputFile.readText()}")
@@ -93,8 +98,12 @@ fun process(
         log("Exit code $exitCode: $commandAndArgs,\noutput = \n${outputFile.readText()}")
     }
 
-    when (exitCode) {
-        0 -> {
+    when {
+        exitCode == 0 -> {
+            emitter.onNext(Notification.Exit(outputFile))
+            emitter.onComplete()
+        }
+        destroyOnUnsubscribe && exitCode == 143 -> {
             emitter.onNext(Notification.Exit(outputFile))
             emitter.onComplete()
         }
@@ -103,7 +112,7 @@ fun process(
         }
     }
 }
-    .subscribeOn(io()) // Prevent subscriber thread from unnecessary blocking.
+        .subscribeOn(io()) // Prevent subscriber thread from unnecessary blocking.
         .observeOn(io())   // Allow to wait for process exit code.
 
 private fun prepareOutputFile(parent: File?, keepOnExit: Boolean): File = Random()

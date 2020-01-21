@@ -1,6 +1,10 @@
 # Changelist
 Items listed here may not be exhaustive, if you are seeing issues, check the git commits for more specific change information &| open an issue.
 
+## 1.0.0-rc05
+Catch specific subset of errors allowing clean disposal of underlying processes. (logcat and instrumentation)
+Add a few test cases in the plugin app/lib test targets as smoke checks for composer changes. 
+
 ## 1.0.0-rc04
 Force process death on unsubscribe for processes redirecting to kept files. (logcat & instrumentation)
 This should resolve issues with files continuing to change after gradle tasks have completing and breaks gradle caching.
