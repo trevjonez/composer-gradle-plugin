@@ -2,6 +2,7 @@
 
 [ ![Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/com/trevjonez/composer/com.trevjonez.composer.gradle.plugin/maven-metadata.xml.svg?label=Plugin%20Portal) ](https://plugins.gradle.org/plugin/com.trevjonez.composer)
 [ ![JCenter](https://api.bintray.com/packages/trevorjones141/maven/composer/images/download.svg) ](https://bintray.com/trevorjones141/maven/composer/_latestVersion)
+![CI](https://github.com/trevjonez/composer-gradle-plugin/workflows/CI/badge.svg)
 
 Gradle task type and plugin for running [gojuno/composer](https://github.com/gojuno/composer) from gradle.
 
