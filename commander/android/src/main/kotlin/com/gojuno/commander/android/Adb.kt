@@ -90,11 +90,12 @@ fun connectedAdbDevices(): Single<Set<AdbDevice>> = process(listOf(adb, "devices
 
 fun AdbDevice.log(message: String) = com.gojuno.commander.os.log("[$id] $message")
 
-fun AdbDevice.installApk(pathToApk: String, timeout: Pair<Int, TimeUnit> = 2 to MINUTES): Observable<Unit> {
+fun AdbDevice.installApk(pathToApk: String, timeout: Pair<Int, TimeUnit> = 2 to MINUTES, logErrors: Boolean = false): Observable<Unit> {
     val installApk = process(
         commandAndArgs = listOf(adb, "-s", id, "install", "-r", pathToApk),
-        unbufferedOutput = true,
-        timeout = timeout
+        timeout = timeout,
+        print = logErrors,
+        unbufferedOutput = true
     )
 
     return Observable

@@ -115,7 +115,7 @@ private fun runAllTests(args: Args, testPackage: TestPackage.Valid, testRunner: 
 
                 val apkPaths = setOf(args.appApkPath, args.testApkPath) + args.extraApks.toSet()
                 val installs = apkPaths.map {
-                    device.installApk(pathToApk = it, timeout = installTimeout)
+                    device.installApk(pathToApk = it, timeout = installTimeout, logErrors = args.verboseOutput)
                 }
 
                 device.log("${installs.size} APK${if (installs.size == 1) "" else "s"} to install")
