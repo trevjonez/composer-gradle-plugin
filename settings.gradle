@@ -18,12 +18,25 @@ pluginManagement {
     repositories {
         google()
         jcenter()
+        gradlePluginPortal()
     }
     resolutionStrategy {
         eachPlugin {
             if (requested.id.id.startsWith("com.android"))
                 useModule("com.android.tools.build:gradle:$AGP_VERSION")
         }
+    }
+}
+
+plugins {
+    id "com.gradle.enterprise" version "3.1.1"
+}
+
+gradleEnterprise {
+    buildScan {
+        setTermsOfServiceUrl("https://gradle.com/terms-of-service")
+        setTermsOfServiceAgree("yes")
+        publishAlways()
     }
 }
 
@@ -44,5 +57,3 @@ gradle.allprojects {
         mavenLocal()
     }
 }
-
-enableFeaturePreview("GRADLE_METADATA")

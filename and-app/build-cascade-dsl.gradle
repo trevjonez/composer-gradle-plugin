@@ -26,11 +26,11 @@ repositories {
 }
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion Integer.parseInt(COMPILE_SDK)
     defaultConfig {
         applicationId "com.trevjonez.andapp"
-        minSdkVersion 21
-        targetSdkVersion 29
+        minSdkVersion Integer.parseInt(MIN_SDK)
+        targetSdkVersion Integer.parseInt(COMPILE_SDK)
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

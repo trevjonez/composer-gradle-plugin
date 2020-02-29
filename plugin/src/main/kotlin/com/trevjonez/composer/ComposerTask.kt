@@ -71,7 +71,7 @@ abstract class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl 
   @get:[Optional Input]
   abstract override val apkInstallTimeout: Property<Int>
 
-  @get:InputFiles
+  @get:[Classpath InputFiles]
   abstract override val extraApks: ConfigurableFileCollection
 
   @get:OutputDirectory
