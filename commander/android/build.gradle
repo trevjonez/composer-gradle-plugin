@@ -18,4 +18,11 @@ test {
     useJUnitPlatform {
         includeEngines 'spek2'
     }
+
+    dependsOn(":commander:testSupport:assembleDebug")
+    def apkDir = file("${project(":commander:testSupport").buildDir}/outputs/apk")
+    inputs.dir(apkDir)
+
+    systemProperty("oldApk", "$apkDir/older/debug/testSupport-older-debug.apk")
+    systemProperty("newApk", "$apkDir/newer/debug/testSupport-newer-debug.apk")
 }

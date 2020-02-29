@@ -66,7 +66,7 @@ tasks.named("test").configure {
 
   inputs.dir(new File(rootProject.projectDir, "composer/html-report"))
 
-  dependsOn(":composer:composer:publishToMavenLocal")
+  dependsOn(":composer:publishToMavenLocal")
   dependsOn(":commander:os:publishToMavenLocal")
   dependsOn(":commander:android:publishToMavenLocal")
 }

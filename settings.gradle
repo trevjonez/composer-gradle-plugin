@@ -14,19 +14,35 @@
  *    limitations under the License.
  */
 
+pluginManagement {
+    repositories {
+        google()
+        jcenter()
+    }
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id.startsWith("com.android"))
+                useModule("com.android.tools.build:gradle:$AGP_VERSION")
+        }
+    }
+}
+
 rootProject.name = "composer-gradle-plugin"
+
 include(":plugin")
-include(":commander", ":commander:os", ":commander:android")
-include(":composer:composer")
+include(":commander", ":commander:os", ":commander:android", ":commander:testSupport")
+include("composer")
+
+project(":composer").projectDir = file("composer/composer")
 
 gradle.allprojects {
-  version = CGP_VERSION
+    version = CGP_VERSION
 
-  repositories {
-    google()
-    jcenter()
-    mavenLocal()
-  }
+    repositories {
+        google()
+        jcenter()
+        mavenLocal()
+    }
 }
 
 enableFeaturePreview("GRADLE_METADATA")
