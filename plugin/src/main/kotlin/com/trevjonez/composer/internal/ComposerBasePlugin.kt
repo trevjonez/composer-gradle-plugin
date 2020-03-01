@@ -18,6 +18,7 @@ package com.trevjonez.composer.internal
 
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.api.TestedVariant
+import com.trevjonez.composer.ComposerPlugin
 import com.trevjonez.composer.ComposerTask
 import com.trevjonez.composer.ConfigExtension
 import com.trevjonez.composer.ConfiguratorDomainObj
@@ -39,12 +40,11 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
 
   abstract fun T.getApk(task: ComposerTask): Provider<RegularFile>
   abstract fun T.getTestApk(task: ComposerTask): Provider<RegularFile>
+  abstract fun T.getExtraApks(task: ComposerTask): ConfigurableFileCollection
 
   open fun T.getOutputDir(task: ComposerTask): Provider<Directory> {
     return project.layout.buildDirectory.dir("reports/composer/$dirName")
   }
-
-  abstract val extraApks: ConfigurableFileCollection
 
   lateinit var project: Project
   lateinit var globalConfig: ConfigExtension
@@ -68,8 +68,8 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
 
         project.tasks.register(
             "test${testableVariant.name.capitalize()}Composer", ComposerTask::class.java
-        ) {task ->
-          task.group = "Composer"
+                              ) { task ->
+          task.group = ComposerPlugin.GROUP
           task.description = "Run composer for ${testableVariant.name} variant"
           task.environment("ANDROID_HOME", sdkDir.absolutePath)
 
@@ -87,7 +87,7 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
   private fun T.configureTaskDslLevelProperties(
       composerTask: ComposerTask,
       variantConfigurator: ConfiguratorDomainObj?
-  ) {
+                                               ) {
 
     composerTask.apk.set(variantConfigurator?.apk
                              ?.takeIf { it.isPresent }
@@ -102,18 +102,18 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
                                ?: getOutputDir(composerTask))
 
     composerTask.extraApks.setFrom(variantConfigurator?.extraApks
-        ?.takeUnless{ it.isEmpty }
-        ?: extraApks)
+                                       ?.takeUnless { it.isEmpty }
+                                   ?: getExtraApks(composerTask))
   }
 
-  fun logDslSelection(propertyName: String, source: String) {
+  private fun logDslSelection(propertyName: String, source: String) {
     project.logger.info("ComposerBasePlugin: Selecting `$propertyName` from $source config.")
   }
 
   private fun configureGlobalDslLevelProperties(
       composerTask: ComposerTask,
       variantConfigurator: ConfiguratorDomainObj?
-  ) {
+                                               ) {
     if (globalConfig.withOrchestrator.isPresent) {
       logDslSelection("withOrchestrator", "global")
       composerTask.withOrchestrator(globalConfig.withOrchestrator)

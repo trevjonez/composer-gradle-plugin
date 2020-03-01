@@ -18,6 +18,7 @@ package com.trevjonez.composer
 
 import com.android.build.gradle.api.AndroidBasePlugin
 import com.trevjonez.composer.internal.ComposerApplicationPlugin
+import com.trevjonez.composer.internal.ComposerDynamicFeaturePlugin
 import com.trevjonez.composer.internal.ComposerLibraryPlugin
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
@@ -39,28 +40,35 @@ class ComposerPlugin : Plugin<Project> {
     }
 
     project.pluginManager.withPlugin("com.android.dynamic-feature") {
-      project.pluginManager.apply(ComposerApplicationPlugin::class.java)
+      project.pluginManager.apply(ComposerDynamicFeaturePlugin::class.java)
     }
 
     project.afterEvaluate {
       project.extensions.findByType(ConfigExtension::class.java)
       ?: project.tasks.find { it is ComposerTask } //check if manually created tasks exist before throwing
-      ?: project.missingPlugin<AndroidBasePlugin>(genericExceptionMessage)
+      ?: project.missingPlugin<AndroidBasePlugin>()
     }
   }
 
-  private val genericExceptionMessage =
-    """If you believe this is an issue or missing feature, please consider opening an issue on github.
-      |https://github.com/trevjonez/composer-gradle-plugin
-      |""".trimMargin()
+  private inline fun <reified T : Plugin<Project>> Project.missingPlugin(): Nothing {
+    val preamble = """Failed to configure ${ComposerPlugin::class.java.name} plugin on project: $path
+            |  Expected plugin: `${T::class.java.name}` was not applied.
+            |""".trimMargin()
 
-  private inline fun <reified T : Plugin<Project>> Project.missingPlugin(msg: String = ""): Nothing {
-    throw MissingPluginException(
-        """Failed to configure ${ComposerPlugin::class.java.name} plugin on project: $path
-          |  Expected plugin: `${T::class.java.name}` was not applied.
-          |  $msg""".trimMargin()
-    )
+    throw MissingPluginException(preamble.withIssuePrompt())
   }
 
   class MissingPluginException(message: String) : GradleException(message)
 }
+
+fun String.withIssuePrompt(): String =
+    """$this
+      |------
+      |$issuePrompt
+    """.trimMargin()
+
+val issuePrompt =
+    """If you believe this is an issue or missing feature, please consider opening an issue on github.
+      |https://github.com/trevjonez/composer-gradle-plugin
+      |""".trimMargin()
+

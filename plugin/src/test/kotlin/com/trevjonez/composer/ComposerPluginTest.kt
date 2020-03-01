@@ -35,15 +35,13 @@ class ComposerPluginTest {
 
   private val andApp by systemProperty
   private val andLib by systemProperty
+  private val andDyn by systemProperty
 
   @get:Rule
   val testProjectDir = BuildDir(buildDir)
 
   fun gradleRunner(projectDir: File, vararg args: String): GradleRunner {
-    val argList = args.toMutableList().apply {
-      add("--stacktrace")
-
-    }
+    val argList = args.toList() + listOf("--stacktrace", "--no-build-cache")
 
     return GradleRunner.create()
         .withProjectDir(projectDir)
@@ -60,7 +58,7 @@ class ComposerPluginTest {
    * Run with at least one device/emulator connected
    */
   @Test
-  fun `basic application plugin integration`() {
+  fun `application plugin integration`() {
     val projectDir = testProjectDir.newFolder("basicApp").apply {
       andApp.copyRecursively(this, true)
       writeLocalProps()
@@ -85,7 +83,7 @@ class ComposerPluginTest {
     val result = gradleRunner(projectDir, "tasks")
         .build()
 
-    assertThat(result.output).contains("Composer tasks",
+    assertThat(result.output).contains("Composer Plugin tasks",
                                        "testDebugComposer - Run composer for debug variant")
   }
 
@@ -93,13 +91,51 @@ class ComposerPluginTest {
    * Run with at least one device/emulator connected
    */
   @Test
-  fun `basic library plugin integration`() {
+  fun `library plugin integration`() {
     val projectDir = testProjectDir.newFolder("basicLib").apply {
       andLib.copyRecursively(this, true)
       writeLocalProps()
     }
 
     val result = gradleRunner(projectDir, "testDebugComposer")
+        .buildAndFail()
+
+    assertThat(result.output).contains("Successfully installed apk",
+                                       "Starting tests",
+                                       "Test run finished, total passed = 1, total failed = 1, total ignored = 1",
+                                       "Error: There were failed tests.")
+  }
+
+  /**
+   * Run with at least one device/emulator connected
+   */
+  @Test
+  fun `application plugin with dynamic feature integration`() {
+    val projectDir = testProjectDir.newFolder("dynamicApp").apply {
+      andDyn.copyRecursively(this, true)
+      writeLocalProps()
+    }
+
+    val result = gradleRunner(projectDir, "base:testDebugComposer")
+        .buildAndFail()
+
+    assertThat(result.output).contains("Successfully installed apk",
+                                       "Starting tests",
+                                       "Test run finished, total passed = 1, total failed = 1, total ignored = 1",
+                                       "Error: There were failed tests.")
+  }
+
+  /**
+   * Run with at least one device/emulator connected
+   */
+  @Test
+  fun `dynamic feature plugin integration`() {
+    val projectDir = testProjectDir.newFolder("dynamicApp").apply {
+      andDyn.copyRecursively(this, true)
+      writeLocalProps()
+    }
+
+    val result = gradleRunner(projectDir, "atInstall:testDebugComposer")
         .buildAndFail()
 
     assertThat(result.output).contains("Successfully installed apk",

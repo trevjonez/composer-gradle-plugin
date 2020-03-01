@@ -113,12 +113,16 @@ private fun runAllTests(args: Args, testPackage: TestPackage.Valid, testRunner: 
             val runTestsOnDevices: List<Single<AdbDeviceTestRun>> = connectedAdbDevices.mapIndexed { index, device ->
                 val installTimeout = Pair(args.installTimeoutSeconds, TimeUnit.SECONDS)
 
-                val apkPaths = setOf(args.appApkPath, args.testApkPath) + args.extraApks.toSet()
+                //Extras first so dynamic feature base apk installs before the feature apk
+                val apkPaths = args.extraApks + setOf(args.appApkPath, args.testApkPath)
                 val installs = apkPaths.map {
                     device.installApk(pathToApk = it, timeout = installTimeout, print = args.verboseOutput)
                 }
 
                 device.log("${installs.size} APK${if (installs.size == 1) "" else "s"} to install")
+                apkPaths.forEachIndexed { apkIndex, apkPath ->
+                    device.log("${apkIndex + 1}: $apkPath")
+                }
 
                     Observable
                             .concat(installs)

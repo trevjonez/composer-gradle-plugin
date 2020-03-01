@@ -128,7 +128,6 @@ fun <T> Single<T>.acquireDeviceLock(adbDevice: AdbDevice): Single<T> {
         Single.create<T> { emitter ->
             adbDevice.log("Acquiring lock")
             try {
-                val startTime = System.currentTimeMillis()
                 val waitLogging = Observable.interval(5L, 30L, SECONDS)
                     .subscribe {
                         adbDevice.log("Waiting for device to be available")

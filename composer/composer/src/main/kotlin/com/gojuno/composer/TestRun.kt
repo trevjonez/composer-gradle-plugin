@@ -71,7 +71,8 @@ fun AdbDevice.runTests(
             timeout = null,
             redirectOutputTo = instrumentationOutputFile,
             keepOutputOnExit = keepOutput,
-            destroyOnUnsubscribe = true
+            destroyOnUnsubscribe = true,
+            print = verboseOutput
                           ).share()
 
     @Suppress("destructure")

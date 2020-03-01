@@ -16,8 +16,8 @@
 
 package com.trevjonez.composer.internal
 
-import com.android.build.gradle.AppExtension
 import com.android.build.gradle.api.ApplicationVariant
+import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import com.trevjonez.composer.ComposerTask
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.file.ConfigurableFileCollection
@@ -27,7 +27,7 @@ import java.io.File
 
 class ComposerApplicationPlugin : ComposerBasePlugin<ApplicationVariant>() {
   private val androidExtension by lazy(LazyThreadSafetyMode.NONE) {
-    requireNotNull(project.extensions.findByName("android") as? AppExtension) {
+    requireNotNull(project.findExtension<BaseAppModuleExtension>("android")) {
       "Failed to find android application extension"
     }
   }
@@ -56,10 +56,12 @@ class ComposerApplicationPlugin : ComposerBasePlugin<ApplicationVariant>() {
     })
   }
 
-  override val extraApks: ConfigurableFileCollection
-    get() = project.objects.fileCollection().also {
+  override fun ApplicationVariant.getExtraApks(task: ComposerTask): ConfigurableFileCollection {
+    return project.objects.fileCollection().also {
       it.from(project.provider {
-        androidTestUtil?.resolvedConfiguration?.files?.toList() ?: emptyList()
+        androidTestUtil?.resolvedConfiguration?.files?.toList()
+        ?: emptyList()
       })
     }
+  }
 }
