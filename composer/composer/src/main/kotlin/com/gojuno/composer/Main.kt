@@ -3,6 +3,7 @@ package com.gojuno.composer
 import com.gojuno.commander.android.acquireDeviceLock
 import com.gojuno.commander.android.connectedAdbDevices
 import com.gojuno.commander.android.installApk
+import com.gojuno.commander.android.installMultipleApks
 import com.gojuno.commander.android.log
 import com.gojuno.commander.os.log
 import com.gojuno.commander.os.nanosToHumanReadableTime
@@ -113,22 +114,35 @@ private fun runAllTests(args: Args, testPackage: TestPackage.Valid, testRunner: 
             val runTestsOnDevices: List<Single<AdbDeviceTestRun>> = connectedAdbDevices.mapIndexed { index, device ->
                 val installTimeout = Pair(args.installTimeoutSeconds, TimeUnit.SECONDS)
 
-                val apkPaths = setOf(args.appApkPath, args.testApkPath) + args.extraApks.toSet()
-                val installs = apkPaths.map {
-                    device.installApk(pathToApk = it, timeout = installTimeout, print = args.verboseOutput)
+                val installs = if (args.multiApks.isEmpty()) {
+                    val apkPaths = setOf(args.appApkPath, args.testApkPath) + args.extraApks
+                    device.log("${apkPaths.size} APK${if (apkPaths.size == 1) "" else "s"} to install")
+                    apkPaths.forEachIndexed { apkIndex, apkPath ->
+                        device.log("${apkIndex + 1}: $apkPath")
+                    }
+                    apkPaths.map {
+                        device.installApk(pathToApk = it, timeout = installTimeout, print = args.verboseOutput)
+                    }
+                } else {
+                    val apkPaths = listOf(args.testApkPath) + args.extraApks
+                    device.log("${apkPaths.size + args.multiApks.size} APKs to install")
+                    (apkPaths + args.multiApks).forEachIndexed { apkIndex, apkPath ->
+                        device.log("${apkIndex + 1}: $apkPath")
+                    }
+                    apkPaths.map {
+                        device.installApk(pathToApk = it, timeout = installTimeout, print = args.verboseOutput)
+                    } + device.installMultipleApks(paths = args.multiApks, timeout = installTimeout, print = args.verboseOutput)
                 }
 
-                device.log("${installs.size} APK${if (installs.size == 1) "" else "s"} to install")
-
-                    Observable
-                            .concat(installs)
-                            // Work with each device in parallel, but install apks sequentially on a device.
-                            .subscribeOn(Schedulers.io())
-                            .toList()
-                            .flatMap {
-                                val targetInstrumentation: List<Pair<String, String>>
-                                val testPackageName: String
-                                val testRunnerClass: String
+                Observable
+                    .concat(installs)
+                    // Work with each device in parallel, but install apks sequentially on a device.
+                    .subscribeOn(Schedulers.io())
+                    .toList()
+                    .flatMap {
+                        val targetInstrumentation: List<Pair<String, String>>
+                        val testPackageName: String
+                        val testRunnerClass: String
 
                         if (args.runWithOrchestrator) {
                             targetInstrumentation = listOf("targetInstrumentation" to "${testPackage.value}/${testRunner.value}")
@@ -165,7 +179,7 @@ private fun runAllTests(args: Args, testPackage: TestPackage.Valid, testRunner: 
                             }
                             .subscribeOn(Schedulers.io())
                     }
-                        .acquireDeviceLock(device)
+                    .acquireDeviceLock(device)
             }
             Single.zip(runTestsOnDevices) { results: Array<Any> -> results.map { it as AdbDeviceTestRun } }
         }

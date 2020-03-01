@@ -124,7 +124,16 @@ data class Args(
             description = "Extra APKs you would usually put on androidTestUtil",
             order = 13
         )
-        var extraApks: List<String> = emptyList()
+        var extraApks: List<String> = emptyList(),
+
+        @Parameter(
+                names = arrayOf("--multi-apks"),
+                required = false,
+                variableArity = true,
+                description = "APKs that represent an application with dynamic features",
+                order = 14
+        )
+        var multiApks: List<String> = emptyList()
 )
 
 // No way to share array both for runtime and annotation without reflection.

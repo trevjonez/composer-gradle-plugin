@@ -5,9 +5,10 @@ Items listed here may not be exhaustive, if you are seeing issues, check the git
 - Print output for `adb install` commands. #59 thanks [@plastiv](https://github.com/plastiv).
 - Update gradle and AGP to latest stable. `6.2.1` & `3.6.1` respectively.
 - Process: Github actions for verification. #36 again, thank you [@plastiv](https://github.com/plastiv).
+- Feature: Dynamic-Feature module support
 
 ## 1.0.0-rc05
-- Catch specific subset of errors allowing clean disposal of underlying processes. (logcat and instrumentation)
+- Catch a specific subset of errors allowing clean disposal of underlying processes. (logcat and instrumentation)
 - Add a few test cases in the plugin app/lib test targets as smoke checks for composer changes. 
 
 ## 1.0.0-rc04

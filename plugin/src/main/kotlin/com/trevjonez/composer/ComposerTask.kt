@@ -74,6 +74,9 @@ abstract class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl 
   @get:[Classpath InputFiles]
   abstract override val extraApks: ConfigurableFileCollection
 
+  @get:[Classpath InputFiles]
+  abstract override val multiApks: ConfigurableFileCollection
+
   @get:OutputDirectory
   abstract override val outputDir: DirectoryProperty
 
@@ -96,10 +99,11 @@ abstract class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl 
         testApk.asFile.get(),
         withOrchestrator.orNull,
         extraApks,
+        multiApks,
         shard.orNull,
         outputDir,
         instrumentationArguments.getOrElse(emptyList()),
-        verboseOutput.orNull,
+        verboseOutput.orNull ?: project.hasProperty("composerVerbose"),
         devices.getOrElse(emptyList()),
         devicePattern.orNull,
         keepOutput.orNull,
@@ -136,6 +140,10 @@ abstract class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl 
 
   override fun extraApks(paths: Any) {
     extraApks.from(paths)
+  }
+
+  override fun multiApks(paths: Any) {
+    multiApks.from(paths)
   }
 
   override fun outputDirectory(path: Any) {
