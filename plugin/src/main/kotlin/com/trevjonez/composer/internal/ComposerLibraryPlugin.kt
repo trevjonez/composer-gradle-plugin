@@ -57,9 +57,12 @@ class ComposerLibraryPlugin : ComposerBasePlugin<LibraryVariant>() {
   override fun LibraryVariant.getExtraApks(task: ComposerTask): ConfigurableFileCollection {
     return project.objects.fileCollection().also {
       it.from(project.provider {
-        androidTestUtil?.resolvedConfiguration?.files?.toList()
-        ?: emptyList()
+        androidTestUtil?.resolvedConfiguration?.files?.toList().orEmpty()
       })
     }
+  }
+
+  override fun LibraryVariant.getMultiApks(task: ComposerTask): ConfigurableFileCollection {
+    return project.objects.fileCollection()
   }
 }

@@ -29,10 +29,6 @@ import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import java.io.File
 
-//TODO: rework composer to understand apk groupings.
-// adb install-multiple base.apk feature.apk
-// adb install feature-test.apk
-// adb shell am inst....
 class ComposerDynamicFeaturePlugin : ComposerBasePlugin<ApplicationVariant>() {
   private val androidExtension by lazy(LazyThreadSafetyMode.NONE) {
     requireNotNull(project.findExtension<AppExtension>("android")) {
@@ -65,31 +61,37 @@ class ComposerDynamicFeaturePlugin : ComposerBasePlugin<ApplicationVariant>() {
   }
 
   override fun ApplicationVariant.getExtraApks(task: ComposerTask): ConfigurableFileCollection {
+    androidTestUtil?.let { task.dependsOn(it) }
+    return project.objects.fileCollection().also {
+      it.from(project.provider {
+        androidTestUtil?.resolvedConfiguration?.files?.toList().orEmpty()
+      })
+    }
+  }
+
+  override fun ApplicationVariant.getMultiApks(task: ComposerTask): ConfigurableFileCollection {
     val consumers = findApplicationProjects().thatUseThisFeature()
     if (consumers.isEmpty()) {
       throw UnsupportedOperationException(
-          "Unable to find base module for feature module".withIssuePrompt())
+        "Unable to find base module for feature module".withIssuePrompt())
     }
     if (consumers.size > 1) {
       throw UnsupportedOperationException(
-          "Multiple consuming base modules is not supported".withIssuePrompt())
+        "Multiple consuming base modules is not supported".withIssuePrompt())
     }
     val baseModule = consumers.single()
     val matchedBaseVariant = requireNotNull(baseModule.findExtension<BaseAppModuleExtension>("android")) {
       "Failed to find base module android application extension"
     }.findMatchingVariant(this)
 
+    val featureApk = getApk(task)
     task.dependsOn(matchedBaseVariant.assembleProvider)
-
     return project.objects.fileCollection().also {
       it.from(project.provider {
         val baseAssembleProvider = baseModule.layout.file(baseModule.provider {
           matchedBaseVariant.outputs.single().outputFile
         })
-        val baseExtras = listOf(baseAssembleProvider)
-        val andTestExtras = androidTestUtil?.resolvedConfiguration?.files?.toList().orEmpty()
-
-        baseExtras + andTestExtras
+        listOf(featureApk, baseAssembleProvider)
       })
     }
   }

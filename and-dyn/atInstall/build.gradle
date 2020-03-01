@@ -16,7 +16,7 @@
 
 plugins {
     id "com.android.dynamic-feature"
-//    id "com.trevjonez.composer"
+    id "com.trevjonez.composer"
 }
 
 android {

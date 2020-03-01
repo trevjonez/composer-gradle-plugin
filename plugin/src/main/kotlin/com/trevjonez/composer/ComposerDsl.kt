@@ -129,6 +129,7 @@ interface ComposerTaskDsl : ComposerDsl {
   val apk: RegularFileProperty
   val outputDir: DirectoryProperty
   val extraApks: ConfigurableFileCollection
+  val multiApks: ConfigurableFileCollection
 
   /**
    * @param path evaluated as per [org.gradle.api.Project.file].
@@ -146,4 +147,5 @@ interface ComposerTaskDsl : ComposerDsl {
   fun outputDirectory(path: Any)
 
   fun extraApks(paths: Any)
+  fun multiApks(paths: Any)
 }

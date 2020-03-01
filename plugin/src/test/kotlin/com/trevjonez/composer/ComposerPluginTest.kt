@@ -140,7 +140,7 @@ class ComposerPluginTest {
 
     assertThat(result.output).contains("Successfully installed apk",
                                        "Starting tests",
-                                       "Test run finished, total passed = 1, total failed = 1, total ignored = 1",
+                                       "Test run finished, total passed = 2, total failed = 1, total ignored = 1",
                                        "Error: There were failed tests.")
   }
 

@@ -41,6 +41,7 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
   abstract fun T.getApk(task: ComposerTask): Provider<RegularFile>
   abstract fun T.getTestApk(task: ComposerTask): Provider<RegularFile>
   abstract fun T.getExtraApks(task: ComposerTask): ConfigurableFileCollection
+  abstract fun T.getMultiApks(task: ComposerTask): ConfigurableFileCollection
 
   open fun T.getOutputDir(task: ComposerTask): Provider<Directory> {
     return project.layout.buildDirectory.dir("reports/composer/$dirName")
@@ -104,6 +105,10 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
     composerTask.extraApks.setFrom(variantConfigurator?.extraApks
                                        ?.takeUnless { it.isEmpty }
                                    ?: getExtraApks(composerTask))
+
+    composerTask.multiApks.setFrom(variantConfigurator?.multiApks
+                                       ?.takeUnless { it.isEmpty }
+                                   ?: getMultiApks(composerTask))
   }
 
   private fun logDslSelection(propertyName: String, source: String) {

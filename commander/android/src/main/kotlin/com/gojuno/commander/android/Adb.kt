@@ -90,6 +90,42 @@ fun connectedAdbDevices(): Single<Set<AdbDevice>> = process(listOf(adb, "devices
 
 fun AdbDevice.log(message: String) = com.gojuno.commander.os.log("[$id] $message")
 
+fun AdbDevice.installMultipleApks(paths: List<String>, timeout: Pair<Int, TimeUnit> = 2 to MINUTES, print: Boolean = false): Observable<Unit> {
+    val installMultiple = process(
+        commandAndArgs = listOf(adb, "-s", id, "install-multiple", "-r") + paths,
+        timeout = timeout,
+        print = print,
+        unbufferedOutput = true
+    )
+
+    return Observable
+        .fromCallable { System.nanoTime() }
+        .flatMap { startTimeNanos ->
+            installMultiple.ofType(Notification.Exit::class.java)
+                .map { it to startTimeNanos }
+        }
+        .map { (exit, startTimeNanos) ->
+            val success = exit
+                .output
+                .readText()
+                .split(System.lineSeparator())
+                .map { it.trim() }
+                .filter { it.isNotEmpty() }
+                .firstOrNull { it.equals("Success", ignoreCase = true) } != null
+
+            val duration = System.nanoTime() - startTimeNanos
+
+            if (success)
+                log("Successfully install-multiple in ${duration.nanosToHumanReadableTime()}, apkPaths = $paths")
+            else {
+                log("Failed to install-multiple, apkPaths = $paths")
+                exitProcess(1)
+            }
+        }
+        .doOnSubscribe { log("Installing apks... apkPaths = $paths") }
+        .doOnError { log("Error during install-multiple: $it, pathToApk = $paths") }
+}
+
 fun AdbDevice.installApk(pathToApk: String, timeout: Pair<Int, TimeUnit> = 2 to MINUTES, print: Boolean = false): Observable<Unit> {
     val installApk = process(
         commandAndArgs = listOf(adb, "-s", id, "install", "-r", pathToApk),
@@ -100,7 +136,10 @@ fun AdbDevice.installApk(pathToApk: String, timeout: Pair<Int, TimeUnit> = 2 to 
 
     return Observable
         .fromCallable { System.nanoTime() }
-        .flatMap { startTimeNanos -> installApk.ofType(Notification.Exit::class.java).map { it to startTimeNanos } }
+        .flatMap { startTimeNanos ->
+            installApk.ofType(Notification.Exit::class.java)
+                .map { it to startTimeNanos }
+        }
         .map { (exit, startTimeNanos) ->
             val success = exit
                 .output

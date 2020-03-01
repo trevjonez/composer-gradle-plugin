@@ -24,6 +24,7 @@ data class ComposerParams(
         val testApk: File,
         val withOrchestrator: Boolean?,
         val extraApks: FileCollection,
+        val multiApks: FileCollection,
         val shard: Boolean?,
         val outputDirectory: File?,
         val instrumentationArguments: List<Pair<String, String>>,
@@ -53,6 +54,12 @@ data class ComposerParams(
                     extraApks.takeIf { !it.isEmpty }?.let {
                       val apks = extraApks.map { file -> file.absolutePath }.toTypedArray()
                       params + arrayOf("--extra-apks", *apks)
+                    } ?: params
+                }
+                .let { params ->
+                    multiApks.takeIf { !it.isEmpty }?.let {
+                      val apks = multiApks.map { file -> file.absolutePath }.toTypedArray()
+                      params + arrayOf("--multi-apks", *apks)
                     } ?: params
                 }
                 .let { params ->
