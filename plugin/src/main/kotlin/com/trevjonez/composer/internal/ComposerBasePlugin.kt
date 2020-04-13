@@ -47,6 +47,10 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
     return project.layout.buildDirectory.dir("reports/composer/$dirName")
   }
 
+  open fun T.isTestable(): Boolean {
+    return testVariant != null
+  }
+
   lateinit var project: Project
   lateinit var globalConfig: ConfigExtension
 
@@ -62,8 +66,8 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
   private fun observeVariants() {
     testableVariants.all { testableVariant ->
       if (globalConfig.variants.isEmpty() || globalConfig.variants.contains(testableVariant.name)) {
-        if (testableVariant.testVariant == null) {
-          project.logger.info("variant: ${testableVariant.name}. has no test variant. skipping composer task registration.")
+        if (!testableVariant.isTestable()) {
+          project.logger.info("variant: ${testableVariant.name}. is not testable. skipping composer task registration.")
           return@all
         }
 

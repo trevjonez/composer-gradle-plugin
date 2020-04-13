@@ -36,6 +36,7 @@ class ComposerPluginTest {
   private val andApp by systemProperty
   private val andLib by systemProperty
   private val andDyn by systemProperty
+  private val andTest by systemProperty
 
   @get:Rule
   val testProjectDir = BuildDir(buildDir)
@@ -91,9 +92,28 @@ class ComposerPluginTest {
    * Run with at least one device/emulator connected
    */
   @Test
-  fun `library plugin integration`() {
+  fun `test plugin integration`() {
     val projectDir = testProjectDir.newFolder("basicLib").apply {
       andLib.copyRecursively(this, true)
+      writeLocalProps()
+    }
+
+    val result = gradleRunner(projectDir, "testDebugComposer")
+        .buildAndFail()
+
+    assertThat(result.output).contains("Successfully installed apk",
+                                       "Starting tests",
+                                       "Test run finished, total passed = 1, total failed = 1, total ignored = 1",
+                                       "Error: There were failed tests.")
+  }
+
+  /**
+   * Run with at least one device/emulator connected
+   */
+  @Test
+  fun `library plugin integration`() {
+    val projectDir = testProjectDir.newFolder("basicTest").apply {
+      andTest.copyRecursively(this, true)
       writeLocalProps()
     }
 

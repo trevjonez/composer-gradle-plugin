@@ -6,6 +6,7 @@ Items listed here may not be exhaustive, if you are seeing issues, check the git
 - Update gradle and AGP to latest stable. `6.2.1` & `3.6.1` respectively.
 - Process: Github actions for verification. #36 again, thank you [@plastiv](https://github.com/plastiv).
 - Feature: Dynamic-Feature module support
+- Feature: Test module support "com.android.test". #71 thanks [@dkostyrev](https://github.com/dkostyrev).
 
 ## 1.0.0-rc05
 - Catch a specific subset of errors allowing clean disposal of underlying processes. (logcat and instrumentation)
