@@ -39,6 +39,7 @@ tasks.named("test").configure {
   systemProperty("andApp", new File(rootProject.projectDir, "and-app").absolutePath)
   systemProperty("andLib", new File(rootProject.projectDir, "and-lib").absolutePath)
   systemProperty("andDyn", new File(rootProject.projectDir, "and-dyn").absolutePath)
+  systemProperty("andTest", new File(rootProject.projectDir, "and-test").absolutePath)
   systemProperty("org.gradle.testkit.debug", false)
 
   outputs.dir("$buildDir/tests")
@@ -67,6 +68,15 @@ tasks.named("test").configure {
 
   inputs.dir(new File(rootProject.projectDir, "and-dyn/atInstall/src"))
   inputs.files(new File(rootProject.projectDir, "and-dyn/atInstall/build.gradle"))
+
+  inputs.dir(new File(rootProject.projectDir, "and-test/app/src"))
+  inputs.files(new File(rootProject.projectDir, "and-test/app/build.gradle"))
+
+  inputs.dir(new File(rootProject.projectDir, "and-test/test/src"))
+  inputs.files(new File(rootProject.projectDir, "and-test/test/build.gradle"))
+
+  inputs.files(new File(rootProject.projectDir, "and-test/build.gradle"))
+  inputs.files(new File(rootProject.projectDir, "and-test/settings.gradle"))
 
   inputs.dir(new File(rootProject.projectDir, "commander/os/src/main"))
   inputs.files(new File(rootProject.projectDir, "commander/os/build.gradle"))
