@@ -20,6 +20,7 @@ import com.android.build.gradle.api.AndroidBasePlugin
 import com.trevjonez.composer.internal.ComposerApplicationPlugin
 import com.trevjonez.composer.internal.ComposerDynamicFeaturePlugin
 import com.trevjonez.composer.internal.ComposerLibraryPlugin
+import com.trevjonez.composer.internal.ComposerTestPlugin
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -41,6 +42,10 @@ class ComposerPlugin : Plugin<Project> {
 
     project.pluginManager.withPlugin("com.android.dynamic-feature") {
       project.pluginManager.apply(ComposerDynamicFeaturePlugin::class.java)
+    }
+
+    project.pluginManager.withPlugin("com.android.test") {
+      project.pluginManager.apply(ComposerTestPlugin::class.java)
     }
 
     project.afterEvaluate {
