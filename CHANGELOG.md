@@ -3,10 +3,10 @@ Items listed here may not be exhaustive, if you are seeing issues, check the git
 
 ## 1.0.0-rc06
 - Print output for `adb install` commands. #59 thanks [@plastiv](https://github.com/plastiv).
-- Update gradle and AGP to latest stable. `6.2.1` & `3.6.1` respectively.
+- Update Gradle, AGP, and Kotlin to latest stable versions. `6.3`,`3.6.2`,`1.3.71` respectively.
 - Process: Github actions for verification. #36 again, thank you [@plastiv](https://github.com/plastiv).
-- Feature: Dynamic-Feature module support
-- Feature: Test module support "com.android.test". #71 thanks [@dkostyrev](https://github.com/dkostyrev).
+- Incubating Feature: Dynamic-Feature module support. See issue #63 for more details.
+- Feature: Test module support `com.android.test`. #71 thanks [@dkostyrev](https://github.com/dkostyrev).
 
 ## 1.0.0-rc05
 - Catch a specific subset of errors allowing clean disposal of underlying processes. (logcat and instrumentation)
