@@ -191,7 +191,7 @@ In most cases using the latest version of gradle and agp is safe but may not be 
 Composer plugin version | Gradle version | Android plugin version
 | ------     | ------             | ------ |
 | 0.13.0     | 5.6                | 3.4.2, 3.5.0-rc01<sup>\*</sup>, 3.6.0-alpha05<sup>\*</sup> |
-| 1.0.0-rc06 | 6.2.1              | 3.6.1, 4.0.0-beta01<sup>\*</sup>, 4.1.0-alpha01<sup>\*</sup> |
+| 1.0.0-rc06 | 6.3                | 3.6.2, 4.0.0-beta04<sup>\*</sup>, 4.1.0-alpha05<sup>\*</sup> |
 
 \* Alpha, Beta and RC versions of the android plugin are quickly tested by building against them.
 This usually means the published composer plugin will work with those version 
