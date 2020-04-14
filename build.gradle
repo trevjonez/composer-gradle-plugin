@@ -22,7 +22,7 @@ buildscript {
   }
   dependencies {
     classpath("org.gradle.kotlin:plugins:1.3.3")
-    classpath("com.gradle.publish:plugin-publish-plugin:0.10.1")
+    classpath("com.gradle.publish:plugin-publish-plugin:0.11.0")
     classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION")
     classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4")
   }
