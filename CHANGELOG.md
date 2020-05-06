@@ -1,6 +1,9 @@
 # Changelist
 Items listed here may not be exhaustive, if you are seeing issues, check the git commits for more specific change information &| open an issue.
 
+## 1.0.0-rc07
+- Gradle 6.4 compatibility
+
 ## 1.0.0-rc06
 - Print output for `adb install` commands. #59 thanks [@plastiv](https://github.com/plastiv).
 - Update Gradle, AGP, and Kotlin to latest stable versions. `6.3`,`3.6.2`,`1.3.71` respectively.
