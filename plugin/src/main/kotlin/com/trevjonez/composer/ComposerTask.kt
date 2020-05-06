@@ -83,6 +83,8 @@ abstract class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl 
   init {
     apk.convention(testApk)
     outputDir.convention(project.layout.buildDirectory.dir(ComposerConfig.DEFAULT_OUTPUT_DIR))
+    mainClass.set(MAIN_CLASS)
+    classpath = configuration
   }
 
   override fun exec() {
@@ -114,8 +116,6 @@ abstract class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl 
           it.joinToString(prefix = "ComposerTask: args: =`", postfix = "`")
       )
     }
-    main = MAIN_CLASS
-    classpath = configuration
 
     try {
       super.exec()
