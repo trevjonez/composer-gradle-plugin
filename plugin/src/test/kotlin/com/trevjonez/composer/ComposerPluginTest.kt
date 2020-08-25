@@ -29,7 +29,7 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 class ComposerPluginTest {
-  private val ANDROID_HOME by environmentVariable
+  private val ANDROID_SDK_ROOT by environmentVariable
 
   private val buildDir by systemProperty
 
@@ -52,7 +52,7 @@ class ComposerPluginTest {
   }
 
   fun File.writeLocalProps() {
-    File(this, "local.properties").writeText("sdk.dir=$ANDROID_HOME")
+    File(this, "local.properties").writeText("sdk.dir=$ANDROID_SDK_ROOT")
   }
 
   /**

@@ -51,60 +51,64 @@ adbUninstall {
     )
 }
 
-tasks.named("test").configure {
+tasks.named("test", Test.class) {
     systemProperty("buildDir", buildDir.absolutePath)
-    systemProperty("andApp", new File(rootProject.projectDir, "and-app").absolutePath)
-    systemProperty("andLib", new File(rootProject.projectDir, "and-lib").absolutePath)
-    systemProperty("andDyn", new File(rootProject.projectDir, "and-dyn").absolutePath)
-    systemProperty("andTest", new File(rootProject.projectDir, "and-test").absolutePath)
+    systemProperty("andApp", rootProject.file("and-app").absolutePath)
+    systemProperty("andLib", rootProject.file("and-lib").absolutePath)
+    systemProperty("andDyn", rootProject.file("and-dyn").absolutePath)
+    systemProperty("andTest", rootProject.file("and-test").absolutePath)
     systemProperty("org.gradle.testkit.debug", false)
 
     outputs.dir("$buildDir/tests")
-    outputs.dir(new File(rootProject.projectDir, "and-app/build"))
-    outputs.dir(new File(rootProject.projectDir, "and-lib/build"))
-    outputs.dir(new File(rootProject.projectDir, "and-dyn/build"))
-    outputs.dir(new File(rootProject.projectDir, "and-dyn/base/build"))
-    outputs.dir(new File(rootProject.projectDir, "and-dyn/atInstall/build"))
+    outputs.dir(rootProject.file("and-app/build"))
+    outputs.dir(rootProject.file("and-lib/build"))
+    outputs.dir(rootProject.file("and-dyn/build"))
+    outputs.dir(rootProject.file("and-dyn/base/build"))
+    outputs.dir(rootProject.file("and-dyn/atInstall/build"))
 
     inputs.files("gradle.properties")
-    inputs.dir(new File(rootProject.projectDir, "and-app/src"))
-    inputs.files(new File(rootProject.projectDir, "and-app/build.gradle"))
-    inputs.files(new File(rootProject.projectDir, "and-app/build-cascade-dsl.gradle"))
-    inputs.files(new File(rootProject.projectDir, "and-app/build-custom-task.gradle"))
-    inputs.files(new File(rootProject.projectDir, "and-app/settings.gradle"))
 
-    inputs.dir(new File(rootProject.projectDir, "and-lib/src"))
-    inputs.files(new File(rootProject.projectDir, "and-lib/build.gradle"))
-    inputs.files(new File(rootProject.projectDir, "and-lib/settings.gradle"))
+    inputs.dir(rootProject.file("and-app/src"))
+    inputs.files(
+            rootProject.file("and-app/build.gradle"),
+            rootProject.file("and-app/build-cascade-dsl.gradle"),
+            rootProject.file("and-app/build-custom-task.gradle"),
+            rootProject.file("and-app/settings.gradle")
+    )
 
-    inputs.files(new File(rootProject.projectDir, "and-dyn/build.gradle"))
-    inputs.files(new File(rootProject.projectDir, "and-dyn/settings.gradle"))
+    inputs.dir(rootProject.file("and-lib/src"))
+    inputs.files(
+            rootProject.file("and-lib/build.gradle"),
+            rootProject.file("and-lib/settings.gradle")
+    )
 
-    inputs.dir(new File(rootProject.projectDir, "and-dyn/base/src"))
-    inputs.files(new File(rootProject.projectDir, "and-dyn/base/build.gradle"))
+    inputs.dir(rootProject.file("and-dyn/base/src"))
+    inputs.dir(rootProject.file("and-dyn/atInstall/src"))
+    inputs.files(
+            rootProject.file("and-dyn/build.gradle"),
+            rootProject.file("and-dyn/settings.gradle"),
+            rootProject.file("and-dyn/base/build.gradle"),
+            rootProject.file("and-dyn/atInstall/build.gradle")
+    )
 
-    inputs.dir(new File(rootProject.projectDir, "and-dyn/atInstall/src"))
-    inputs.files(new File(rootProject.projectDir, "and-dyn/atInstall/build.gradle"))
+    inputs.dir(rootProject.file("and-test/app/src"))
+    inputs.dir(rootProject.file("and-test/test/src"))
+    inputs.files(
+            rootProject.file("and-test/app/build.gradle"),
+            rootProject.file("and-test/test/build.gradle"),
+            rootProject.file("and-test/build.gradle"),
+            rootProject.file("and-test/settings.gradle")
+    )
 
-    inputs.dir(new File(rootProject.projectDir, "and-test/app/src"))
-    inputs.files(new File(rootProject.projectDir, "and-test/app/build.gradle"))
-
-    inputs.dir(new File(rootProject.projectDir, "and-test/test/src"))
-    inputs.files(new File(rootProject.projectDir, "and-test/test/build.gradle"))
-
-    inputs.files(new File(rootProject.projectDir, "and-test/build.gradle"))
-    inputs.files(new File(rootProject.projectDir, "and-test/settings.gradle"))
-
-    inputs.dir(new File(rootProject.projectDir, "commander/os/src/main"))
-    inputs.files(new File(rootProject.projectDir, "commander/os/build.gradle"))
-
-    inputs.dir(new File(rootProject.projectDir, "commander/android/src/main"))
-    inputs.files(new File(rootProject.projectDir, "commander/android/build.gradle"))
-
-    inputs.dir(new File(rootProject.projectDir, "composer/composer/src/main"))
-    inputs.files(new File(rootProject.projectDir, "composer/composer/build.gradle"))
-
-    inputs.dir(new File(rootProject.projectDir, "composer/html-report"))
+    inputs.dir(rootProject.file("commander/os/src/main"))
+    inputs.dir(rootProject.file("commander/android/src/main"))
+    inputs.dir(rootProject.file("composer/composer/src/main"))
+    inputs.dir(rootProject.file("composer/html-report"))
+    inputs.files(
+            rootProject.file("commander/os/build.gradle"),
+            rootProject.file("commander/android/build.gradle"),
+            rootProject.file("composer/composer/build.gradle")
+    )
 
     dependsOn(":composer:publishToMavenLocal")
     dependsOn(":commander:os:publishToMavenLocal")
