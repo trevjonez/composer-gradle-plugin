@@ -31,8 +31,10 @@ abstract class RemoveApkTask : AbstractExecTask<RemoveApkTask>(RemoveApkTask::cl
   abstract val adbPath: Property<String>
 
   private val androidHome by lazy {
-    requireNotNull(System.getenv("ANDROID_SDK_ROOT")
-                   ?: System.getenv("ANDROID_HOME"))
+    requireNotNull(
+        System.getenv("ANDROID_SDK_ROOT")
+        ?: System.getenv("ANDROID_HOME")
+    )
   }
 
   private val adb by lazy {
@@ -43,9 +45,11 @@ abstract class RemoveApkTask : AbstractExecTask<RemoveApkTask>(RemoveApkTask::cl
     isIgnoreExitValue = true
     commandLine(
         adbPath.orNull ?: adb,
-        "shell", "pm", "uninstall",
+        "shell",
+        "pm",
+        "uninstall",
         packageName.get()
-               )
+    )
     super.exec()
   }
 }
