@@ -53,4 +53,8 @@ abstract class AdbUninstallPlugin: Plugin<Project> {
 
 abstract class AdbUninstallExtension {
   abstract val packageNames: SetProperty<String>
+
+  fun packages(vararg packages: String) {
+    packageNames.addAll(*packages)
+  }
 }

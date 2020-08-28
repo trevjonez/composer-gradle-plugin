@@ -18,7 +18,10 @@ class ComposerTestPlugin : ComposerBasePlugin<ApplicationVariant>() {
   }
 
   private val appExtension by lazy(LazyThreadSafetyMode.NONE) {
-    val project = requireNotNull(project.findProject(testExtension.targetProjectPath)) {
+    val targetPath = requireNotNull(testExtension.targetProjectPath) {
+      "Target project not set"
+    }
+    val project = requireNotNull(project.findProject(targetPath)) {
       "Failed to find target project ${testExtension.targetProjectPath}"
     }
     requireNotNull(project.findExtension<AppExtension>("android")) {

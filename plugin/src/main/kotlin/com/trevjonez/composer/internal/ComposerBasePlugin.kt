@@ -30,6 +30,8 @@ import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
+import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.register
 import java.io.File
 
 abstract class ComposerBasePlugin<T> : Plugin<Project>
@@ -57,33 +59,30 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
   override fun apply(target: Project) {
     this.project = target
     target.composerConfig()
-    globalConfig = target.extensions.create(ConfigExtension.DEFAULT_NAME,
-                                            ConfigExtension::class.java,
-                                            target)
+    globalConfig = target.extensions.create(ConfigExtension.DEFAULT_NAME, target)
     target.afterEvaluate { observeVariants() }
   }
 
   private fun observeVariants() {
-    testableVariants.all { testableVariant ->
-      if (globalConfig.variants.isEmpty() || globalConfig.variants.contains(testableVariant.name)) {
-        if (!testableVariant.isTestable()) {
-          project.logger.info("variant: ${testableVariant.name}. is not testable. skipping composer task registration.")
+    testableVariants.all {
+      val variant = this
+      if (globalConfig.variants.isEmpty() || globalConfig.variants.contains(name)) {
+        if (!isTestable()) {
+          project.logger.info("variant: ${name}. is not testable. skipping composer task registration.")
           return@all
         }
 
-        project.tasks.register(
-            "test${testableVariant.name.capitalize()}Composer", ComposerTask::class.java
-                              ) { task ->
-          task.group = ComposerPlugin.GROUP
-          task.description = "Run composer for ${testableVariant.name} variant"
-          task.environment("ANDROID_HOME", sdkDir.absolutePath)
+        project.tasks.register<ComposerTask>("test${name.capitalize()}Composer") {
+          group = ComposerPlugin.GROUP
+          description = "Run composer for ${variant.name} variant"
+          environment("ANDROID_HOME", sdkDir.absolutePath)
 
-          val variantConfigurator = globalConfig.configs.findByName(testableVariant.name)
+          val variantConfigurator = globalConfig.configs.findByName(variant.name)
           if (variantConfigurator == null)
-            project.logger.info("ComposerBasePlugin: Variant configurator for `${testableVariant.name}` is null")
+            project.logger.info("ComposerBasePlugin: Variant configurator for `${variant.name}` is null")
 
-          testableVariant.configureTaskDslLevelProperties(task, variantConfigurator)
-          configureGlobalDslLevelProperties(task, variantConfigurator)
+          variant.configureTaskDslLevelProperties(this, variantConfigurator)
+          configureGlobalDslLevelProperties(this, variantConfigurator)
         }
       }
     }
@@ -92,27 +91,32 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
   private fun T.configureTaskDslLevelProperties(
       composerTask: ComposerTask,
       variantConfigurator: ConfiguratorDomainObj?
-                                               ) {
+  ) {
 
-    composerTask.apk.set(variantConfigurator?.apk
-                             ?.takeIf { it.isPresent }
-                         ?: getApk(composerTask))
+    composerTask.apk.set(
+        variantConfigurator?.apk?.takeIf { it.isPresent }
+        ?: getApk(composerTask)
+    )
 
-    composerTask.testApk.set(variantConfigurator?.testApk
-                                 ?.takeIf { it.isPresent }
-                             ?: getTestApk(composerTask))
+    composerTask.testApk.set(
+        variantConfigurator?.testApk?.takeIf { it.isPresent }
+        ?: getTestApk(composerTask)
+    )
 
-    composerTask.outputDir.set(variantConfigurator?.outputDir
-                                   ?.takeIf { it.isPresent }
-                               ?: getOutputDir(composerTask))
+    composerTask.outputDir.set(
+        variantConfigurator?.outputDir?.takeIf { it.isPresent }
+        ?: getOutputDir(composerTask)
+    )
 
-    composerTask.extraApks.setFrom(variantConfigurator?.extraApks
-                                       ?.takeUnless { it.isEmpty }
-                                   ?: getExtraApks(composerTask))
+    composerTask.extraApks.setFrom(
+        variantConfigurator?.extraApks?.takeUnless { it.isEmpty }
+        ?: getExtraApks(composerTask)
+    )
 
-    composerTask.multiApks.setFrom(variantConfigurator?.multiApks
-                                       ?.takeUnless { it.isEmpty }
-                                   ?: getMultiApks(composerTask))
+    composerTask.multiApks.setFrom(
+        variantConfigurator?.multiApks?.takeUnless { it.isEmpty }
+        ?: getMultiApks(composerTask)
+    )
   }
 
   private fun logDslSelection(propertyName: String, source: String) {
@@ -122,7 +126,7 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
   private fun configureGlobalDslLevelProperties(
       composerTask: ComposerTask,
       variantConfigurator: ConfiguratorDomainObj?
-                                               ) {
+  ) {
     if (globalConfig.withOrchestrator.isPresent) {
       logDslSelection("withOrchestrator", "global")
       composerTask.withOrchestrator(globalConfig.withOrchestrator)

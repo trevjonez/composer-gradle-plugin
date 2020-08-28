@@ -22,19 +22,16 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 
 object ComposerConfig {
-    const val MAIN_CLASS = "com.gojuno.composer.MainKt"
-    const val COMPOSER = "composer"
-    const val COMPOSER_VER = "1.0.0-rc08"
-    const val ARTIFACT_DEP = "com.trevjonez.composer:composer:$COMPOSER_VER"
-    const val DEFAULT_OUTPUT_DIR = "composer-output"
+  const val MAIN_CLASS = "com.gojuno.composer.MainKt"
+  const val COMPOSER = "composer"
+  const val COMPOSER_VER = "1.0.0-rc08"
+  const val ARTIFACT_DEP = "com.trevjonez.composer:composer:$COMPOSER_VER"
+  const val DEFAULT_OUTPUT_DIR = "composer-output"
 }
 
-fun Project.composerConfig(): Configuration {
-    val defaultComposerArtifact = dependencies.create(ARTIFACT_DEP)
-    return configurations.findByName(COMPOSER)
-           ?: configurations.create(COMPOSER) { config ->
-               config.defaultDependencies { depSet ->
-                   depSet.add(defaultComposerArtifact)
-               }
-           }
-}
+fun Project.composerConfig(): Configuration =
+    configurations.findByName(COMPOSER) ?: configurations.create(COMPOSER) {
+      defaultDependencies {
+        add(this@composerConfig.dependencies.create(ARTIFACT_DEP))
+      }
+    }
