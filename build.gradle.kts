@@ -33,6 +33,10 @@ buildscript {
   }
 }
 
+plugins {
+  `build-dashboard`
+}
+
 allprojects {
   tasks.withType<KotlinCompile> {
     kotlinOptions {
