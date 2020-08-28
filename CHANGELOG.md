@@ -1,6 +1,12 @@
 # Changelist
 Items listed here may not be exhaustive, if you are seeing issues, check the git commits for more specific change information &| open an issue.
 
+## 1.0.0-rc08
+- Support for ANDROID_SDK_ROOT falling back to ANDROID_HOME and warning when appropriate
+- Update Gradle, AGP to latest stable versions. `6.6.1`, `4.0.1` respectively.
+- Verify changes in github actions against both JDK 8 and 11
+- Automate publishing via github actions
+
 ## 1.0.0-rc07
 - Gradle 6.4 compatibility
 

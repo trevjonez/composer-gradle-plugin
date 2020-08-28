@@ -18,7 +18,8 @@ package com.trevjonez.composer
 
 import org.assertj.core.api.Assertions.assertThat
 import org.gradle.testkit.runner.GradleRunner
-import org.junit.Assume.assumeNotNull
+import org.hamcrest.CoreMatchers.*
+import org.junit.Assume.assumeThat
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -36,7 +37,7 @@ class ComposerTaskTest {
   @get:Rule
   val testProjectDir = TemporaryFolder()
 
-  private val ANDROID_HOME by environmentVariable
+  private val ANDROID_SDK_ROOT by environmentVariable
 
   @FileName("build.gradle")
   private val buildFile by testProjectDir.makeFile()
@@ -69,7 +70,7 @@ class ComposerTaskTest {
       buildScriptConfig: String = defaultConfig,
       taskDsl: String = defaultTaskDsl,
       dependencyDsl: String = ""
-  ): String {
+                           ): String {
     //language=Groovy
     return """
       plugins {
@@ -81,7 +82,7 @@ class ComposerTaskTest {
       $buildScriptConfig
 
       task runComposer(type: ComposerTask) {
-        environment.put("ANDROID_HOME", "$ANDROID_HOME")
+        environment.put("ANDROID_HOME", "$ANDROID_SDK_ROOT")
         $taskDsl
       }
 
@@ -104,7 +105,7 @@ class ComposerTaskTest {
    * It is an indicator that the plugin task invoked composer
    */
   private val dumpFailedError =
-    "ERROR: dump failed because no AndroidManifest.xml found"
+      "ERROR: dump failed because no AndroidManifest.xml found"
 
   @Test
   fun defaultConfig() {
@@ -244,31 +245,30 @@ class ComposerTaskTest {
   }
 
   private fun String.writeTo(file: File) =
-    BufferedWriter(FileWriter(file)).use {
-      it.write(this)
-    }
+      BufferedWriter(FileWriter(file)).use {
+        it.write(this)
+      }
 
   private val environmentVariable: ReadOnlyProperty<Any, String>
     get() {
       return object : ReadOnlyProperty<Any, String> {
         override fun getValue(thisRef: Any, property: KProperty<*>): String {
-          return System.getenv(property.name).also { assumeNotNull(it) }
+          return System.getenv(property.name).also { assumeThat("Env variable '${property.name}' was null", it, `is`(notNullValue())) }
         }
       }
     }
 
   private fun TemporaryFolder.makeFile(): ReadOnlyProperty<Any, File> {
     return object : ReadOnlyProperty<Any, File> {
-      private lateinit var file: File
+      private var file: File? = null
       override fun getValue(thisRef: Any, property: KProperty<*>): File {
-        if (::file.isInitialized) return file
+        file?.let { return it }
 
         val name = requireNotNull(property.findAnnotation<FileName>()) {
           "FileName Annotation Required"
         }
 
-        file = newFile(name.value)
-        return file
+        return newFile(name.value).also { file = it }
       }
     }
   }
