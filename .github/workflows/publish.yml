@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Ensure Tag Ref Matches Properties
+        run: grep -q "CGP_VERSION=$(echo $GITHUB_REF | cut -c 11-)" gradle.properties
+
+      - name: Ensure Tag Ref Matches ComposerConfig
+        run: grep -q "const val COMPOSER_VER = \"$(echo $GITHUB_REF | cut -c 11-)\"" plugin/src/main/kotlin/com/trevjonez/composer/ComposerConfig.kt
+
+      - name: Ensure Tag Ref Was Added To CHANGELOG.md
+        run: grep -q "## $(echo $GITHUB_REF | cut -c 11-)" CHANGELOG.md
+
+      - name: Gradle Wrapper Validation
+        uses: gradle/wrapper-validation-action@v1
+        
+      - name: Setup Java JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 8
+#         Publish builds with java 8 so we don't break consumers not on 11 yet
+
+      - name: Setup node
+        uses: actions/setup-node@v1
+
+      - name: Gradle build
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          script: ./gradlew build buildDashboard
+
+      - name: Upload build reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: Build Reports
+          path: |
+            build/reports/
+            **/build/reports/
+            **/build/test-results/
+            !plugin/build/testDir*/**/
+
+      - name: Publish Artifacts
+        env:
+          ORG_GRADLE_PROJECT_bintray_user: ${{ secrets.BINTRAY_USER }}
+          ORG_GRADLE_PROJECT_bintray_api_key: ${{ secrets.BINTRAY_API_KEY }}
+          GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
+          GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
+        run: ./gradlew publishPlugins

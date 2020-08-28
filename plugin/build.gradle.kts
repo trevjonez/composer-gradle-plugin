@@ -148,3 +148,10 @@ publishing {
     }
   }
 }
+
+tasks.named("publishPlugins") {
+  dependsOn(":setupGradleCredentials")
+  dependsOn(":commander:os:bintrayUpload")
+  dependsOn(":commander:android:bintrayUpload")
+  dependsOn(":composer:bintrayUpload")
+}

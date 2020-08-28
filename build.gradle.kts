@@ -44,3 +44,19 @@ allprojects {
     }
   }
 }
+
+tasks.register("setupGradleCredentials") {
+  onlyIf {
+    !properties.containsKey("gradle.publish.key") && !properties.containsKey("gradle.publish.secret")
+  }
+  doLast {
+    System.setProperty(
+        "gradle.publish.key",
+        requireNotNull(System.getenv("GRADLE_PUBLISH_KEY"))
+    )
+    System.setProperty(
+        "gradle.publish.secret",
+        requireNotNull(System.getenv("GRADLE_PUBLISH_SECRET"))
+    )
+  }
+}
