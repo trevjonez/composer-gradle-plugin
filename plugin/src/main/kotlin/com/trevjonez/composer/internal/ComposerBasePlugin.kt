@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 /*
  *    Copyright 2018 Trevor Jones
  *
@@ -68,7 +70,10 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
       val variant = this
       if (globalConfig.variants.isEmpty() || globalConfig.variants.contains(name)) {
         if (!isTestable()) {
-          project.logger.info("variant: ${name}. is not testable. skipping composer task registration.")
+          project.logger.info(
+              "variant: %s. is not testable. skipping composer task registration.",
+              name
+          )
           return@all
         }
 
@@ -78,8 +83,9 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
           environment("ANDROID_HOME", sdkDir.absolutePath)
 
           val variantConfigurator = globalConfig.configs.findByName(variant.name)
-          if (variantConfigurator == null)
+          if (variantConfigurator == null) {
             project.logger.info("ComposerBasePlugin: Variant configurator for `${variant.name}` is null")
+          }
 
           variant.configureTaskDslLevelProperties(this, variantConfigurator)
           configureGlobalDslLevelProperties(this, variantConfigurator)
@@ -123,6 +129,7 @@ abstract class ComposerBasePlugin<T> : Plugin<Project>
     project.logger.info("ComposerBasePlugin: Selecting `$propertyName` from $source config.")
   }
 
+  @Suppress("LongMethod", "ComplexMethod")
   private fun configureGlobalDslLevelProperties(
       composerTask: ComposerTask,
       variantConfigurator: ConfiguratorDomainObj?

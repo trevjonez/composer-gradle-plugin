@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 /*
  *    Copyright 2019 Trevor Jones
  *
@@ -21,7 +23,6 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.internal.file.TaskFileVarFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
@@ -34,7 +35,6 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import java.io.File
 
-//TODO: use the worker api not JavaExec
 @CacheableTask
 abstract class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
 
@@ -122,10 +122,13 @@ abstract class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl 
     } finally {
       val htmlReportIndex = File(
           outputDir,
-          "${File.separator}html-report${File.separator}index.html")
+          "${File.separator}html-report${File.separator}index.html"
+      )
 
       if (htmlReportIndex.exists()) {
-        println("\nComposer Html Report: file://${htmlReportIndex.absolutePath}\n")
+        println(
+            "\nComposer Html Report: file://${htmlReportIndex.absolutePath}\n"
+        )
       }
     }
   }

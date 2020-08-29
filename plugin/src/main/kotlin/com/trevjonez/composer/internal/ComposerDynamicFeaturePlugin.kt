@@ -28,15 +28,16 @@ import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import java.io.File
+import kotlin.LazyThreadSafetyMode.NONE
 
 class ComposerDynamicFeaturePlugin : ComposerBasePlugin<ApplicationVariant>() {
-  private val androidExtension by lazy(LazyThreadSafetyMode.NONE) {
+  private val androidExtension by lazy(NONE) {
     requireNotNull(project.findExtension<AppExtension>("android")) {
       "Failed to find android application extension"
     }
   }
 
-  private val androidTestUtil by lazy(LazyThreadSafetyMode.NONE) {
+  private val androidTestUtil by lazy(NONE) {
     project.configurations.findByName("androidTestUtil")
   }
 
@@ -46,53 +47,75 @@ class ComposerDynamicFeaturePlugin : ComposerBasePlugin<ApplicationVariant>() {
   override val testableVariants: DomainObjectCollection<ApplicationVariant>
     get() = androidExtension.applicationVariants
 
-  override fun ApplicationVariant.getApk(task: ComposerTask): Provider<RegularFile> {
+  override fun ApplicationVariant.getApk(
+      task: ComposerTask
+  ): Provider<RegularFile> {
     task.dependsOn(assembleProvider)
-    return project.layout.file(project.provider {
-      outputs.single().outputFile
-    })
+    return project.layout.file(
+        project.provider {
+          outputs.single().outputFile
+        }
+    )
   }
 
-  override fun ApplicationVariant.getTestApk(task: ComposerTask): Provider<RegularFile> {
+  override fun ApplicationVariant.getTestApk(
+      task: ComposerTask
+  ): Provider<RegularFile> {
     task.dependsOn(testVariant.assembleProvider)
-    return project.layout.file(project.provider {
-      testVariant.outputs.single().outputFile
-    })
+    return project.layout.file(
+        project.provider {
+          testVariant.outputs.single().outputFile
+        }
+    )
   }
 
-  override fun ApplicationVariant.getExtraApks(task: ComposerTask): ConfigurableFileCollection {
+  override fun ApplicationVariant.getExtraApks(
+      task: ComposerTask
+  ): ConfigurableFileCollection {
     androidTestUtil?.let { task.dependsOn(it) }
     return project.objects.fileCollection().also {
-      it.from(project.provider {
-        androidTestUtil?.resolvedConfiguration?.files?.toList().orEmpty()
-      })
+      it.from(
+          project.provider {
+            androidTestUtil?.resolvedConfiguration?.files?.toList().orEmpty()
+          }
+      )
     }
   }
 
-  override fun ApplicationVariant.getMultiApks(task: ComposerTask): ConfigurableFileCollection {
+  override fun ApplicationVariant.getMultiApks(
+      task: ComposerTask
+  ): ConfigurableFileCollection {
     val consumers = findApplicationProjects().thatUseThisFeature()
     if (consumers.isEmpty()) {
       throw UnsupportedOperationException(
-        "Unable to find base module for feature module".withIssuePrompt())
+          "Unable to find base module for feature module".withIssuePrompt()
+      )
     }
     if (consumers.size > 1) {
       throw UnsupportedOperationException(
-        "Multiple consuming base modules is not supported".withIssuePrompt())
+          "Multiple consuming base modules is not supported".withIssuePrompt()
+      )
     }
     val baseModule = consumers.single()
-    val matchedBaseVariant = requireNotNull(baseModule.findExtension<BaseAppModuleExtension>("android")) {
+    val matchedBaseVariant = requireNotNull(
+        baseModule.findExtension<BaseAppModuleExtension>("android")
+    ) {
       "Failed to find base module android application extension"
     }.findMatchingVariant(this)
 
     val featureApk = getApk(task)
     task.dependsOn(matchedBaseVariant.assembleProvider)
     return project.objects.fileCollection().also {
-      it.from(project.provider {
-        val baseAssembleProvider = baseModule.layout.file(baseModule.provider {
-          matchedBaseVariant.outputs.single().outputFile
-        })
-        listOf(featureApk, baseAssembleProvider)
-      })
+      it.from(
+          project.provider {
+            val baseAssembleProvider = baseModule.layout.file(
+                baseModule.provider {
+                  matchedBaseVariant.outputs.single().outputFile
+                }
+            )
+            listOf(featureApk, baseAssembleProvider)
+          }
+      )
     }
   }
 
@@ -102,35 +125,48 @@ class ComposerDynamicFeaturePlugin : ComposerBasePlugin<ApplicationVariant>() {
     }
   }
 
-  private fun List<Project>.thatUseThisFeature() = filter { it.usesThisFeature() }
+  private fun List<Project>.thatUseThisFeature() =
+      filter { it.usesThisFeature() }
 
   private fun Project.usesThisFeature(): Boolean {
     val appExtension = findExtension<BaseAppModuleExtension>("android")
     val features = appExtension?.dynamicFeatures
-    return features?.contains(this@ComposerDynamicFeaturePlugin.project.path) == true
+    return features?.contains(
+        this@ComposerDynamicFeaturePlugin.project.path
+    ) == true
   }
 
-  private fun BaseAppModuleExtension.findMatchingVariant(featureVariant: ApplicationVariant): ApplicationVariant {
-    val withMatchingType = applicationVariants.filter { it hasTheSameBuildTypeNameAs featureVariant }
+  private fun BaseAppModuleExtension.findMatchingVariant(
+      featureVariant: ApplicationVariant
+  ): ApplicationVariant {
+    val withMatchingType = applicationVariants.filter {
+      it hasTheSameBuildTypeNameAs featureVariant
+    }
     if (withMatchingType.size == 1) return withMatchingType.single()
 
-    val withMatchingFlavors = applicationVariants.filter { it hasTheSameFlavorsAs featureVariant }
+    val withMatchingFlavors = applicationVariants.filter {
+      it hasTheSameFlavorsAs featureVariant
+    }
 
     val perfectOverlaps = withMatchingType.intersect(withMatchingFlavors)
     if (perfectOverlaps.size == 1) return perfectOverlaps.single()
 
+    val variants = applicationVariants.joinToString(
+        prefix = "[",
+        postfix = "]"
+    ) { "`${it.name}`" }
     throw UnsupportedOperationException(
-        """Unable to select the correct base module variant for ${featureVariant.name}
-      |from: ${applicationVariants.joinToString(prefix = "[", postfix = "]") { "`${it.name}`" }}
-    """.trimMargin().withIssuePrompt())
+        ("Unable to select the correct base module variant for " +
+         "${featureVariant.name} \n from: $variants").withIssuePrompt()
+    )
   }
 
-  private infix fun BaseVariant.hasTheSameBuildTypeNameAs(other: BaseVariant): Boolean {
-    return this.buildType.name == other.buildType.name
-  }
+  private infix fun BaseVariant.hasTheSameBuildTypeNameAs(
+      other: BaseVariant
+  ): Boolean = this.buildType.name == other.buildType.name
 
-  private infix fun BaseVariant.hasTheSameFlavorsAs(other: BaseVariant): Boolean {
-    return this.productFlavors.map { it.name }.sorted() ==
-        other.productFlavors.map { it.name }.sorted()
-  }
+  private infix fun BaseVariant.hasTheSameFlavorsAs(
+      other: BaseVariant
+  ): Boolean = productFlavors.map { it.name }.sorted() ==
+      other.productFlavors.map { it.name }.sorted()
 }

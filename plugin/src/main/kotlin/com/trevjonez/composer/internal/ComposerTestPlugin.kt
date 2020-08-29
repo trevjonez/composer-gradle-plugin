@@ -9,15 +9,16 @@ import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import java.io.File
+import kotlin.LazyThreadSafetyMode.NONE
 
 class ComposerTestPlugin : ComposerBasePlugin<ApplicationVariant>() {
-  private val testExtension by lazy(LazyThreadSafetyMode.NONE) {
+  private val testExtension by lazy(NONE) {
     requireNotNull(project.findExtension<TestExtension>("android")) {
       "Failed to find android test extension"
     }
   }
 
-  private val appExtension by lazy(LazyThreadSafetyMode.NONE) {
+  private val appExtension by lazy(NONE) {
     val targetPath = requireNotNull(testExtension.targetProjectPath) {
       "Target project not set"
     }
@@ -29,7 +30,7 @@ class ComposerTestPlugin : ComposerBasePlugin<ApplicationVariant>() {
     }
   }
 
-  private val androidTestUtil by lazy(LazyThreadSafetyMode.NONE) {
+  private val androidTestUtil by lazy(NONE) {
     project.configurations.findByName("androidTestUtil")
   }
 
@@ -39,32 +40,46 @@ class ComposerTestPlugin : ComposerBasePlugin<ApplicationVariant>() {
   override val testableVariants: DomainObjectCollection<ApplicationVariant>
     get() = testExtension.applicationVariants
 
-  override fun ApplicationVariant.getApk(task: ComposerTask): Provider<RegularFile> {
+  override fun ApplicationVariant.getApk(
+      task: ComposerTask
+  ): Provider<RegularFile> {
     val variant = appExtension.applicationVariants.find { it.name == name }
-      ?: error("Failed to find application variant")
+                  ?: error("Failed to find application variant")
 
     task.dependsOn(variant.assembleProvider)
-    return project.layout.file(project.provider {
-      variant.outputs.single().outputFile
-    })
+    return project.layout.file(
+        project.provider {
+          variant.outputs.single().outputFile
+        }
+    )
   }
 
-  override fun ApplicationVariant.getTestApk(task: ComposerTask): Provider<RegularFile> {
+  override fun ApplicationVariant.getTestApk(
+      task: ComposerTask
+  ): Provider<RegularFile> {
     task.dependsOn(assembleProvider)
-    return project.layout.file(project.provider {
-      outputs.single().outputFile
-    })
+    return project.layout.file(
+        project.provider {
+          outputs.single().outputFile
+        }
+    )
   }
 
-  override fun ApplicationVariant.getExtraApks(task: ComposerTask): ConfigurableFileCollection {
+  override fun ApplicationVariant.getExtraApks(
+      task: ComposerTask
+  ): ConfigurableFileCollection {
     return project.objects.fileCollection().also {
-      it.from(project.provider {
-        androidTestUtil?.resolvedConfiguration?.files?.toList().orEmpty()
-      })
+      it.from(
+          project.provider {
+            androidTestUtil?.resolvedConfiguration?.files?.toList().orEmpty()
+          }
+      )
     }
   }
 
-  override fun ApplicationVariant.getMultiApks(task: ComposerTask): ConfigurableFileCollection {
+  override fun ApplicationVariant.getMultiApks(
+      task: ComposerTask
+  ): ConfigurableFileCollection {
     return project.objects.fileCollection()
   }
 

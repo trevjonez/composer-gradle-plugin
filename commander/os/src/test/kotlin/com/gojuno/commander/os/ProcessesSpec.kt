@@ -8,78 +8,78 @@ import java.util.concurrent.TimeUnit.SECONDS
 
 class ProcessesSpec : Spek({
 
-    describe("null device file") {
+                             describe("null device file") {
 
-        val result = os().nullDeviceFile()
+                               val result = os().nullDeviceFile()
 
-        it("is writable") {
-            assertThat(result).canWrite()
-        }
-    }
+                               it("is writable") {
+                                 assertThat(result).canWrite()
+                               }
+                             }
 
-    describe("nanosToHumanReadableTime") {
+                             describe("nanosToHumanReadableTime") {
 
-        context("convert 1 second") {
+                               context("convert 1 second") {
 
-            val result by memoized { SECONDS.toNanos(1).nanosToHumanReadableTime() }
+                                 val result by memoized { SECONDS.toNanos(1).nanosToHumanReadableTime() }
 
-            it("converts it to 1 second") {
-                assertThat(result).isEqualTo("1 second")
-            }
-        }
+                                 it("converts it to 1 second") {
+                                   assertThat(result).isEqualTo("1 second")
+                                 }
+                               }
 
-        context("convert 59 seconds") {
+                               context("convert 59 seconds") {
 
-            val result by memoized { SECONDS.toNanos(59).nanosToHumanReadableTime() }
+                                 val result by memoized { SECONDS.toNanos(59).nanosToHumanReadableTime() }
 
-            it("converts it to 59 seconds") {
-                assertThat(result).isEqualTo("59 seconds")
-            }
-        }
+                                 it("converts it to 59 seconds") {
+                                   assertThat(result).isEqualTo("59 seconds")
+                                 }
+                               }
 
-        context("convert 60 seconds") {
+                               context("convert 60 seconds") {
 
-            val result by memoized { SECONDS.toNanos(60).nanosToHumanReadableTime() }
+                                 val result by memoized { SECONDS.toNanos(60).nanosToHumanReadableTime() }
 
-            it("converts it to 1 minute 0 seconds") {
-                assertThat(result).isEqualTo("1 minute 0 seconds")
-            }
-        }
+                                 it("converts it to 1 minute 0 seconds") {
+                                   assertThat(result).isEqualTo("1 minute 0 seconds")
+                                 }
+                               }
 
-        context("convert 61 seconds") {
+                               context("convert 61 seconds") {
 
-            val result by memoized { SECONDS.toNanos(61).nanosToHumanReadableTime() }
+                                 val result by memoized { SECONDS.toNanos(61).nanosToHumanReadableTime() }
 
-            it("converts it to 1 minute 1 second") {
-                assertThat(result).isEqualTo("1 minute 1 second")
-            }
-        }
+                                 it("converts it to 1 minute 1 second") {
+                                   assertThat(result).isEqualTo("1 minute 1 second")
+                                 }
+                               }
 
-        context("convert 62 seconds") {
+                               context("convert 62 seconds") {
 
-            val result by memoized { SECONDS.toNanos(62).nanosToHumanReadableTime() }
+                                 val result by memoized { SECONDS.toNanos(62).nanosToHumanReadableTime() }
 
-            it("converts it to 1 minute 2 seconds") {
-                assertThat(result).isEqualTo("1 minute 2 seconds")
-            }
-        }
+                                 it("converts it to 1 minute 2 seconds") {
+                                   assertThat(result).isEqualTo("1 minute 2 seconds")
+                                 }
+                               }
 
-        context("convert 60 minutes") {
+                               context("convert 60 minutes") {
 
-            val result by memoized { MINUTES.toNanos(60).nanosToHumanReadableTime() }
+                                 val result by memoized { MINUTES.toNanos(60).nanosToHumanReadableTime() }
 
-            it("converts it to 1 hour 0 seconds") {
-                assertThat(result).isEqualTo("1 hour 0 minutes 0 seconds")
-            }
-        }
+                                 it("converts it to 1 hour 0 seconds") {
+                                   assertThat(result).isEqualTo("1 hour 0 minutes 0 seconds")
+                                 }
+                               }
 
-        context("convert 61 minutes") {
+                               context("convert 61 minutes") {
 
-            val result by memoized { MINUTES.toNanos(61).nanosToHumanReadableTime() }
+                                 val result by memoized { MINUTES.toNanos(61).nanosToHumanReadableTime() }
 
-            it("converts it to 1 hour 1 minute 0 seconds") {
-                assertThat(result).isEqualTo("1 hour 1 minute 0 seconds")
-            }
-        }
-    }
-})
+                                 it("converts it to 1 hour 1 minute 0 seconds") {
+                                   assertThat(result).isEqualTo("1 hour 1 minute 0 seconds")
+                                 }
+                               }
+                             }
+                           })

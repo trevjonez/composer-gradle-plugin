@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 /*
  *    Copyright 2017 Trevor Jones
  *
@@ -20,12 +22,10 @@ import groovy.lang.Closure
 import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
-import org.gradle.api.artifacts.Configuration
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 
-abstract class ConfigExtension(project: Project)
-  : ComposerDsl, ComposerConfigurator {
+abstract class ConfigExtension(project: Project) : ComposerDsl, ComposerConfigurator {
 
   val configs: NamedDomainObjectContainer<ConfiguratorDomainObj> =
       project.container(ConfiguratorDomainObj::class.java)

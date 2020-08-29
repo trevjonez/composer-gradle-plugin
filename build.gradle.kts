@@ -35,13 +35,21 @@ buildscript {
 
 plugins {
   `build-dashboard`
+  id("io.gitlab.arturbosch.detekt").version("1.12.0").apply(false)
 }
 
 allprojects {
   tasks.withType<KotlinCompile> {
     kotlinOptions {
       jvmTarget = "1.8"
+      freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+      freeCompilerArgs += "-Xopt-in=kotlin.ExperimentalStdlibApi"
     }
+  }
+
+  apply(plugin = "io.gitlab.arturbosch.detekt")
+  dependencies {
+    add("detektPlugins", "io.gitlab.arturbosch.detekt:detekt-formatting:1.12.0")
   }
 }
 

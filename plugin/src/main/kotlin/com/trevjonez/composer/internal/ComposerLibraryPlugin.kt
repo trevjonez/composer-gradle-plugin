@@ -18,22 +18,22 @@ package com.trevjonez.composer.internal
 
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.LibraryVariant
-import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import com.trevjonez.composer.ComposerTask
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import java.io.File
+import kotlin.LazyThreadSafetyMode.NONE
 
 class ComposerLibraryPlugin : ComposerBasePlugin<LibraryVariant>() {
-  private val androidExtension by lazy(LazyThreadSafetyMode.NONE) {
+  private val androidExtension by lazy(NONE) {
     requireNotNull(project.findExtension<LibraryExtension>("android")) {
       "Failed to find android library extension"
     }
   }
 
-  private val androidTestUtil by lazy(LazyThreadSafetyMode.NONE) {
+  private val androidTestUtil by lazy(NONE) {
     project.configurations.findByName("androidTestUtil")
   }
 
@@ -43,26 +43,38 @@ class ComposerLibraryPlugin : ComposerBasePlugin<LibraryVariant>() {
   override val testableVariants: DomainObjectCollection<LibraryVariant>
     get() = androidExtension.libraryVariants
 
-  override fun LibraryVariant.getApk(task: ComposerTask): Provider<RegularFile> {
+  override fun LibraryVariant.getApk(
+      task: ComposerTask
+  ): Provider<RegularFile> {
     return getTestApk(task)
   }
 
-  override fun LibraryVariant.getTestApk(task: ComposerTask): Provider<RegularFile> {
+  override fun LibraryVariant.getTestApk(
+      task: ComposerTask
+  ): Provider<RegularFile> {
     task.dependsOn(testVariant.assembleProvider)
-    return project.layout.file(project.provider {
-      testVariant.outputs.single().outputFile
-    })
+    return project.layout.file(
+        project.provider {
+          testVariant.outputs.single().outputFile
+        }
+    )
   }
 
-  override fun LibraryVariant.getExtraApks(task: ComposerTask): ConfigurableFileCollection {
+  override fun LibraryVariant.getExtraApks(
+      task: ComposerTask
+  ): ConfigurableFileCollection {
     return project.objects.fileCollection().also {
-      it.from(project.provider {
-        androidTestUtil?.resolvedConfiguration?.files?.toList().orEmpty()
-      })
+      it.from(
+          project.provider {
+            androidTestUtil?.resolvedConfiguration?.files?.toList().orEmpty()
+          }
+      )
     }
   }
 
-  override fun LibraryVariant.getMultiApks(task: ComposerTask): ConfigurableFileCollection {
+  override fun LibraryVariant.getMultiApks(
+      task: ComposerTask
+  ): ConfigurableFileCollection {
     return project.objects.fileCollection()
   }
 }

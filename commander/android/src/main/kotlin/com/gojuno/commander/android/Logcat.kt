@@ -14,11 +14,21 @@
  *    limitations under the License.
  */
 
-package com.trevjonez.composer.internal
+package com.gojuno.commander.android
 
-import org.gradle.api.Project
+import com.gojuno.commander.os.Notification
+import com.gojuno.commander.os.process
+import io.reactivex.Observable
+import java.io.File
 
-fun <T : Any> Project.findExtension(name: String): T? {
-  @Suppress("UNCHECKED_CAST")
-  return extensions.findByName(name) as? T
-}
+fun AdbDevice.redirectLogcatToFile(file: File): Observable<Process> =
+    process(
+        listOf(adb.absolutePath, "-s", id, "logcat"),
+        redirectOutputTo = file,
+        timeout = null,
+        destroyOnUnsubscribe = true
+    )
+        .doOnSubscribe { file.parentFile.mkdirs() }
+        .ofType(Notification.Start::class.java)
+        .doOnError { this.log("Error during redirecting logcat to file $file, error = $it") }
+        .map { it.process }

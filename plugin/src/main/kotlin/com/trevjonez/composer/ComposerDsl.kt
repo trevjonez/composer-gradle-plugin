@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 /*
  *    Copyright 2019 Trevor Jones
  *
@@ -57,7 +59,6 @@ interface ComposerDsl {
    * @param value converted via [Any.toString]
    */
   fun instrumentationArgument(key: CharSequence, value: CharSequence)
-
 
   /**
    * Add many instrumentation arguments to the configuration.
@@ -120,9 +121,6 @@ interface ComposerDsl {
   fun apkInstallTimeout(value: Any)
 }
 
-/**
- *
- */
 interface ComposerTaskDsl : ComposerDsl {
 
   val testApk: RegularFileProperty
@@ -146,6 +144,17 @@ interface ComposerTaskDsl : ComposerDsl {
    */
   fun outputDirectory(path: Any)
 
+  /**
+   * Any extra apk's to install. IE Orchestrator
+   *
+   * @param path evaluated as per [org.gradle.api.Project.file].
+   */
   fun extraApks(paths: Any)
+
+  /**
+   * Apk's that should be installed in a single adb invocation
+   *
+   * @param path evaluated as per [org.gradle.api.Project.file].
+   */
   fun multiApks(paths: Any)
 }

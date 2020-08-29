@@ -22,7 +22,7 @@ import org.gradle.api.provider.SetProperty
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.register
 
-abstract class AdbUninstallPlugin: Plugin<Project> {
+abstract class AdbUninstallPlugin : Plugin<Project> {
 
   override fun apply(target: Project) {
     val extension = target.extensions.create<AdbUninstallExtension>("adbUninstall")
@@ -33,7 +33,7 @@ abstract class AdbUninstallPlugin: Plugin<Project> {
     }
 
     target.afterEvaluate {
-      extension.packageNames.orNull.orEmpty().forEachIndexed { index, pkgName ->
+      extension.packageNames.orNull.orEmpty().forEach { pkgName ->
         val nameSuffix = pkgName.split('.')
             .joinToString(separator = "") { it.capitalize() }
 
@@ -55,6 +55,6 @@ abstract class AdbUninstallExtension {
   abstract val packageNames: SetProperty<String>
 
   fun packages(vararg packages: String) {
-    packageNames.addAll(*packages)
+    packageNames.addAll(packages.toList())
   }
 }
