@@ -50,7 +50,7 @@ class ComposerPlugin : Plugin<Project> {
 
     project.afterEvaluate {
       project.extensions.findByType(ConfigExtension::class.java)
-      ?: project.tasks.find { it is ComposerTask } //check if manually created tasks exist before throwing
+      ?: project.tasks.find { it is ComposerTask } // check if manually created tasks exist before throwing
       ?: project.missingPlugin<AndroidBasePlugin>()
     }
   }
@@ -76,4 +76,3 @@ val issuePrompt =
     """If you believe this is an issue or missing feature, please consider opening an issue on github.
       |https://github.com/trevjonez/composer-gradle-plugin
       |""".trimMargin()
-

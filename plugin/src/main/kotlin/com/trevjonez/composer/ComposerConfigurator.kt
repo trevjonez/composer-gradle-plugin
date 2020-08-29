@@ -19,13 +19,13 @@ package com.trevjonez.composer
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 
-interface ComposerConfigurator: ComposerDsl {
-    val withOrchestrator: Property<Boolean>
-    val shard: Property<Boolean>
-    val instrumentationArguments: ListProperty<Pair<String, String>>
-    val verboseOutput: Property<Boolean>
-    val devices: ListProperty<String>
-    val devicePattern: Property<String>
-    val keepOutput: Property<Boolean>
-    val apkInstallTimeout: Property<Int>
+interface ComposerConfigurator : ComposerDsl {
+  val withOrchestrator: Property<Boolean>
+  val shard: Property<Boolean>
+  val instrumentationArguments: ListProperty<Pair<String, String>>
+  val verboseOutput: Property<Boolean>
+  val devices: ListProperty<String>
+  val devicePattern: Property<String>
+  val keepOutput: Property<Boolean>
+  val apkInstallTimeout: Property<Int>
 }

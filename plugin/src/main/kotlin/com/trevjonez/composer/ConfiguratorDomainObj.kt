@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 /*
  *    Copyright 2017 Trevor Jones
  *

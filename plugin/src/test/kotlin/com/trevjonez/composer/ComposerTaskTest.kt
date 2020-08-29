@@ -18,7 +18,8 @@ package com.trevjonez.composer
 
 import org.assertj.core.api.Assertions.assertThat
 import org.gradle.testkit.runner.GradleRunner
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.notNullValue
 import org.junit.Assume.assumeThat
 import org.junit.Rule
 import org.junit.Test
@@ -70,7 +71,7 @@ class ComposerTaskTest {
       buildScriptConfig: String = defaultConfig,
       taskDsl: String = defaultTaskDsl,
       dependencyDsl: String = ""
-                           ): String {
+  ): String {
     //language=Groovy
     return """
       plugins {

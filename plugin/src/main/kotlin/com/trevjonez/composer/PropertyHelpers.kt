@@ -25,8 +25,10 @@ inline fun <reified T> Property<T>.eval(value: Any) {
   when (value) {
     is T -> set(value)
     is Provider<*> -> set(value as Provider<out T>)
-    else ->
-      throw IllegalArgumentException("Unsupported type: ${value.javaClass}, expecting ${T::class.java} or ${Provider::class.java}")
+    else -> throw IllegalArgumentException(
+        "Unsupported type: ${value.javaClass}, " +
+        "expecting ${T::class.java} or ${Provider::class.java}"
+    )
   }
 }
 
@@ -35,8 +37,10 @@ inline fun <reified T> ListProperty<T>.eval(value: Any) {
   when (value) {
     is T -> add(value)
     is Provider<*> -> add(value as Provider<out T>)
-    else ->
-      throw IllegalArgumentException("Unsupported type: ${value.javaClass}, expecting ${T::class.java} or ${Provider::class.java}")
+    else -> throw IllegalArgumentException(
+        "Unsupported type: ${value.javaClass}, " +
+        "expecting ${T::class.java} or ${Provider::class.java}"
+    )
   }
 }
 
@@ -45,7 +49,9 @@ inline fun <reified T> ListProperty<T>.evalAll(value: Any) {
   when (value) {
     is Iterable<*> -> addAll(value as Iterable<T>)
     is Provider<*> -> addAll(value as Provider<out Iterable<T>>)
-    else ->
-      throw IllegalArgumentException("Unsupported type: ${value.javaClass}, expecting ${Iterable::class.java} or ${Provider::class.java}")
+    else -> throw IllegalArgumentException(
+        "Unsupported type: ${value.javaClass}, " +
+        "expecting ${Iterable::class.java} or ${Provider::class.java}"
+    )
   }
 }

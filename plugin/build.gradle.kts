@@ -155,3 +155,7 @@ tasks.named("publishPlugins") {
   dependsOn(":commander:android:bintrayUpload")
   dependsOn(":composer:bintrayUpload")
 }
+
+kotlinDslPluginOptions {
+  experimentalWarning.set(false)
+}

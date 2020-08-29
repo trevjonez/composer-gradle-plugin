@@ -23,3 +23,7 @@ gradlePlugin {
 dependencies {
   detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.12.0")
 }
+
+kotlinDslPluginOptions {
+  experimentalWarning.set(false)
+}

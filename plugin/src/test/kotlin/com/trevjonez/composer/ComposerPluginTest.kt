@@ -231,19 +231,19 @@ class ComposerPluginTest {
       }
     }
 
-    class BuildDir(val parentDir: File): TestRule {
-        lateinit var root: File
-        override fun apply(base: Statement, description: Description): Statement {
-            return object : Statement() {
-                override fun evaluate() {
-                    root = File(parentDir, "testDir-${description.methodName.replace("\\s+".toRegex(), "_")}")
-                    if(root.exists()) root.deleteRecursively()
-                    root.mkdirs()
-                    base.evaluate()
-                }
-            }
+  class BuildDir(val parentDir: File) : TestRule {
+    lateinit var root: File
+    override fun apply(base: Statement, description: Description): Statement {
+      return object : Statement() {
+        override fun evaluate() {
+          root = File(parentDir, "testDir-${description.methodName.replace("\\s+".toRegex(), "_")}")
+          if (root.exists()) root.deleteRecursively()
+          root.mkdirs()
+          base.evaluate()
         }
-
-        fun newFolder(name: String) = File(root, name).apply { mkdirs() }
+      }
     }
+
+    fun newFolder(name: String) = File(root, name).apply { mkdirs() }
+  }
 }
