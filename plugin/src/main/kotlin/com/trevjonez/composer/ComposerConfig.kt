@@ -20,6 +20,7 @@ import com.trevjonez.composer.ComposerConfig.ARTIFACT_DEP
 import com.trevjonez.composer.ComposerConfig.COMPOSER
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
+import java.io.File
 
 object ComposerConfig {
   const val MAIN_CLASS = "com.gojuno.composer.MainKt"
@@ -27,6 +28,7 @@ object ComposerConfig {
   const val COMPOSER_VER = "1.0.0-rc09"
   const val ARTIFACT_DEP = "com.trevjonez.composer:composer:$COMPOSER_VER"
   const val DEFAULT_OUTPUT_DIR = "composer-output"
+  val DEFAULT_WORK_DIR = "tmp${File.separator}composer-working-dir"
 }
 
 fun Project.composerConfig(): Configuration =

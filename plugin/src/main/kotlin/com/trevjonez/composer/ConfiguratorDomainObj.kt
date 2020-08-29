@@ -31,6 +31,7 @@ abstract class ConfiguratorDomainObj(val name: String) :
   abstract override val testApk: RegularFileProperty
   abstract override val apk: RegularFileProperty
   abstract override val outputDir: DirectoryProperty
+  abstract override val workDir: DirectoryProperty
   abstract override val extraApks: ConfigurableFileCollection
   abstract override val multiApks: ConfigurableFileCollection
   abstract override val withOrchestrator: Property<Boolean>
@@ -52,6 +53,10 @@ abstract class ConfiguratorDomainObj(val name: String) :
 
   override fun outputDirectory(path: Any) {
     outputDir.eval(path)
+  }
+
+  override fun workDirectory(path: Any) {
+    workDir.eval(path)
   }
 
   override fun extraApks(paths: Any) {
