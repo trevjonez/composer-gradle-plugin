@@ -3,6 +3,7 @@ Items listed here may not be exhaustive, if you are seeing issues, check the git
 
 ## 1.0.0-rc09
 - Formatting and some top-level elements have been moved in commander/composer
+- Invoke composer within the project build directory
 
 ## 1.0.0-rc08
 - Support for ANDROID_SDK_ROOT falling back to ANDROID_HOME and warning when appropriate

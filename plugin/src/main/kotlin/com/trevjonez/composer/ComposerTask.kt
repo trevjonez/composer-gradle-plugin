@@ -80,9 +80,15 @@ abstract class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl 
   @get:OutputDirectory
   abstract override val outputDir: DirectoryProperty
 
+  @get:OutputDirectory
+  abstract override val workDir: DirectoryProperty
+
   init {
     apk.convention(testApk)
-    outputDir.convention(project.layout.buildDirectory.dir(ComposerConfig.DEFAULT_OUTPUT_DIR))
+    val buildDirectory = project.layout.buildDirectory
+    outputDir.convention(buildDirectory.dir(ComposerConfig.DEFAULT_OUTPUT_DIR))
+    workDir.convention(buildDirectory.dir(ComposerConfig.DEFAULT_WORK_DIR))
+    setWorkingDir(workDir.map { it.also { it.asFile.mkdirs() } })
     mainClass.set(MAIN_CLASS)
     classpath = configuration
   }
@@ -151,6 +157,10 @@ abstract class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl 
 
   override fun outputDirectory(path: Any) {
     outputDir.set(project.file(path))
+  }
+
+  override fun workDirectory(path: Any) {
+    TODO("Not yet implemented")
   }
 
   override fun withOrchestrator(value: Any) {

@@ -126,6 +126,7 @@ interface ComposerTaskDsl : ComposerDsl {
   val testApk: RegularFileProperty
   val apk: RegularFileProperty
   val outputDir: DirectoryProperty
+  val workDir: DirectoryProperty
   val extraApks: ConfigurableFileCollection
   val multiApks: ConfigurableFileCollection
 
@@ -143,6 +144,11 @@ interface ComposerTaskDsl : ComposerDsl {
    * @param path evaluated as per [org.gradle.api.Project.file].
    */
   fun outputDirectory(path: Any)
+
+  /**
+   * @param path evaluated as per [org.gradle.api.Project.file].
+   */
+  fun workDirectory(path: Any)
 
   /**
    * Any extra apk's to install. IE Orchestrator
