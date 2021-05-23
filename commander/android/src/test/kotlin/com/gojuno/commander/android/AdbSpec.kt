@@ -13,12 +13,15 @@ import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import java.nio.channels.OverlappingFileLockException
 import java.util.concurrent.TimeUnit.SECONDS
+import kotlin.io.path.ExperimentalPathApi
+import kotlin.io.path.createTempFile
 
+@ExperimentalPathApi
 class AdbSpec : Spek({
 
                        describe("process exit notification output") {
 
-                         val file = createTempFile().apply {
+                         val file = createTempFile().toFile().apply {
                            deleteOnExit()
                            writeText("\ttest \n")
                          }

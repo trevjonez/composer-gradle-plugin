@@ -26,7 +26,7 @@ buildscript {
   }
   dependencies {
     val KOTLIN_VERSION: String by rootProject
-    classpath("org.gradle.kotlin:plugins:1.3.6")
+    classpath("org.gradle.kotlin:gradle-kotlin-dsl-plugins:1.4.9")
     classpath("com.gradle.publish:plugin-publish-plugin:0.11.0")
     classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION")
     classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4")
@@ -35,7 +35,7 @@ buildscript {
 
 plugins {
   `build-dashboard`
-  id("io.gitlab.arturbosch.detekt").version("1.12.0").apply(false)
+  id("io.gitlab.arturbosch.detekt").version("1.14.2").apply(false)
 }
 
 allprojects {
@@ -49,7 +49,7 @@ allprojects {
 
   apply(plugin = "io.gitlab.arturbosch.detekt")
   dependencies {
-    add("detektPlugins", "io.gitlab.arturbosch.detekt:detekt-formatting:1.12.0")
+    add("detektPlugins", "io.gitlab.arturbosch.detekt:detekt-formatting:1.14.2")
   }
 }
 
