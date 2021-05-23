@@ -16,9 +16,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     flavorDimensions("version")
-    variantFilter {
-        ignore = buildType.name == "release"
-    }
     productFlavors {
         create("older") {
             dimension = "version"
@@ -30,5 +27,12 @@ android {
     }
     sourceSets.named("main") {
         manifest.srcFile(file("AndroidManifest.xml"))
+    }
+}
+
+androidComponents {
+    val release = selector().withBuildType("release")
+    beforeVariants(release) { variant ->
+        variant.enabled = false
     }
 }
