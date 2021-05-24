@@ -5,6 +5,7 @@ Items listed here may not be exhaustive, if you are seeing issues, check the git
 - Formatting and some top-level elements have been moved in commander/composer
 - Invoke composer within the project build directory
 - Update to Gradle 6.9, AGP 4.2.1, Kotlin 1.4.32, detekt 1.14.2
+- Fix Configuration Cache compatibility
 
 ## 1.0.0-rc08
 - Support for ANDROID_SDK_ROOT falling back to ANDROID_HOME and warning when appropriate
