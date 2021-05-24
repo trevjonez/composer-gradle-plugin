@@ -85,7 +85,7 @@ abstract class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl 
     val buildDirectory = project.layout.buildDirectory
     outputDir.convention(buildDirectory.dir(ComposerConfig.DEFAULT_OUTPUT_DIR))
     workDir.convention(buildDirectory.dir(ComposerConfig.DEFAULT_WORK_DIR))
-    setWorkingDir(workDir.map { it.also { it.asFile.mkdirs() } })
+    setWorkingDir(workDir)
     mainClass.set(MAIN_CLASS)
     classpath = project.composerConfig()
   }
