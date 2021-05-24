@@ -19,7 +19,6 @@
 package com.trevjonez.composer
 
 import com.trevjonez.composer.ComposerConfig.MAIN_CLASS
-import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
@@ -37,8 +36,6 @@ import java.io.File
 
 @CacheableTask
 abstract class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl {
-
-  private val configuration: Configuration = project.composerConfig()
 
   @get:[Classpath InputFile]
   abstract override val testApk: RegularFileProperty
@@ -88,9 +85,9 @@ abstract class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl 
     val buildDirectory = project.layout.buildDirectory
     outputDir.convention(buildDirectory.dir(ComposerConfig.DEFAULT_OUTPUT_DIR))
     workDir.convention(buildDirectory.dir(ComposerConfig.DEFAULT_WORK_DIR))
-    setWorkingDir(workDir.map { it.also { it.asFile.mkdirs() } })
+    setWorkingDir(workDir)
     mainClass.set(MAIN_CLASS)
-    classpath = configuration
+    classpath = project.composerConfig()
   }
 
   override fun exec() {
@@ -111,14 +108,14 @@ abstract class ComposerTask : JavaExec(), ComposerConfigurator, ComposerTaskDsl 
         shard.orNull,
         outputDir,
         instrumentationArguments.getOrElse(emptyList()),
-        verboseOutput.orNull ?: project.hasProperty("composerVerbose"),
+        verboseOutput.orNull ?: providerFactory.gradleProperty("composerVerbose").isPresent,
         devices.getOrElse(emptyList()),
         devicePattern.orNull,
         keepOutput.orNull,
         apkInstallTimeout.orNull)
 
     args = config.toCliArgs().also {
-      project.logger.info(
+      logger.info(
           it.joinToString(prefix = "ComposerTask: args: =`", postfix = "`")
       )
     }

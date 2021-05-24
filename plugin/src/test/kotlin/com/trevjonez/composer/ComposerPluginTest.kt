@@ -213,6 +213,26 @@ class ComposerPluginTest {
         "--install-timeout, 10")
   }
 
+  /**
+   * Run with at least one device/emulator connected
+   */
+  @Test
+  fun `reuse configuration cache`() {
+    val projectDir = testProjectDir.newFolder("basicTest").apply {
+      andTest.copyRecursively(this, true)
+      writeLocalProps()
+    }
+
+
+    gradleRunner(projectDir, "--configuration-cache", "testDebugComposer")
+            .buildAndFail()
+
+    val result = gradleRunner(projectDir, "--configuration-cache", "testDebugComposer")
+            .buildAndFail()
+
+    assertThat(result.output).contains("Reusing configuration cache.")
+  }
+
   private val environmentVariable: ReadOnlyProperty<Any, String>
     get() {
       return object : ReadOnlyProperty<Any, String> {
