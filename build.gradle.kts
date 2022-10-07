@@ -26,7 +26,7 @@ buildscript {
   }
   dependencies {
     val KOTLIN_VERSION: String by rootProject
-    classpath("org.gradle.kotlin:gradle-kotlin-dsl-plugins:1.4.9")
+    classpath("org.gradle.kotlin:gradle-kotlin-dsl-plugins:2.1.4")
     classpath("com.gradle.publish:plugin-publish-plugin:0.11.0")
     classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION")
     classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4")
