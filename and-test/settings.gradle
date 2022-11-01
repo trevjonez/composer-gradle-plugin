@@ -19,7 +19,7 @@ pluginManagement {
     repositories {
         mavenLocal()
         google()
-        jcenter()
+        mavenCentral()
     }
     resolutionStrategy {
         eachPlugin {

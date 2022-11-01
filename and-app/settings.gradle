@@ -18,7 +18,7 @@
 pluginManagement {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     resolutionStrategy {
         eachPlugin {

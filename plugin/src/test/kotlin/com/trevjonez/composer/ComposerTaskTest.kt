@@ -54,7 +54,7 @@ class ComposerTaskTest {
     """
     repositories {
       mavenLocal()
-      jcenter()
+      mavenCentral()
     }
     """.trimIndent()
   }

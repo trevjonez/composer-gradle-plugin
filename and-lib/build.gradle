@@ -22,7 +22,7 @@ plugins {
 repositories {
     mavenLocal()
     google()
-    jcenter()
+    mavenCentral()
 }
 
 android {

@@ -19,7 +19,7 @@
 pluginManagement {
   repositories {
     google()
-    jcenter()
+    mavenCentral()
     gradlePluginPortal()
   }
   resolutionStrategy {
@@ -57,7 +57,7 @@ gradle.allprojects {
 
   repositories {
     google()
-    jcenter()
+    mavenCentral()
     mavenLocal()
   }
 }
