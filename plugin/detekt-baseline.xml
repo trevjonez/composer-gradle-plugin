@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>MaxLineLength:ComposerTaskTest.kt$ComposerTaskTest.&lt;no name provided&gt;$return System.getenv(property.name).also { assumeThat("Env variable '${property.name}' was null", it, `is`(notNullValue())) }</ID>
+    <ID>MaximumLineLength:com.trevjonez.composer.ComposerTaskTest.kt:257</ID>
+  </CurrentIssues>
+</SmellBaseline>

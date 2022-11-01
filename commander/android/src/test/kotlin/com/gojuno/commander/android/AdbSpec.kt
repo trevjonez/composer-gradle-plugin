@@ -32,7 +32,6 @@ class AdbSpec : Spek({
                                .test()
                                .assertValue("test")
                          }
-
                        }
 
                        describe("system level device lock") {

@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>MaxLineLength:AdbSpec.kt$AdbSpec$.</ID>
+    <ID>MaxLineLength:AdbSpec.kt$AdbSpec$assertThat(capturedOutput).contains("testSupport-older-debug.apk: Failure [INSTALL_FAILED_VERSION_DOWNGRADE")</ID>
+    <ID>MaximumLineLength:com.gojuno.commander.android.AdbSpec.kt:102</ID>
+    <ID>MaximumLineLength:com.gojuno.commander.android.AdbSpec.kt:91</ID>
+  </CurrentIssues>
+</SmellBaseline>

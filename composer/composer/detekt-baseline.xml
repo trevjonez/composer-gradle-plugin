@@ -1,0 +1,131 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>LargeClass:InstrumentationSpec.kt$InstrumentationSpec : Spek</ID>
+    <ID>MaxLineLength:ApkSpec.kt$ApkSpec$assertThat(parseTestPackage(testApkPath)).isEqualTo(TestPackage.Valid("test.test.myapplication.test"))</ID>
+    <ID>MaxLineLength:ApkSpec.kt$ApkSpec$assertThat(parseTestRunner(testApkPath)).isEqualTo(TestRunner.Valid("android.support.test.runner.AndroidJUnitRunner"))</ID>
+    <ID>MaxLineLength:ApkSpec.kt$ApkSpec$listOf("org.junit.runner.RunWith", "dalvik.annotation.Throws", "org.junit.Test")</ID>
+    <ID>MaxLineLength:ApkSpec.kt$ApkSpec$val testApkPath by memoized { fileFromJarResources&lt;InstrumentationSpec&gt;("instrumentation-test.apk").absolutePath }</ID>
+    <ID>MaxLineLength:ArgsSpec.kt$ArgsSpec$assertThat(args.instrumentationArguments).isEqualTo(listOf("key1", "value1", "key2", "value2"))</ID>
+    <ID>MaxLineLength:ArgsSpec.kt$ArgsSpec$assertThat(args.instrumentationArguments).isEqualTo(listOf("key1", "value1,value2", "key2", "value3,value4"))</ID>
+    <ID>MaxLineLength:ArgsSpec.kt$ArgsSpec$assertThatThrownBy { parseArgs(rawArgsWithOnlyRequiredFields + arrayOf("--device-pattern", "[abc|def]") + arrayOf("--devices", "emulator-5554")) }</ID>
+    <ID>MaxLineLength:ArgsSpec.kt$ArgsSpec$parseArgs(rawArgsWithOnlyRequiredFields + arrayOf("--devices", "emulator-5554", "emulator-5556"))</ID>
+    <ID>MaxLineLength:ArgsSpec.kt$ArgsSpec$parseArgs(rawArgsWithOnlyRequiredFields + arrayOf("--fail-if-no-tests", "$failIfNoTests"))</ID>
+    <ID>MaxLineLength:ArgsSpec.kt$ArgsSpec$parseArgs(rawArgsWithOnlyRequiredFields + arrayOf("--instrumentation-arguments", "key1", "value1", "key2", "value2"))</ID>
+    <ID>MaxLineLength:ArgsSpec.kt$ArgsSpec$parseArgs(rawArgsWithOnlyRequiredFields + arrayOf("--instrumentation-arguments", "key1", "value1,value2", "key2", "value3,value4"))</ID>
+    <ID>MaxLineLength:HtmlDeviceSpec.kt$HtmlDeviceSpec$val device = Device(id = "testDevice1", logcat = testFile(), instrumentationOutput = testFile(), model = "testModel1")</ID>
+    <ID>MaxLineLength:HtmlFullSuiteSpec.kt$HtmlFullSuiteSpec$Device(id = "device1", logcat = testFile(), instrumentationOutput = testFile(), model = "model1")</ID>
+    <ID>MaxLineLength:HtmlFullSuiteSpec.kt$HtmlFullSuiteSpec$Device(id = "device2", logcat = testFile(), instrumentationOutput = testFile(), model = "model2")</ID>
+    <ID>MaxLineLength:HtmlFullSuiteSpec.kt$HtmlFullSuiteSpec$tests = suite.tests.map { it.toHtmlFullTest(suiteId = "testSuite", htmlReportDir = testFile()).toHtmlShortTest() }</ID>
+    <ID>MaxLineLength:HtmlFullSuiteSpec.kt$HtmlFullSuiteSpec$val htmlFullSuite = suite.toHtmlFullSuite(id = "testSuite", htmlReportDir = testFile())</ID>
+    <ID>MaxLineLength:HtmlFullTestSpec.kt$HtmlFullTestSpec$screenshots = adbDeviceTest.screenshots.map { HtmlFullTest.Screenshot(path = it.name, title = it.nameWithoutExtension) }</ID>
+    <ID>MaxLineLength:HtmlFullTestSpec.kt$HtmlFullTestSpec$val htmlTest = adbDeviceTest.toHtmlFullTest(suiteId = "testSuite", htmlReportDir = testFile().parentFile)</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$ &lt;div class=</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$ window.mainData = {</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$ window.suite = {</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$ window.test = {</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$assertThat(File(File(File(File(outputDir, "suites"), "0"), "device1"), "com.gojuno.example1TestClasstest1.html").readText().removeEmptyLines())</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$assertThat(File(File(File(File(outputDir, "suites"), "0"), "device1"), "com.gojuno.example1TestClasstest2.html").readText().removeEmptyLines())</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$assertThat(File(File(outputDir, "suites"), "0.html").readText().removeEmptyLines())</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$files = listOf(File(File(outputDir, "com.gojuno.example1.TestClass.test1"), "file1"), File(File(outputDir, "com.gojuno.example1.TestClass.test1"), "file2"))</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$files = listOf(File(File(outputDir, "com.gojuno.example1.TestClass.test2"), "file1"), File(File(outputDir, "com.gojuno.example1.TestClass.test2"), "file2"))</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$fun String.removeEmptyLines()</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$logcat = File(File(outputDir, "com.gojuno.example1.TestClass"), "test1.logcat")</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$logcat = File(File(outputDir, "com.gojuno.example1.TestClass"), "test2.logcat")</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$screenshots = listOf(File(File(outputDir, "com.gojuno.example1.TestClass.test1"), "screenshot1"), File(File(outputDir, "com.gojuno.example1.TestClass.test1"), "screenshot2"))</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$screenshots = listOf(File(File(outputDir, "com.gojuno.example1.TestClass.test2"), "screenshot1"), File(File(outputDir, "com.gojuno.example1.TestClass.test2"), "screenshot2"))</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$val cssClass by memoized { cssClassForLogcatLine("06-07 16:55:14.490 2100 2100 A MicroDetectionWorker: #onError(false)") }</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$val cssClass by memoized { cssClassForLogcatLine("06-07 16:55:14.490 2100 2100 D MicroDetectionWorker: #onError(false)") }</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$val cssClass by memoized { cssClassForLogcatLine("06-07 16:55:14.490 2100 2100 E MicroDetectionWorker: #onError(false)") }</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$val cssClass by memoized { cssClassForLogcatLine("06-07 16:55:14.490 2100 2100 I MicroDetectionWorker: #onError(false)") }</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$val cssClass by memoized { cssClassForLogcatLine("06-07 16:55:14.490 2100 2100 U MicroDetectionWorker: #onError(false)") }</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$val cssClass by memoized { cssClassForLogcatLine("06-07 16:55:14.490 2100 2100 V MicroDetectionWorker: #onError(false)") }</ID>
+    <ID>MaxLineLength:HtmlReportSpec.kt$HtmlReportSpec$val cssClass by memoized { cssClassForLogcatLine("06-07 16:55:14.490 2100 2100 W MicroDetectionWorker: #onError(false)") }</ID>
+    <ID>MaxLineLength:HtmlShortSuiteSpec.kt$HtmlShortSuiteSpec$Device(id = "device1", logcat = testFile(), instrumentationOutput = testFile(), model = "model1")</ID>
+    <ID>MaxLineLength:HtmlShortSuiteSpec.kt$HtmlShortSuiteSpec$Device(id = "device2", logcat = testFile(), instrumentationOutput = testFile(), model = "model2")</ID>
+    <ID>MaxLineLength:HtmlShortSuiteSpec.kt$HtmlShortSuiteSpec$devices = suite.devices.map { it.toHtmlDevice(htmlReportDir = testFile().parentFile) }</ID>
+    <ID>MaxLineLength:HtmlShortSuiteSpec.kt$HtmlShortSuiteSpec$val htmlShortSuite by memoized { suite.toHtmlShortSuite(id = "testSuite", htmlReportDir = testFile().parentFile) }</ID>
+    <ID>MaxLineLength:HtmlShortTestSpec.kt$HtmlShortTestSpec$screenshots = listOf(HtmlFullTest.Screenshot(path = "testScreenshotPath1", title = "testScreenshot1"), HtmlFullTest.Screenshot(path = "testScreenshotPath2", title = "testScreenshot2"))</ID>
+    <ID>MaxLineLength:InstrumentationSpec.kt$InstrumentationSpec$"Instrumentation was unable to run tests using runner com.composer.example.ExampleAndroidJUnitRunner.\n"</ID>
+    <ID>MaxLineLength:InstrumentationSpec.kt$InstrumentationSpec$"Most likely you forgot to declare test runner in AndroidManifest.xml or build.gradle.\n"</ID>
+    <ID>MaxLineLength:InstrumentationSpec.kt$InstrumentationSpec$assertThat(entriesSubscriber.values().map { it.copy(timestampNanos = 0) })</ID>
+    <ID>MaxLineLength:InstrumentationSpec.kt$InstrumentationSpec$assertThat(testsSubscriber.values().map { it.copy(durationNanos = 0) })</ID>
+    <ID>MaxLineLength:InstrumentationSpec.kt$InstrumentationSpec$val entries by memoized { readInstrumentationOutput(fileFromJarResources&lt;InstrumentationSpec&gt;("instrumentation-output-0-tests.txt")) }</ID>
+    <ID>MaxLineLength:InstrumentationSpec.kt$InstrumentationSpec$val entries by memoized { readInstrumentationOutput(fileFromJarResources&lt;InstrumentationSpec&gt;("instrumentation-output-assumption-violation.txt")) }</ID>
+    <ID>MaxLineLength:InstrumentationSpec.kt$InstrumentationSpec$val entries by memoized { readInstrumentationOutput(fileFromJarResources&lt;InstrumentationSpec&gt;("instrumentation-output-failed-test.txt")) }</ID>
+    <ID>MaxLineLength:InstrumentationSpec.kt$InstrumentationSpec$val entries by memoized { readInstrumentationOutput(fileFromJarResources&lt;InstrumentationSpec&gt;("instrumentation-output-ignored-test.txt")) }</ID>
+    <ID>MaxLineLength:InstrumentationSpec.kt$InstrumentationSpec$val entries by memoized { readInstrumentationOutput(fileFromJarResources&lt;InstrumentationSpec&gt;("instrumentation-unordered-output.txt")) }</ID>
+    <ID>MaxLineLength:InstrumentationSpec.kt$InstrumentationSpec$val outputFile = fileFromJarResources&lt;InstrumentationSpec&gt;("instrumentation-output-app-crash.txt")</ID>
+    <ID>MaxLineLength:InstrumentationSpec.kt$InstrumentationSpec$val outputFile = fileFromJarResources&lt;InstrumentationSpec&gt;("instrumentation-output-unable-to-find-instrumentation-info.txt")</ID>
+    <ID>MaxLineLength:InstrumentationSpec.kt$InstrumentationSpec$var</ID>
+    <ID>MaxLineLength:JUnitReportSpec.kt$JUnitReportSpec$ &lt;testsuite name=</ID>
+    <ID>MaxLineLength:LogLineParserSpec.kt$LogLineParserSpec$"04-06 00:25:49.747 28632 28650 I TestRunner: finished: someTestMethod(com.example.SampleClass)".parseTestClassAndName()</ID>
+    <ID>MaxLineLength:LogLineParserSpec.kt$LogLineParserSpec$"04-06 00:25:49.747 28632 28650 I TestRunner: started: someTestMethod(com.example.SampleClass)".parseTestClassAndName()</ID>
+    <ID>MaxLineLength:LogLineParserSpec.kt$LogLineParserSpec$"I/TestRunner( 123): finished: someTestMethod(com.example.SampleClass)".parseTestClassAndName()</ID>
+    <ID>MaxLineLength:LogLineParserSpec.kt$LogLineParserSpec$"I/TestRunner( 123): started: someTestMethod(com.example.SampleClass)".parseTestClassAndName()</ID>
+    <ID>MaxLineLength:LogLineParserSpec.kt$LogLineParserSpec$assertThat("04-06 00:25:49.747 28632 28650 I TestRunner:".parseTestClassAndName()).isNull()</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.ApkSpec.kt:11</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.ApkSpec.kt:14</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.ApkSpec.kt:18</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.ApkSpec.kt:24</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.ArgsSpec.kt:120</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.ArgsSpec.kt:142</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.ArgsSpec.kt:188</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.ArgsSpec.kt:53</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.ArgsSpec.kt:57</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.ArgsSpec.kt:64</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.ArgsSpec.kt:68</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.InstrumentationSpec.kt:107</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.InstrumentationSpec.kt:16</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.InstrumentationSpec.kt:258</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.InstrumentationSpec.kt:306</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.InstrumentationSpec.kt:351</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.InstrumentationSpec.kt:361</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.InstrumentationSpec.kt:449</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.InstrumentationSpec.kt:489</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.InstrumentationSpec.kt:499</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.InstrumentationSpec.kt:565</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.InstrumentationSpec.kt:589</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.InstrumentationSpec.kt:631</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.InstrumentationSpec.kt:706</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.InstrumentationSpec.kt:722</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.InstrumentationSpec.kt:733</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.InstrumentationSpec.kt:734</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.InstrumentationSpec.kt:743</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.LogLineParserSpec.kt:13</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.LogLineParserSpec.kt:23</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.LogLineParserSpec.kt:37</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.LogLineParserSpec.kt:48</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.LogLineParserSpec.kt:65</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlDeviceSpec.kt:13</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlFullSuiteSpec.kt:19</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlFullSuiteSpec.kt:20</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlFullSuiteSpec.kt:51</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlFullSuiteSpec.kt:61</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlFullTestSpec.kt:26</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlFullTestSpec.kt:40</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlReportSpec.kt:125</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlReportSpec.kt:150</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlReportSpec.kt:176</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlReportSpec.kt:206</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlReportSpec.kt:215</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlReportSpec.kt:224</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlReportSpec.kt:233</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlReportSpec.kt:242</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlReportSpec.kt:251</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlReportSpec.kt:260</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlReportSpec.kt:48</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlReportSpec.kt:49</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlReportSpec.kt:50</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlReportSpec.kt:58</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlReportSpec.kt:59</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlReportSpec.kt:60</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlReportSpec.kt:96</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlShortSuiteSpec.kt:20</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlShortSuiteSpec.kt:21</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlShortSuiteSpec.kt:53</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlShortSuiteSpec.kt:62</ID>
+    <ID>MaximumLineLength:com.gojuno.composer.html.HtmlShortTestSpec.kt:23</ID>
+  </CurrentIssues>
+</SmellBaseline>

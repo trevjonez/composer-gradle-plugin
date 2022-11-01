@@ -185,7 +185,6 @@ class ComposerPluginTest {
                                        "Error: There were failed tests.")
   }
 
-
   /**
    * Run with at least one device/emulator connected
    *
@@ -222,7 +221,6 @@ class ComposerPluginTest {
       andTest.copyRecursively(this, true)
       writeLocalProps()
     }
-
 
     gradleRunner(projectDir, "--configuration-cache", "testDebugComposer")
             .buildAndFail()

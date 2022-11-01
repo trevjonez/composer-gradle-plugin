@@ -216,5 +216,4 @@ class ArgsSpec : Spek({
                             assertThat(args.extraApks).isEqualTo(listOf("apk1.apk", "apk2.apk"))
                           }
                         }
-
                       })

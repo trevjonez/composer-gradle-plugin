@@ -1,5 +1,6 @@
 @file:Suppress("LocalVariableName")
 
+import io.gitlab.arturbosch.detekt.detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /*
@@ -35,7 +36,7 @@ buildscript {
 
 plugins {
   `build-dashboard`
-  id("io.gitlab.arturbosch.detekt").version("1.14.2").apply(false)
+  id("io.gitlab.arturbosch.detekt").version("1.17.0").apply(false)
 }
 
 allprojects {
@@ -49,7 +50,7 @@ allprojects {
 
   apply(plugin = "io.gitlab.arturbosch.detekt")
   dependencies {
-    add("detektPlugins", "io.gitlab.arturbosch.detekt:detekt-formatting:1.14.2")
+    add("detektPlugins", "io.gitlab.arturbosch.detekt:detekt-formatting:1.17.0")
   }
 }
 

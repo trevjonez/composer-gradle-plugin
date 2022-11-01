@@ -1,7 +1,7 @@
 plugins {
   `kotlin-dsl`
   `java-gradle-plugin`
-  id("io.gitlab.arturbosch.detekt").version("1.14.2")
+  id("io.gitlab.arturbosch.detekt").version("1.17.0")
 }
 
 repositories {
@@ -19,5 +19,5 @@ gradlePlugin {
 }
 
 dependencies {
-  detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.14.2")
+  detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.17.0")
 }
