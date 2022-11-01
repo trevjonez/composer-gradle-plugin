@@ -100,7 +100,7 @@ class AdbSpec : Spek({
 
                            val capturedOutput = byteStreamOut.toString()
                            print(capturedOutput)
-                           assertThat(capturedOutput).contains("testSupport-older-debug.apk: Failure [INSTALL_FAILED_VERSION_DOWNGRADE]")
+                           assertThat(capturedOutput).contains("testSupport-older-debug.apk: Failure [INSTALL_FAILED_VERSION_DOWNGRADE")
                          }
                        }
                      })

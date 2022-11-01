@@ -15,15 +15,19 @@ application {
 dependencies {
   api("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
   api(project(":commander:android"))
-  api("com.beust:jcommander:1.71")
+  api("com.beust:jcommander:1.81")
   api("commons-io:commons-io:2.6")
   api("org.apache.commons:commons-text:1.6")
   api("com.google.code.gson:gson:2.8.5")
-  api("com.linkedin.dextestparser:parser:1.1.0")
+  api("com.linkedin.dextestparser:parser:2.3.4") {
+      attributes {
+        attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
+      }
+  }
 
   testImplementation("org.assertj:assertj-core:3.11.1")
-  testImplementation("org.spekframework.spek2:spek-dsl-jvm:2.0.5")
-  testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:2.0.5")
+  testImplementation("org.spekframework.spek2:spek-dsl-jvm:2.0.7")
+  testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:2.0.7")
   testRuntimeOnly("org.jetbrains.kotlin:kotlin-reflect")
 }
 

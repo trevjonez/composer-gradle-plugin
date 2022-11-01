@@ -72,5 +72,5 @@ fun parseTestRunner(testApkPath: String): TestRunner =
 
 fun parseTests(testApkPath: String): List<TestMethod> =
     DexParser.findTestMethods(testApkPath).map {
-      TestMethod(it.testName, it.annotationNames)
+      TestMethod(it.testName, it.annotations.map { it.name })
     }

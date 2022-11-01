@@ -21,7 +21,7 @@ class ApkSpec : Spek({
                          it("parses tests list correctly") {
                            assertThat(parseTests(testApkPath)).isEqualTo(listOf(
                                TestMethod("test.test.myapplication.ExampleInstrumentedTest#useAppContext",
-                                          listOf("dalvik.annotation.Throws", "org.junit.Test", "org.junit.runner.RunWith")
+                                          listOf("org.junit.runner.RunWith", "dalvik.annotation.Throws", "org.junit.Test")
                                )
                            ))
                          }
