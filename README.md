@@ -1,7 +1,7 @@
 # composer-gradle-plugin
 
 [ ![Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/com/trevjonez/composer/com.trevjonez.composer.gradle.plugin/maven-metadata.xml.svg?label=Plugin%20Portal) ](https://plugins.gradle.org/plugin/com.trevjonez.composer)
-[ ![JCenter](https://api.bintray.com/packages/trevorjones141/maven/composer/images/download.svg) ](https://bintray.com/trevorjones141/maven/composer/_latestVersion)
+[![](https://jitpack.io/v/trevjonez/composer-gradle-plugin.svg)](https://jitpack.io/#trevjonez/composer-gradle-plugin)
 ![CI](https://github.com/trevjonez/composer-gradle-plugin/workflows/CI/badge.svg)
 
 Gradle task type and plugin for running [gojuno/composer](https://github.com/gojuno/composer) from gradle.
@@ -22,7 +22,7 @@ Composer from this project will not be published as a fat jar for standalone con
 
 ##### Via Gradle Plugin Portal:
 
-The plugin is available via the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/com.trevjonez.composer)
+The plugin is available via the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/com.trevjonez.composer) or [JitPack](https://jitpack.io/#trevjonez/composer-gradle-plugin).
 
 ```groovy
 plugins {
@@ -54,7 +54,7 @@ apply plugin: 'com.trevjonez.composer'
 ```
 The above should be all you need to get started and will create a task for each testable variant in the project.
 
-The tasks that are created will be of the form `testFlavorTypeComposer`
+The tasks that are created will be of the form `testFlavorTypeComposer`.
 
 If you want to limit the variants that get tasks or provide custom configuration you can do so via the `composer` DSL block:
 ```groovy
